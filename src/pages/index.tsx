@@ -1,7 +1,9 @@
-import DefaultLayout from "@/components/layouts/DefaultLayout";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import type { NextPageWithLayout } from "./_app";
+
+// components imports
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const Home: NextPageWithLayout = () => {
   const { data: session } = useSession();
