@@ -2,7 +2,7 @@ import styles from "@/styles/searchbar.module.css";
 import type { Product } from "@/types/globals";
 import { Combobox, Transition } from "@headlessui/react";
 import Router from "next/router";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 
 // icons imports
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
@@ -17,7 +17,6 @@ const Searchbar = <TData extends Product>({
   route,
   className,
 }: SearchbarProps<TData>) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
 
   // filter data
@@ -33,18 +32,6 @@ const Searchbar = <TData extends Product>({
             : item
         );
 
-  // handle keyboard shortcuts
-  useEffect(() => {
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        setIsOpen(!isOpen);
-      }
-    };
-    document.addEventListener("keydown", handleKeydown);
-    return () => document.removeEventListener("keydown", handleKeydown);
-  }, [isOpen]);
-
   return (
     <Combobox
       aria-label="combobox"
@@ -52,7 +39,6 @@ const Searchbar = <TData extends Product>({
       className={`relative w-full max-w-5xl ${className}`}
       onChange={(value: TData) => {
         Router.push(`/dashboard/${route}/${value.id}`);
-        setIsOpen(false);
       }}
     >
       <div className={styles.inputWrapper}>

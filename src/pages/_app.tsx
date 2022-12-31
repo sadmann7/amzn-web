@@ -1,9 +1,15 @@
-import type { ReactElement, ReactNode } from "react";
+import { type ReactElement, type ReactNode, useState } from "react";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
+import {
+  type DehydratedState,
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import "../styles/globals.css";
 
 // components imports
@@ -18,22 +24,30 @@ export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
-type AppPropsWithLayout = AppProps<{ session: Session | null }> & {
+type AppPropsWithLayout = AppProps<{
+  session: Session | null;
+  dehydratedState: DehydratedState;
+}> & {
   Component: NextPageWithLayout;
 };
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout =
     Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <SessionProvider session={pageProps.session}>
-      <Head>
-        <title>Amzn Store</title>
-      </Head>
-      {getLayout(<Component {...pageProps} />)}
-      <ToastWrapper />
-    </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <SessionProvider session={pageProps.session}>
+          <Head>
+            <title>Amzn Store</title>
+          </Head>
+          {getLayout(<Component {...pageProps} />)}
+          <ToastWrapper />
+        </SessionProvider>
+      </Hydrate>
+    </QueryClientProvider>
   );
 }
 

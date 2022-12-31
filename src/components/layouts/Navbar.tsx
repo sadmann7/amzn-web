@@ -1,12 +1,13 @@
-import { env } from "@/env/client.mjs";
-import type { Product } from "@/types/globals";
-import Link from "next/link";
-import Image from "next/image";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { getProducts } from "@/utils/query";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { Fragment } from "react";
 
 // components imports
+import Loader from "../Loader";
 import Searchbar from "../Searchbar";
 
 // icons imports
@@ -59,17 +60,31 @@ const bottomLinks = [
   },
 ];
 
+export async function getStaticProps() {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery(["products"], getProducts);
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+}
+
 const Navbar = () => {
-  const [products, setProducts] = useState<Product[]>();
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const res = await fetch(env.NEXT_PUBLIC_PRODUCTS_GET);
-      const data = await res.json();
-      if (!data) return;
-      setProducts(data);
-    };
-    fetchProducts();
-  }, []);
+  const { data: products, status } = useQuery({
+    queryKey: ["posts"],
+    queryFn: getProducts,
+  });
+
+  if (status === "loading") {
+    return <Loader />;
+  }
+
+  if (status === "error") {
+    return (
+      <div className="text-center text-base text-title md:text-lg">Error</div>
+    );
+  }
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-layout text-white">
@@ -82,6 +97,7 @@ const Navbar = () => {
               width={115}
               height={35}
               className="h-auto min-w-[100px] p-2 ring-white transition hover:ring-1"
+              priority
             />
           </Link>
           {products ? (
