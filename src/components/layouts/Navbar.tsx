@@ -1,6 +1,6 @@
 import { getProducts } from "@/utils/query";
 import { Menu, Transition } from "@headlessui/react";
-import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +11,8 @@ import Loader from "../Loader";
 import Searchbar from "../Searchbar";
 
 // icons imports
-import { ChevronDownIcon, ShoppingCartIcon } from "@heroicons/react/20/solid";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 
 const bottomLinks = [
   {
@@ -59,16 +60,6 @@ const bottomLinks = [
     href: "##",
   },
 ];
-
-export async function getStaticProps() {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery(["products"], getProducts);
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  };
-}
 
 const Navbar = () => {
   const { data: products, status } = useQuery({
@@ -145,7 +136,7 @@ export default Navbar;
 const dropLinks = [
   {
     name: "Account",
-    href: "##",
+    href: "/app/account",
   },
   {
     name: "Create a List",
@@ -166,7 +157,7 @@ const Dropdown = () => {
   const { data: session } = useSession();
 
   return (
-    <Menu as="div" className="relative inline-block text-left">
+    <Menu as="div" className="relative z-10 inline-block text-left">
       <div>
         <Menu.Button className="inline-flex w-full flex-col justify-center whitespace-nowrap rounded-sm p-2 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white">
           <span className="text-xs">

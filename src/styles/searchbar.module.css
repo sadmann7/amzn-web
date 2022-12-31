@@ -1,12 +1,9 @@
 .inputWrapper {
-  @apply w-full cursor-default overflow-hidden rounded-md bg-white text-left shadow-md ring-2 ring-lowkey/80;
+  @apply w-full cursor-default overflow-hidden rounded-md bg-white text-left shadow-md ring-2 ring-lowkey/80 transition ui-open:ring-primary;
   @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-primary;
 }
-.iconWrapper {
-  @apply absolute inset-y-0 left-0 flex items-center pl-3 text-title;
-}
 .input {
-  @apply w-full border-none py-2.5 text-sm font-medium leading-5 text-title outline-none placeholder:text-lowkey/80;
+  @apply w-full border-none py-2.5 text-sm font-medium leading-5 text-title placeholder:text-lowkey/80 focus:ring-0;
 }
 .inputButton {
   @apply absolute right-0 h-full rounded-sm bg-orange-300 px-3 transition-colors hover:bg-primary;
@@ -18,5 +15,5 @@
   @apply relative block cursor-default select-none truncate bg-red-200 py-2 px-3 font-medium text-title;
 }
 .option {
-  @apply relative block cursor-pointer select-none truncate py-2 px-3 font-medium text-title ui-active:bg-background;
+  @apply relative block cursor-pointer select-none truncate py-2 px-3 font-medium text-title ui-active:bg-neutral-200;
 }

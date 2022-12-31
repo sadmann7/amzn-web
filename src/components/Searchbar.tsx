@@ -43,6 +43,7 @@ const Searchbar = <TData extends Product>({
     >
       <div className={styles.inputWrapper}>
         <Combobox.Input
+          type="text"
           className={styles.input}
           placeholder={`Search ${route}...`}
           onChange={(e) => setQuery(e.target.value)}

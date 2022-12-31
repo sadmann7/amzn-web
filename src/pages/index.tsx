@@ -7,6 +7,7 @@ import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const Home: NextPageWithLayout = () => {
   const { data: session } = useSession();
+  console.log(session);
 
   return (
     <>
@@ -16,11 +17,9 @@ const Home: NextPageWithLayout = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
-        <div className="flex flex-col items-center justify-center gap-4">
-          <p className="text-center text-2xl text-title">
-            {session && <span>Logged in as {session.user?.name}</span>}
-          </p>
-        </div>
+        <p className="text-center text-2xl text-title">
+          {session && <span>Logged in as {session.user?.name}</span>}
+        </p>
       </main>
     </>
   );

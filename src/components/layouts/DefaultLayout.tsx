@@ -12,7 +12,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      Router.push("/");
+      Router.push("/app");
     }
   }, [status]);
 

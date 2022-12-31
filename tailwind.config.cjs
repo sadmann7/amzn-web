@@ -4,7 +4,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "hsl(0, 0%, 90%)",
+        bg: {
+          white: "hsl(0, 0%, 100%)",
+          neutral: "hsl(0, 0%, 90%)",
+        },
         primary: "hsl(27, 96%, 61%)",
         secondary: "hsl(220, 9%, 46%)",
         success: "hsl(142, 71%, 45%)",
@@ -14,6 +17,9 @@ module.exports = {
         lowkey: "hsl(0, 0%, 45%)",
         title: "hsl(0, 0%, 15%)",
         text: "hsl(0, 0%, 25%)",
+      },
+      screens: {
+        xs: "480px",
       },
     },
   },
