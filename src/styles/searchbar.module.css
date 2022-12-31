@@ -1,0 +1,25 @@
+.inputWrapper {
+  @apply relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md ring-1 ring-gray-500/75;
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300;
+}
+.iconWrapper {
+  @apply absolute inset-y-0 left-0 flex items-center pl-3;
+}
+.icon {
+  @apply aspect-square w-5;
+}
+.input {
+  @apply w-full border-none py-3 pl-10 pr-4 text-sm font-medium leading-5 text-title outline-none placeholder:text-lowkey/80;
+}
+.options {
+  @apply absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-gray-500/75 focus:outline-none;
+}
+.optionNull {
+  @apply relative cursor-default select-none bg-red-500/90 py-2 pl-10 pr-4 font-medium text-white;
+}
+.option {
+  @apply relative cursor-default select-none py-2 pl-10 pr-4 font-medium;
+}
+.optionText {
+  @apply block truncate;
+}
