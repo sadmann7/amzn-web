@@ -42,7 +42,6 @@ const Four0Four: NextPageWithLayout = ({ statusCode }) => {
         </h1>
         <Button
           aria-label="go back to the previous page"
-          className="bg-primary"
           onClick={() => Router.back()}
         >
           Go back

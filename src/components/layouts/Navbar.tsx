@@ -13,6 +13,7 @@ import Searchbar from "../Searchbar";
 // icons imports
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { trpc } from "@/utils/trpc";
 
 const bottomLinks = [
   {
@@ -100,11 +101,14 @@ const Navbar = () => {
           ) : null}
           <div className="flex items-center justify-between gap-1">
             <Dropdown />
-            <button className="flex items-center gap-1 rounded-sm p-2 transition hover:ring-1 hover:ring-white">
+            <button className="relative flex items-center gap-1 rounded-sm p-2 transition hover:ring-1 hover:ring-white">
               <ShoppingCartIcon
                 className="aspect-square w-7"
                 aria-hidden="true"
               />
+              <span className="absolute -top-0.5 left-[1.2rem] bg-layout text-base font-medium text-primary md:text-lg">
+                0
+              </span>
               <span className="text-sm font-medium md:text-base">Cart</span>
             </button>
           </div>
@@ -154,21 +158,22 @@ const dropLinks = [
 ];
 
 const Dropdown = () => {
-  const { data: session } = useSession();
+  const sessionMutation = trpc.auth.getSession.useQuery();
 
   return (
     <Menu as="div" className="relative z-10 inline-block text-left">
       <div>
         <Menu.Button className="inline-flex w-full flex-col justify-center whitespace-nowrap rounded-sm p-2 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white">
           <span className="text-xs">
-            Hello, {session ? session.user?.name : "sign in"}
+            Hello,{" "}
+            {sessionMutation.data ? sessionMutation.data.user?.name : "sign in"}
           </span>
           <span className="flex items-center gap-0.5">
             <span className="text-xs font-medium md:text-sm">
               Accounts & Lists
             </span>
             <ChevronDownIcon
-              className="aspect-square w-5 stroke-2 text-violet-200 transition hover:text-violet-100 ui-open:rotate-180"
+              className="aspect-square w-5 text-violet-200 transition hover:text-violet-100 ui-open:rotate-180"
               aria-hidden="true"
             />
           </span>
@@ -199,9 +204,9 @@ const Dropdown = () => {
               <span
                 aria-label="Sign out"
                 className="w-full cursor-pointer text-xs text-title transition ui-active:text-primary ui-active:underline md:text-sm"
-                onClick={() => (session ? signOut() : signIn())}
+                onClick={() => (sessionMutation.data ? signOut() : signIn())}
               >
-                {session ? "Sign out" : "Sign in"}
+                {sessionMutation.data ? "Sign out" : "Sign in"}
               </span>
             </Menu.Item>
           </div>
