@@ -1,5 +1,8 @@
 import { trpc } from "@/utils/trpc";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signOut } from "next-auth/react";
 import Head from "next/head";
+import Router from "next/router";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -8,10 +11,9 @@ import type { NextPageWithLayout } from "../../_app";
 // components imports
 import Button from "@/components/Button";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import Router from "next/router";
 
 const schema = z.object({
-  id: z.string(),
+  id: z.any(),
   name: z
     .string()
     .min(3, { message: "Name must be at least 3 charachters" })
@@ -36,23 +38,24 @@ const Update: NextPageWithLayout = () => {
   // delete user mutation
   const deleteUserMutation = trpc.users.deleteOne.useMutation({
     onSuccess: async () => {
+      await Router.push("/app");
+      await signOut();
       toast.success("User deleted!");
-      Router.push("/app");
     },
     onError: async (e) => {
       toast.error(e.message);
     },
   });
-
   // react-hook-form
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    if (!sessionMutation.data?.user) return;
     await updateUserMutation.mutateAsync({
-      id: sessionMutation.data?.user?.id as string,
+      id: sessionMutation.data.user.id,
       name: data.name,
       email: data.email,
     });
@@ -63,7 +66,7 @@ const Update: NextPageWithLayout = () => {
       <Head>
         <title>Change Name, E-mail, and Delete Account | Amzn Store</title>
       </Head>
-      <main className="mx-auto mt-5 mb-10 min-h-screen w-[95vw] max-w-screen-sm pt-28">
+      <main className="mx-auto mb-10 min-h-screen w-[95vw] max-w-screen-sm px-2 pt-52 md:pt-44 lg:pt-40">
         {sessionMutation.isLoading ? (
           <div
             role="status"
@@ -96,8 +99,8 @@ const Update: NextPageWithLayout = () => {
                   type="text"
                   id="update-user-name"
                   className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-                  placeholder="Store name"
-                  {...register("name", { required: true })}
+                  placeholder="Enter your name"
+                  {...register("name", { required: "Name is required" })}
                   defaultValue={
                     updateUserMutation.isLoading
                       ? ""
@@ -121,8 +124,8 @@ const Update: NextPageWithLayout = () => {
                   type="text"
                   id="update-user-email"
                   className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-                  placeholder="Store address"
-                  {...register("email", { required: true })}
+                  placeholder="Enter your email addres"
+                  {...register("email", { required: "Email is required" })}
                   defaultValue={
                     updateUserMutation.isLoading
                       ? ""
@@ -140,7 +143,7 @@ const Update: NextPageWithLayout = () => {
                 className="w-full"
                 disabled={updateUserMutation.isLoading}
               >
-                {updateUserMutation.isLoading ? "Loading..." : "Update user"}
+                {updateUserMutation.isLoading ? "Loading..." : "Update"}
               </Button>
             </form>{" "}
             <Button
@@ -151,7 +154,7 @@ const Update: NextPageWithLayout = () => {
                 )
               }
             >
-              Delete account
+              {deleteUserMutation.isLoading ? "Deleting..." : "Delete account"}
             </Button>
           </div>
         )}

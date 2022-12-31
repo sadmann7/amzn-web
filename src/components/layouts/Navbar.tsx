@@ -1,7 +1,7 @@
 import { getProducts } from "@/utils/query";
 import { Menu, Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -11,9 +11,9 @@ import Loader from "../Loader";
 import Searchbar from "../Searchbar";
 
 // icons imports
+import { trpc } from "@/utils/trpc";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
-import { trpc } from "@/utils/trpc";
 
 const bottomLinks = [
   {
@@ -63,6 +63,7 @@ const bottomLinks = [
 ];
 
 const Navbar = () => {
+  // tanstack/react-query
   const { data: products, status } = useQuery({
     queryKey: ["posts"],
     queryFn: getProducts,
@@ -80,15 +81,15 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-layout text-white">
-      <div className="mx-auto flex w-[95vw] max-w-screen-2xl flex-col items-center justify-between gap-1 py-1.5 md:flex-row md:gap-5">
-        <div className="flex w-full items-center justify-between gap-5">
+      <div className="mx-auto flex w-[95vw] max-w-screen-2xl flex-col items-center justify-between gap-1 px-2 py-1.5 md:flex-row md:gap-5">
+        <div className="flex w-full items-center justify-between gap-0 md:gap-5">
           <Link href={`/`}>
             <Image
               src={"/img/logo-white.png"}
               alt="amzn logo"
               width={115}
               height={35}
-              className="h-auto min-w-[100px] p-2 ring-white transition hover:ring-1"
+              className="h-auto min-w-[115px] p-3 ring-white transition hover:ring-1"
               priority
             />
           </Link>
@@ -99,14 +100,14 @@ const Navbar = () => {
               route="products"
             />
           ) : null}
-          <div className="flex items-center justify-between gap-1">
+          <div className="flex items-center gap-1">
             <Dropdown />
-            <button className="relative flex items-center gap-1 rounded-sm p-2 transition hover:ring-1 hover:ring-white">
+            <button className="relative flex items-center gap-1 rounded-sm px-2 py-3 transition hover:ring-1 hover:ring-white">
               <ShoppingCartIcon
                 className="aspect-square w-7"
                 aria-hidden="true"
               />
-              <span className="absolute -top-0.5 left-[1.2rem] bg-layout text-base font-medium text-primary md:text-lg">
+              <span className="absolute top-0 left-[1.2rem] h-5 bg-layout text-base font-medium text-primary md:text-lg">
                 0
               </span>
               <span className="text-sm font-medium md:text-base">Cart</span>
@@ -158,12 +159,13 @@ const dropLinks = [
 ];
 
 const Dropdown = () => {
+  // trpc
   const sessionMutation = trpc.auth.getSession.useQuery();
 
   return (
     <Menu as="div" className="relative z-10 inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex w-full flex-col justify-center whitespace-nowrap rounded-sm p-2 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white">
+        <Menu.Button className="hidden w-full flex-col justify-center whitespace-nowrap rounded-sm p-2 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white sm:inline-flex">
           <span className="text-xs">
             Hello,{" "}
             {sessionMutation.data ? sessionMutation.data.user?.name : "sign in"}
@@ -177,6 +179,15 @@ const Dropdown = () => {
               aria-hidden="true"
             />
           </span>
+        </Menu.Button>
+        <Menu.Button className="flex w-full items-center gap-0.5 whitespace-nowrap rounded-sm px-2 py-4 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white sm:hidden">
+          <span className="text-xs">
+            {sessionMutation.data ? sessionMutation.data.user?.name : "Sign in"}
+          </span>
+          <ChevronDownIcon
+            className="aspect-square w-5 text-violet-200 transition hover:text-violet-100 ui-open:rotate-180"
+            aria-hidden="true"
+          />
         </Menu.Button>
       </div>
       <Transition
