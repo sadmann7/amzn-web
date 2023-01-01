@@ -80,7 +80,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-layout text-white">
+    <nav className="fixed top-0 left-0 z-50 w-full bg-layout text-white">
       <div className="mx-auto flex w-[95vw] max-w-screen-2xl flex-col items-center justify-between gap-1 px-2 py-1.5 md:flex-row md:gap-5">
         <div className="flex w-full items-center justify-between gap-0 md:gap-5">
           <Link href={`/`}>
@@ -100,14 +100,18 @@ const Navbar = () => {
               route="products"
             />
           ) : null}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 md:gap-2">
             <Dropdown />
+            <button className="hidden flex-col gap-0.5 whitespace-nowrap p-2 transition hover:ring-1 hover:ring-white md:flex">
+              <span className="text-xs">Retruns</span>
+              <span className="text-xs font-medium md:text-sm">& Orders</span>
+            </button>
             <button className="relative flex items-center gap-1 rounded-sm px-2 py-3 transition hover:ring-1 hover:ring-white">
               <ShoppingCartIcon
                 className="aspect-square w-7"
                 aria-hidden="true"
               />
-              <span className="absolute top-0 left-[1.2rem] h-5 bg-layout text-base font-medium text-primary md:text-lg">
+              <span className="absolute top-1 left-[1.15rem] h-5 bg-layout text-base font-medium text-primary md:text-lg">
                 0
               </span>
               <span className="text-sm font-medium md:text-base">Cart</span>
@@ -165,7 +169,7 @@ const Dropdown = () => {
   return (
     <Menu as="div" className="relative z-10 inline-block text-left">
       <div>
-        <Menu.Button className="hidden w-full flex-col justify-center whitespace-nowrap rounded-sm p-2 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white sm:inline-flex">
+        <Menu.Button className="hidden w-full flex-col justify-center whitespace-nowrap rounded-sm p-2 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white md:inline-flex">
           <span className="text-xs">
             Hello,{" "}
             {sessionMutation.data ? sessionMutation.data.user?.name : "sign in"}
@@ -180,7 +184,7 @@ const Dropdown = () => {
             />
           </span>
         </Menu.Button>
-        <Menu.Button className="flex w-full items-center gap-0.5 whitespace-nowrap rounded-sm px-2 py-4 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white sm:hidden">
+        <Menu.Button className="flex w-full items-center gap-0.5 whitespace-nowrap rounded-sm px-2 py-4 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white md:hidden">
           <span className="text-xs">
             {sessionMutation.data ? sessionMutation.data.user?.name : "Sign in"}
           </span>
@@ -199,7 +203,7 @@ const Dropdown = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute right-0 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-sm bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="flex flex-col gap-2 px-5 py-4">
             {dropLinks.map((link) => (
               <Menu.Item key={link.name}>
