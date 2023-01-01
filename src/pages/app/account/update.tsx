@@ -100,7 +100,7 @@ const Update: NextPageWithLayout = () => {
                   id="update-user-name"
                   className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                   placeholder="Enter your name"
-                  {...register("name", { required: "Name is required" })}
+                  {...register("name", { required: true })}
                   defaultValue={
                     updateUserMutation.isLoading
                       ? ""
@@ -125,7 +125,7 @@ const Update: NextPageWithLayout = () => {
                   id="update-user-email"
                   className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                   placeholder="Enter your email addres"
-                  {...register("email", { required: "Email is required" })}
+                  {...register("email", { required: true })}
                   defaultValue={
                     updateUserMutation.isLoading
                       ? ""

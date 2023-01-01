@@ -1,21 +1,21 @@
-import { type ReactElement, type ReactNode, useState } from "react";
-import type { NextPage } from "next";
-import type { AppProps } from "next/app";
-import type { Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
-import { trpc } from "../utils/trpc";
 import {
-  type DehydratedState,
   Hydrate,
   QueryClient,
   QueryClientProvider,
+  type DehydratedState,
 } from "@tanstack/react-query";
+import type { NextPage } from "next";
+import type { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
+import type { AppProps } from "next/app";
+import Head from "next/head";
+import { useState, type ReactElement, type ReactNode } from "react";
 import "../styles/globals.css";
+import { trpc } from "../utils/trpc";
 
 // components imports
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ToastWrapper from "@/components/ToastWrapper";
-import Head from "next/head";
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,

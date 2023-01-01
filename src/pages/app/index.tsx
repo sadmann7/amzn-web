@@ -1,5 +1,3 @@
-import { getProducts } from "@/utils/query";
-import { dehydrate, QueryClient } from "@tanstack/react-query";
 import Head from "next/head";
 import type { NextPageWithLayout } from "../_app";
 
@@ -24,13 +22,3 @@ const App: NextPageWithLayout = () => {
 export default App;
 
 App.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
-
-export async function getStaticProps() {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery(["products"], getProducts);
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  };
-}

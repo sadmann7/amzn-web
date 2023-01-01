@@ -1,4 +1,5 @@
-import { getProducts } from "@/utils/query";
+import { getProducts } from "@/utils/queryFns";
+import { trpc } from "@/utils/trpc";
 import { Menu, Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import { signIn, signOut } from "next-auth/react";
@@ -11,7 +12,6 @@ import Loader from "../Loader";
 import Searchbar from "../Searchbar";
 
 // icons imports
-import { trpc } from "@/utils/trpc";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 
@@ -65,7 +65,7 @@ const bottomLinks = [
 const Navbar = () => {
   // tanstack/react-query
   const { data: products, status } = useQuery({
-    queryKey: ["posts"],
+    queryKey: ["products"],
     queryFn: getProducts,
   });
 

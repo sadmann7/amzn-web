@@ -7,7 +7,6 @@ import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const Home: NextPageWithLayout = () => {
   const { data: session } = useSession();
-  console.log(session);
 
   return (
     <>
