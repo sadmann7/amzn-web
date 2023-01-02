@@ -31,12 +31,12 @@ const Hero = () => {
   return (
     <section
       aria-label="hero carousel"
-      className="relative mx-auto max-w-screen-2xl sm:w-[95vw]"
+      className="relative mx-auto w-full max-w-screen-2xl sm:w-[95vw]"
     >
       <div className="absolute bottom-0 z-20 h-32 w-full bg-gradient-to-t from-bg-gray to-transparent" />
       <button
         aria-label="navigate to right"
-        className="absolute left-0 z-10 my-1 hidden h-2/5 px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
+        className="absolute left-0 z-20 my-1 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
         ref={leftArrowRef}
       >
         <ChevronLeftIcon
@@ -46,7 +46,7 @@ const Hero = () => {
       </button>
       <button
         aria-label="navigate to left"
-        className="absolute right-0 z-10 my-1 hidden h-2/5 px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
+        className="absolute right-0 z-20 my-1 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
         ref={rightArrowRef}
       >
         <ChevronRightIcon
@@ -69,16 +69,16 @@ const Hero = () => {
         }}
         onBeforeInit={onBeforeInit}
         modules={[Autoplay, Navigation]}
-        className="h-full w-full"
+        className="h-64 w-full"
       >
         {heroImages.map((image, i) => (
           <SwiperSlide key={i}>
             <Image
               src={image.src}
               alt={image.alt}
-              className="h-full w-full object-cover"
               width={1536}
               height={614}
+              className="object-contain"
               priority
             />
           </SwiperSlide>

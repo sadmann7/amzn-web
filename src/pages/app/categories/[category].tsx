@@ -29,15 +29,13 @@ const CategoryName: NextPageWithLayout<CategoryNameProps> = (props) => {
         <title>Products | Amzn Store</title>
       </Head>
       <main className="pt-48 md:pt-40 lg:pt-36">
-        <div className="mx-auto min-h-screen w-[95vw] max-w-screen-2xl">
+        <div className="mx-auto min-h-screen w-full max-w-screen-2xl px-2 sm:w-[95vw]">
           {status === "error" ? (
             <div className="text-center text-base text-title md:text-lg">
               Error in fetching product
             </div>
           ) : (
-            <div className="text-center text-base text-title md:text-lg">
-              <ProductList products={products} status={status} />
-            </div>
+            <ProductList products={products} status={status} />
           )}
         </div>
       </main>

@@ -18,7 +18,7 @@ const ProductList = ({ products, status }: ProductListProps) => {
   return (
     <section
       aria-label="product list"
-      className="mx-auto max-w-screen-2xl px-2 sm:w-[95vw]"
+      className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]"
     >
       <h2 className="sr-only">Product list</h2>
       {status === "error" ? (
@@ -30,7 +30,7 @@ const ProductList = ({ products, status }: ProductListProps) => {
           {products.map((product) => (
             <div
               key={product.id}
-              className="flex flex-col gap-3 bg-white p-5 transition-opacity hover:bg-opacity-80 active:bg-opacity-100"
+              className="flex flex-col gap-3 bg-white p-5 shadow-sm transition-opacity hover:bg-opacity-80 active:bg-opacity-100"
             >
               <Link href={`/app/products/${product.id}`}>
                 <Image
