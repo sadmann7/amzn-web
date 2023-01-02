@@ -1,12 +1,17 @@
-import { useSession } from "next-auth/react";
 import Head from "next/head";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import type { NextPageWithLayout } from "./_app";
 
 // components imports
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const Home: NextPageWithLayout = () => {
-  const { data: session } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/app");
+  }, [router]);
 
   return (
     <>
@@ -16,9 +21,9 @@ const Home: NextPageWithLayout = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
-        <p className="text-center text-2xl text-title">
-          {session && <span>Logged in as {session.user?.name}</span>}
-        </p>
+        <Link href="/app" passHref>
+          <a className="text-center text-2xl text-title">Go to app</a>
+        </Link>
       </main>
     </>
   );

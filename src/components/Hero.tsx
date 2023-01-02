@@ -76,7 +76,7 @@ const Hero = () => {
               className="h-full w-full object-cover"
               width={1536}
               height={614}
-              loading="lazy"
+              priority
             />
           </SwiperSlide>
         ))}

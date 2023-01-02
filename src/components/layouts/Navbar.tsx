@@ -6,6 +6,7 @@ import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
+import type { Product } from "@/types/globals";
 
 // components imports
 import Loader from "../Loader";
@@ -33,11 +34,11 @@ const bottomLinks = [
     href: "##",
   },
   {
-    name: "Home",
-    href: "/",
+    name: "Gift Cards",
+    href: "##",
   },
   {
-    name: "Gift Cards",
+    name: "Returns & Orders",
     href: "##",
   },
   {
@@ -64,7 +65,7 @@ const bottomLinks = [
 
 const Navbar = () => {
   // tanstack/react-query
-  const { data: products, status } = useQuery({
+  const { data: products, status } = useQuery<Product[]>({
     queryKey: ["products"],
     queryFn: getProducts,
   });
@@ -73,17 +74,11 @@ const Navbar = () => {
     return <Loader />;
   }
 
-  if (status === "error") {
-    return (
-      <div className="text-center text-base text-title md:text-lg">Error</div>
-    );
-  }
-
   return (
     <nav className="fixed top-0 left-0 z-50 w-full bg-layout text-white">
       <div className="mx-auto flex w-[95vw] max-w-screen-2xl flex-col items-center justify-between gap-1 px-2 py-1.5 md:flex-row md:gap-5">
         <div className="flex w-full items-center justify-between gap-0 md:gap-5">
-          <Link href={`/`}>
+          <Link href={`/app`}>
             <Image
               src={"/img/logo-white.png"}
               alt="amzn logo"
@@ -93,13 +88,15 @@ const Navbar = () => {
               priority
             />
           </Link>
-          {products ? (
+          {status === "error" ? (
+            <div className="text-xs md:text-sm">Error in fetching products</div>
+          ) : (
             <Searchbar
               className="hidden md:block"
               data={products}
               route="products"
             />
-          ) : null}
+          )}
           <div className="flex items-center gap-1 md:gap-2">
             <Dropdown />
             <button className="hidden flex-col gap-0.5 whitespace-nowrap p-2 transition hover:ring-1 hover:ring-white md:flex">
@@ -118,9 +115,11 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-        {products ? (
+        {status === "error" ? (
+          <div className="text-xs md:text-sm">Error in fetching products</div>
+        ) : (
           <Searchbar className="md:hidden" data={products} route="products" />
-        ) : null}
+        )}
       </div>
       <div className="w-full bg-layout-light">
         <div className="mx-auto flex w-[95vw] max-w-screen-2xl items-center justify-between gap-4 overflow-x-auto whitespace-nowrap py-2 px-1 md:justify-start ">

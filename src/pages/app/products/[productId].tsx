@@ -14,8 +14,9 @@ type ProductIdProps = {
 };
 
 const ProductId: NextPageWithLayout<ProductIdProps> = (props) => {
+  // tanstack/react-query
   const productId = Number(Router.query.productId);
-  const { data: product, status } = useQuery({
+  const { data: product, status } = useQuery<Product>({
     queryKey: ["product", productId],
     queryFn: () => getProduct(productId),
     initialData: props.product,
@@ -26,11 +27,11 @@ const ProductId: NextPageWithLayout<ProductIdProps> = (props) => {
       <Head>
         <title>Product | Amzn Store</title>
       </Head>
-      <main className="pt-40 md:pt-32 lg:pt-[6.7rem]">
+      <main className="pt-48 md:pt-40 lg:pt-36">
         <div className="mx-auto min-h-screen w-[95vw] max-w-screen-2xl">
           {status === "error" ? (
             <div className="text-center text-base text-title md:text-lg">
-              Error
+              Error in fetching product
             </div>
           ) : (
             <div className="text-center text-base text-title md:text-lg">
