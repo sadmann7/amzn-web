@@ -6,6 +6,7 @@ import type { NextPageWithLayout } from "./_app";
 
 // components imports
 import DefaultLayout from "@/components/layouts/DefaultLayout";
+import Button from "@/components/Button";
 
 const Home: NextPageWithLayout = () => {
   const router = useRouter();
@@ -21,8 +22,8 @@ const Home: NextPageWithLayout = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
-        <Link href="/app" passHref>
-          <a className="text-center text-2xl text-title">Go to app</a>
+        <Link href="/app">
+          <Button>Go to app</Button>
         </Link>
       </main>
     </>

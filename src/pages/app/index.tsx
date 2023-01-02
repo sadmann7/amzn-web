@@ -27,11 +27,9 @@ const App: NextPageWithLayout<AppProps> = (props) => {
       <Head>
         <title>Amzn Store</title>
       </Head>
-      <main className="bg-bg-gray pt-40 md:pt-32 lg:pt-[6.7rem]">
-        <div className="mx-auto min-h-screen w-[95vw] max-w-screen-2xl">
-          <Hero />
-          <ProductList products={products} status={status} />
-        </div>
+      <main className="min-h-screen bg-bg-gray pt-40 md:pt-32 lg:pt-[6.7rem]">
+        <Hero />
+        <ProductList products={products} status={status} />
       </main>
     </>
   );

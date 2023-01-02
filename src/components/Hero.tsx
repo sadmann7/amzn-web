@@ -29,7 +29,10 @@ const Hero = () => {
   };
 
   return (
-    <section aria-label="hero carousel" className="relative">
+    <section
+      aria-label="hero carousel"
+      className="relative mx-auto max-w-screen-2xl sm:w-[95vw]"
+    >
       <div className="absolute bottom-0 z-20 h-32 w-full bg-gradient-to-t from-bg-gray to-transparent" />
       <button
         aria-label="navigate to right"
