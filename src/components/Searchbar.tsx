@@ -38,7 +38,7 @@ const Searchbar = <TData extends Product>({
       as="div"
       className={`relative w-full max-w-5xl ${className}`}
       onChange={(value: TData) => {
-        Router.push(`/dashboard/${route}/${value.id}`);
+        Router.push(`/app/${route}/${value.id}`);
       }}
     >
       <div className={styles.inputWrapper}>

@@ -30,9 +30,10 @@ const Hero = () => {
 
   return (
     <section aria-label="hero carousel" className="relative">
+      <div className="absolute bottom-0 z-20 h-32 w-full bg-gradient-to-t from-bg-gray to-transparent" />
       <button
         aria-label="navigate to right"
-        className="absolute left-0 z-10 my-1 hidden h-1/2 px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
+        className="absolute left-0 z-10 my-1 hidden h-2/5 px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
         ref={leftArrowRef}
       >
         <ChevronLeftIcon
@@ -42,7 +43,7 @@ const Hero = () => {
       </button>
       <button
         aria-label="navigate to left"
-        className="absolute right-0 z-10 my-1 hidden h-1/2 px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
+        className="absolute right-0 z-10 my-1 hidden h-2/5 px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
         ref={rightArrowRef}
       >
         <ChevronRightIcon
@@ -54,7 +55,11 @@ const Hero = () => {
         slidesPerView={1}
         spaceBetween={20}
         loop={true}
-        autoplay={{ delay: 3000 }}
+        autoplay={{
+          delay: 4000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        }}
         navigation={{
           prevEl: leftArrowRef.current,
           nextEl: rightArrowRef.current,
@@ -68,9 +73,10 @@ const Hero = () => {
             <Image
               src={image.src}
               alt={image.alt}
-              className="object-cover"
+              className="h-full w-full object-cover"
               width={1536}
               height={614}
+              loading="lazy"
             />
           </SwiperSlide>
         ))}

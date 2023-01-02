@@ -6,7 +6,7 @@ module.exports = {
       colors: {
         bg: {
           white: "hsl(0, 0%, 100%)",
-          neutral: "hsl(0, 0%, 90%)",
+          gray: "hsl(220, 14%, 96%)",
         },
         primary: "hsl(27, 96%, 61%)",
         secondary: "hsl(220, 9%, 46%)",
