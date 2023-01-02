@@ -69,7 +69,7 @@ const Account: NextPageWithLayout = () => {
       <Head>
         <title>Account | Amzn Store</title>
       </Head>
-      <main className="mx-auto mb-10 min-h-screen w-[89vw] max-w-screen-lg px-2 pt-48 md:pt-40 lg:pt-36">
+      <main className="mx-auto mb-10 min-h-screen w-[89vw] max-w-screen-lg px-2 pt-48 pb-14 md:pt-36">
         <h1 className="text-xl font-medium text-title md:text-2xl">
           Your Account
         </h1>

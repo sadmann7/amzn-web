@@ -19,7 +19,7 @@ type AppProps = {
 const App: NextPageWithLayout<AppProps> = (props) => {
   // tanstack/react-query
   const { data: products, status: productsStatus } = useQuery<Product[]>({
-    queryKey: ["products"],
+    queryKey: ["productsById"],
     queryFn: getProducts,
     initialData: props.products,
   });
@@ -36,8 +36,10 @@ const App: NextPageWithLayout<AppProps> = (props) => {
       </Head>
       <main className="min-h-screen bg-bg-gray pt-40 md:pt-32 lg:pt-[6.7rem]">
         <Hero />
-        <ProductList products={products} status={productsStatus} />
-        <CategoryList categories={categories} status={categoriesStatus} />
+        <div className="flex flex-col gap-5 pb-10">
+          <CategoryList categories={categories} status={categoriesStatus} />
+          <ProductList products={products} status={productsStatus} />
+        </div>
       </main>
     </>
   );
@@ -50,7 +52,7 @@ App.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
 export const getServerSideProps: GetServerSideProps = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["products"],
+    queryKey: ["productsById"],
     queryFn: getProducts,
   });
   await queryClient.prefetchQuery({

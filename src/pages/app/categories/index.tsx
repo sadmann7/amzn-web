@@ -26,7 +26,7 @@ const Categories: NextPageWithLayout<CategoriesProps> = (props) => {
       <Head>
         <title>Categories | Amzn Store</title>
       </Head>
-      <main className="min-h-screen bg-bg-gray pt-48 md:pt-40 lg:pt-36">
+      <main className="min-h-screen bg-bg-gray pt-56 pb-14 md:pt-48">
         <CategoryList categories={categories} status={status} />
       </main>
     </>

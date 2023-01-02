@@ -1,6 +1,7 @@
 import type { Product } from "@/types/globals";
 import { formatCurrency } from "@/utils/format";
 import Image from "next/image";
+import Link from "next/link";
 
 // components imports
 import Button from "./Button";
@@ -25,17 +26,22 @@ const ProductList = ({ products, status }: ProductListProps) => {
           Error in fetching products
         </div>
       ) : (
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-5 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product) => (
-            <div key={product.id} className="flex flex-col gap-3">
-              <Image
-                src={product.image}
-                alt={product.title}
-                width={192}
-                height={192}
-                className="mx-auto h-48 w-48 object-cover"
-                loading="lazy"
-              />
+            <div
+              key={product.id}
+              className="flex flex-col gap-3 bg-white p-5 transition-opacity hover:bg-opacity-80 active:bg-opacity-100"
+            >
+              <Link href={`/app/products/${product.id}`}>
+                <Image
+                  src={product.image}
+                  alt={product.title}
+                  width={192}
+                  height={192}
+                  className="mx-auto h-48 w-48 object-cover"
+                  loading="lazy"
+                />
+              </Link>
               <div className="flex items-center gap-1">
                 {product.rating.rate
                   ? Array.from(

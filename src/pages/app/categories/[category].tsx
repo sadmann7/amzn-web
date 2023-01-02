@@ -8,24 +8,25 @@ import type { NextPageWithLayout } from "../../_app";
 
 // components imports
 import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ProductList from "@/components/ProductList";
 
 type CategoryNameProps = {
-  product: Product;
+  products: Product[];
 };
 
 const CategoryName: NextPageWithLayout<CategoryNameProps> = (props) => {
   // tanstack/react-query
   const category = Router.query.category as string;
-  const { data: product, status } = useQuery<Product>({
-    queryKey: ["product", category],
+  const { data: products, status } = useQuery<Product[]>({
+    queryKey: ["productsByCategory", category],
     queryFn: () => getProductsByCategory(category),
-    initialData: props.product,
+    initialData: props.products,
   });
 
   return (
     <>
       <Head>
-        <title>Product | Amzn Store</title>
+        <title>Products | Amzn Store</title>
       </Head>
       <main className="pt-48 md:pt-40 lg:pt-36">
         <div className="mx-auto min-h-screen w-[95vw] max-w-screen-2xl">
@@ -35,7 +36,7 @@ const CategoryName: NextPageWithLayout<CategoryNameProps> = (props) => {
             </div>
           ) : (
             <div className="text-center text-base text-title md:text-lg">
-              {product.title}
+              <ProductList products={products} status={status} />
             </div>
           )}
         </div>
@@ -52,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const category = ctx.query.category as string;
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["product", category],
+    queryKey: ["productsByCategory", category],
     queryFn: () => getProductsByCategory(category),
   });
   return {

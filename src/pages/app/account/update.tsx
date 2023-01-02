@@ -66,7 +66,7 @@ const Update: NextPageWithLayout = () => {
       <Head>
         <title>Change Name, E-mail, and Delete Account | Amzn Store</title>
       </Head>
-      <main className="mx-auto mb-10 min-h-screen w-[95vw] max-w-screen-sm px-2 pt-52 md:pt-44 lg:pt-40">
+      <main className="mx-auto min-h-screen w-[95vw] max-w-screen-sm px-2 pt-52 pb-14 md:pt-40">
         {sessionMutation.isLoading ? (
           <div
             role="status"
