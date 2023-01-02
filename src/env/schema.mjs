@@ -30,6 +30,7 @@ export const serverSchema = z.object({
  */
 export const clientSchema = z.object({
   NEXT_PUBLIC_PRODUCTS_GET: z.string().url(),
+  NEXT_PUBLIC_CATEGORIES_GET: z.string().url(),
 });
 
 /**
@@ -40,4 +41,5 @@ export const clientSchema = z.object({
  */
 export const clientEnv = {
   NEXT_PUBLIC_PRODUCTS_GET: process.env.NEXT_PUBLIC_PRODUCTS_GET,
+  NEXT_PUBLIC_CATEGORIES_GET: process.env.NEXT_PUBLIC_CATEGORIES_GET,
 };

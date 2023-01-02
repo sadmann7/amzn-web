@@ -30,7 +30,7 @@ const Four0Four: NextPageWithLayout = ({ statusCode }) => {
   return (
     <>
       <Head>
-        <title>Error | Top Ten Agro Chemicals</title>
+        <title>Error | Amzn Store</title>
         <meta
           name="description"
           content="The page you are looking for is unavailable."

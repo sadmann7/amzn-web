@@ -1,5 +1,5 @@
-import type { Product } from "@/types/globals";
-import { getProducts } from "@/utils/queryFns";
+import type { Category, Product } from "@/types/globals";
+import { getCategories, getProducts } from "@/utils/queryFns";
 import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
@@ -9,17 +9,24 @@ import type { NextPageWithLayout } from "../_app";
 import Hero from "@/components/Hero";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
+import CategoryList from "@/components/CategoryList";
 
 type AppProps = {
   products: Product[];
+  categories: Category[];
 };
 
 const App: NextPageWithLayout<AppProps> = (props) => {
   // tanstack/react-query
-  const { data: products, status } = useQuery<Product[]>({
+  const { data: products, status: productsStatus } = useQuery<Product[]>({
     queryKey: ["products"],
     queryFn: getProducts,
     initialData: props.products,
+  });
+  const { data: categories, status: categoriesStatus } = useQuery<Category[]>({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+    initialData: props.categories,
   });
 
   return (
@@ -29,7 +36,8 @@ const App: NextPageWithLayout<AppProps> = (props) => {
       </Head>
       <main className="min-h-screen bg-bg-gray pt-40 md:pt-32 lg:pt-[6.7rem]">
         <Hero />
-        <ProductList products={products} status={status} />
+        <ProductList products={products} status={productsStatus} />
+        <CategoryList categories={categories} status={categoriesStatus} />
       </main>
     </>
   );
@@ -44,6 +52,10 @@ export const getServerSideProps: GetServerSideProps = async () => {
   await queryClient.prefetchQuery({
     queryKey: ["products"],
     queryFn: getProducts,
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
   });
   return {
     props: {

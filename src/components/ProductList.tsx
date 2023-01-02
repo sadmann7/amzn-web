@@ -17,14 +17,15 @@ const ProductList = ({ products, status }: ProductListProps) => {
   return (
     <section
       aria-label="product list"
-      className="mx-auto mb-10 max-w-screen-2xl px-2 sm:w-[95vw]"
+      className="mx-auto max-w-screen-2xl px-2 sm:w-[95vw]"
     >
+      <h2 className="sr-only">Product list</h2>
       {status === "error" ? (
         <div className="text-center text-base text-title md:text-lg">
           Error in fetching products
         </div>
       ) : (
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product) => (
             <div key={product.id} className="flex flex-col gap-3">
               <Image

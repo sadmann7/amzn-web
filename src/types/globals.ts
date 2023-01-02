@@ -10,3 +10,9 @@ export type Product = {
     count: number;
   };
 };
+
+export type Category =
+  | "electronics"
+  | "jewelery"
+  | "men's clothing"
+  | "women's clothing";

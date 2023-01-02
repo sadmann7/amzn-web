@@ -1,47 +1,47 @@
 import type { NextPageWithLayout } from "@/pages/_app";
-import type { Product } from "@/types/globals";
-import { getProducts } from "@/utils/queryFns";
+import type { Category } from "@/types/globals";
+import { getCategories } from "@/utils/queryFns";
 import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 
 // components imports
+import CategoryList from "@/components/CategoryList";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import ProductList from "@/components/ProductList";
 
-type ProductsProps = {
-  products: Product[];
+type CategoriesProps = {
+  categories: Category[];
 };
 
-const Products: NextPageWithLayout<ProductsProps> = (props) => {
+const Categories: NextPageWithLayout<CategoriesProps> = (props) => {
   // tanstack/react-query
-  const { data: products, status } = useQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
-    initialData: props.products,
+  const { data: categories, status } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+    initialData: props.categories,
   });
 
   return (
     <>
       <Head>
-        <title>Products | Amzn Store</title>
+        <title>Categories | Amzn Store</title>
       </Head>
       <main className="min-h-screen bg-bg-gray pt-48 md:pt-40 lg:pt-36">
-        <ProductList products={products} status={status} />
+        <CategoryList categories={categories} status={status} />
       </main>
     </>
   );
 };
 
-export default Products;
+export default Categories;
 
-Products.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
+Categories.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
+    queryKey: ["categories"],
+    queryFn: getCategories,
   });
   return {
     props: {
