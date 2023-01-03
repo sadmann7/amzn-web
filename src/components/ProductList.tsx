@@ -76,7 +76,7 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
               alt={product.title}
               width={192}
               height={192}
-              className="absolute h-full w-full object-cover"
+              className="absolute h-full w-full object-contain"
               loading="lazy"
             />
           </Link>
