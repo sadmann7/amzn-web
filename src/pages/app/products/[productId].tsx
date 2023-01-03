@@ -25,7 +25,7 @@ const ShowProduct: NextPageWithLayout<ShowProductProps> = (props) => {
   return (
     <>
       <Head>
-        <title>Product | Amzn Store</title>
+        <title>{product.title ?? "Product"} | Amzn Store</title>
       </Head>
       <main className="min-h-screen pt-48 md:pt-40 lg:pt-36">
         <div className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]">

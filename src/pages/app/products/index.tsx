@@ -26,7 +26,7 @@ const Products: NextPageWithLayout<ProductsProps> = (props) => {
       <Head>
         <title>Products | Amzn Store</title>
       </Head>
-      <main className="min-h-screen bg-bg-gray pt-52 pb-14 md:pt-40">
+      <main className="min-h-screen bg-bg-gray pb-14 pt-48 md:pt-40 lg:pt-36">
         <ProductList products={products} status={status} />
       </main>
     </>

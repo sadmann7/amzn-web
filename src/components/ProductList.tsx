@@ -3,45 +3,14 @@ import { formatCurrency } from "@/utils/format";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
+import { renderStars } from "@/utils/render";
 
 // components imports
 import Button from "./Button";
 
-// icons imports
-import { StarIcon } from "@heroicons/react/20/solid";
-
 type ProductListProps = {
   products: Product[];
   status: "error" | "success";
-};
-
-const renderStars = (rate: number) => {
-  const stars = [];
-  for (let i = 1; i <= 5; i++) {
-    if (i <= rate) {
-      stars.push(
-        <StarIcon
-          key={i}
-          className="h-4 stroke-orange-400 stroke-2 text-primary"
-        />
-      );
-    } else if (i === Math.ceil(rate) && !Number.isInteger(rate)) {
-      stars.push(
-        <StarIcon
-          key={i}
-          className="h-4 stroke-orange-400 stroke-2 text-primary"
-        />
-      );
-    } else {
-      stars.push(
-        <StarIcon
-          key={i}
-          className="h-4 stroke-orange-400 stroke-2 text-white"
-        />
-      );
-    }
-  }
-  return stars;
 };
 
 const ProductList = ({ products, status }: ProductListProps) => {
@@ -127,7 +96,10 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
               {formatCurrency(product.price, "USD")}
             </p>
           ) : null}
-          <Button className="w-full bg-orange-300 text-title transition-colors hover:bg-primary active:bg-orange-300">
+          <Button
+            aria-label="add to cart"
+            className="w-full bg-orange-300 text-title transition-colors hover:bg-primary active:bg-orange-300"
+          >
             Add to Cart
           </Button>
         </div>

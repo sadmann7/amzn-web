@@ -22,8 +22,11 @@ const Home: NextPageWithLayout = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
+        <h1 className="text-2xl font-semibold md:text-3xl">
+          Redirecting to the app page
+        </h1>
         <Link href="/app">
-          <Button className="text-base md:text-lg">Go to app</Button>
+          <Button aria-label="go to app page">Go to app</Button>
         </Link>
       </main>
     </>

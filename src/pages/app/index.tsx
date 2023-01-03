@@ -6,10 +6,10 @@ import Head from "next/head";
 import type { NextPageWithLayout } from "../_app";
 
 // components imports
+import CategoryList from "@/components/CategoryList";
 import Hero from "@/components/Hero";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
-import CategoryList from "@/components/CategoryList";
 
 type AppProps = {
   products: Product[];

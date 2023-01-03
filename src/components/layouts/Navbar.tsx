@@ -84,7 +84,7 @@ const Navbar = () => {
               alt="amzn logo"
               width={115}
               height={35}
-              className="h-auto min-w-[115px] p-3 ring-white transition hover:ring-1"
+              className="h-auto min-w-[115px] rounded-sm p-3 ring-white transition hover:ring-1"
               priority
             />
           </Link>
@@ -99,20 +99,22 @@ const Navbar = () => {
           )}
           <div className="flex items-center gap-1 md:gap-2">
             <Dropdown />
-            <button className="hidden flex-col gap-0.5 whitespace-nowrap p-2 transition hover:ring-1 hover:ring-white md:flex">
+            <button className="hidden flex-col gap-0.5 whitespace-nowrap rounded-sm p-2 transition hover:ring-1 hover:ring-white md:flex">
               <span className="text-xs">Retruns</span>
               <span className="text-xs font-medium md:text-sm">& Orders</span>
             </button>
-            <button className="relative flex items-center gap-1 rounded-sm px-2 py-3 transition hover:ring-1 hover:ring-white">
-              <ShoppingCartIcon
-                className="aspect-square w-7"
-                aria-hidden="true"
-              />
-              <span className="absolute top-1 left-[1.15rem] h-5 bg-layout text-base font-medium text-primary md:text-lg">
-                0
-              </span>
-              <span className="text-sm font-medium md:text-base">Cart</span>
-            </button>
+            <Link href={"/app/checkout"}>
+              <button className="relative flex items-center gap-1 rounded-sm px-2 py-3 transition hover:ring-1 hover:ring-white">
+                <ShoppingCartIcon
+                  className="aspect-square w-7"
+                  aria-hidden="true"
+                />
+                <span className="absolute top-1 left-[1.15rem] h-5 bg-layout text-base font-medium text-primary md:text-lg">
+                  0
+                </span>
+                <span className="text-sm font-medium md:text-base">Cart</span>
+              </button>
+            </Link>
           </div>
         </div>
         {status === "error" ? (
