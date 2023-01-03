@@ -26,12 +26,16 @@ const bottomLinks = [
     href: "##",
   },
   {
-    name: "Livestreams",
+    name: "New Releases",
     href: "##",
   },
   {
-    name: "New Releases",
-    href: "##",
+    name: "Categories",
+    href: "/app/categories",
+  },
+  {
+    name: "Products",
+    href: "/app/products",
   },
   {
     name: "Gift Cards",
@@ -43,10 +47,6 @@ const bottomLinks = [
   },
   {
     name: "Registry",
-    href: "##",
-  },
-  {
-    name: "Buy Again",
     href: "##",
   },
   {

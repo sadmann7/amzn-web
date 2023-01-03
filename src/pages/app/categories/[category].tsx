@@ -10,11 +10,11 @@ import type { NextPageWithLayout } from "../../_app";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
 
-type CategoryNameProps = {
+type ShowCategoryProps = {
   products: Product[];
 };
 
-const CategoryName: NextPageWithLayout<CategoryNameProps> = (props) => {
+const ShowCategory: NextPageWithLayout<ShowCategoryProps> = (props) => {
   // tanstack/react-query
   const category = Router.query.category as string;
   const { data: products, status } = useQuery<Product[]>({
@@ -28,24 +28,22 @@ const CategoryName: NextPageWithLayout<CategoryNameProps> = (props) => {
       <Head>
         <title>Products | Amzn Store</title>
       </Head>
-      <main className="pt-48 md:pt-40 lg:pt-36">
-        <div className="mx-auto min-h-screen w-full max-w-screen-2xl px-2 sm:w-[95vw]">
-          {status === "error" ? (
-            <div className="text-center text-base text-title md:text-lg">
-              Error in fetching product
-            </div>
-          ) : (
-            <ProductList products={products} status={status} />
-          )}
-        </div>
+      <main className="min-h-screen bg-bg-gray pt-48 pb-14 md:pt-40 lg:pt-36">
+        {status === "error" ? (
+          <div className="text-center text-base text-title md:text-lg">
+            Error in fetching product
+          </div>
+        ) : (
+          <ProductList products={products} status={status} />
+        )}
       </main>
     </>
   );
 };
 
-export default CategoryName;
+export default ShowCategory;
 
-CategoryName.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
+ShowCategory.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const category = ctx.query.category as string;

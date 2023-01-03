@@ -23,7 +23,7 @@ const Home: NextPageWithLayout = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <Link href="/app">
-          <Button>Go to app</Button>
+          <Button className="text-base md:text-lg">Go to app</Button>
         </Link>
       </main>
     </>

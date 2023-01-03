@@ -14,6 +14,35 @@ type ProductListProps = {
   status: "error" | "success";
 };
 
+const renderStars = (rate: number) => {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    if (i <= rate) {
+      stars.push(
+        <StarIcon
+          key={i}
+          className="h-4 stroke-orange-400 stroke-2 text-primary"
+        />
+      );
+    } else if (i === Math.ceil(rate) && !Number.isInteger(rate)) {
+      stars.push(
+        <StarIcon
+          key={i}
+          className="h-4 stroke-orange-400 stroke-2 text-primary"
+        />
+      );
+    } else {
+      stars.push(
+        <StarIcon
+          key={i}
+          className="h-4 stroke-orange-400 stroke-2 text-white"
+        />
+      );
+    }
+  }
+  return stars;
+};
+
 const ProductList = ({ products, status }: ProductListProps) => {
   return (
     <section
@@ -32,41 +61,36 @@ const ProductList = ({ products, status }: ProductListProps) => {
               key={product.id}
               className="flex flex-col gap-3 bg-white p-5 shadow-sm transition-opacity hover:bg-opacity-80 active:bg-opacity-100"
             >
-              <Link href={`/app/products/${product.id}`}>
+              <Link
+                href={`/app/products/${product.id}`}
+                className="relative mx-auto h-48 w-48"
+              >
                 <Image
                   src={product.image}
                   alt={product.title}
                   width={192}
                   height={192}
-                  className="mx-auto h-48 w-48 object-cover"
+                  className="absolute h-full w-full object-cover"
                   loading="lazy"
                 />
               </Link>
               <div className="flex items-center gap-1">
-                {product.rating.rate
-                  ? Array.from(
-                      { length: Math.floor(product.rating.rate) },
-                      (_, i) => (
-                        <StarIcon
-                          key={i}
-                          className="aspect-square w-4 text-primary"
-                        />
-                      )
-                    )
-                  : null}
+                {product.rating.rate ? renderStars(product.rating.rate) : null}
               </div>
-              <h2 className="text-sm font-medium line-clamp-1 md:text-base">
-                {product.title}
-              </h2>
-              <p className="text-xs font-medium line-clamp-2 md:text-sm">
+              <Link href={`/app/products/${product.id}`}>
+                <h2 className="text-sm font-medium text-title transition-colors line-clamp-1 hover:text-primary md:text-base">
+                  {product.title}
+                </h2>
+              </Link>
+              <p className="text-xs font-medium text-text line-clamp-2 md:text-sm">
                 {product.description}
               </p>
               {product.price ? (
-                <p className="text-sm font-medium md:text-base">
+                <p className="text-sm font-medium text-title md:text-base">
                   {formatCurrency(product.price, "USD")}
                 </p>
               ) : null}
-              <Button className="w-full bg-orange-300 font-bold text-title transition-colors hover:bg-primary active:bg-orange-300">
+              <Button className="w-full bg-orange-300 text-title transition-colors hover:bg-primary active:bg-orange-300">
                 Add to Cart
               </Button>
             </div>
