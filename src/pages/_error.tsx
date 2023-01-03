@@ -36,7 +36,7 @@ const Four0Four: NextPageWithLayout = ({ statusCode }) => {
           content="The page you are looking for is unavailable."
         />
       </Head>
-      <main className="container-res flex min-h-screen flex-col items-center justify-center gap-7">
+      <main className="flex min-h-screen w-full flex-col items-center justify-center gap-7 px-2 sm:w-[95vw]">
         <h1 className="text-2xl font-semibold md:text-3xl">
           {`${statusCode} | ${statusMesasge}`}
         </h1>
