@@ -18,10 +18,10 @@ const CategoryList = ({ categories, status }: CategoryListProps) => {
           Error in fetching categories
         </div>
       ) : (
-        <div className="grid gap-5 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-flow-row-dense gap-5 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {categories.map((category) => (
             <Link key={category} href={`/app/categories/${category}`}>
-              <div className="grid h-64 place-items-center bg-white p-5 text-lg font-bold capitalize text-title shadow-sm transition-opacity hover:bg-opacity-80 active:bg-opacity-100 md:text-xl">
+              <div className="grid h-64 place-items-center bg-white p-5 text-lg font-bold capitalize text-title shadow transition-opacity hover:bg-opacity-80 active:bg-opacity-100 md:text-xl">
                 {category}
               </div>
             </Link>

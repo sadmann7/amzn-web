@@ -36,7 +36,7 @@ const Hero = () => {
       <div className="absolute bottom-0 z-20 h-32 w-full bg-gradient-to-t from-bg-gray to-transparent" />
       <button
         aria-label="navigate to right"
-        className="absolute left-0 z-20 my-1 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
+        className="absolute left-0 z-20 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
         ref={leftArrowRef}
       >
         <ChevronLeftIcon
@@ -46,7 +46,7 @@ const Hero = () => {
       </button>
       <button
         aria-label="navigate to left"
-        className="absolute right-0 z-20 my-1 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
+        className="absolute right-0 z-20 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
         ref={rightArrowRef}
       >
         <ChevronRightIcon
@@ -69,7 +69,7 @@ const Hero = () => {
         }}
         onBeforeInit={onBeforeInit}
         modules={[Autoplay, Navigation]}
-        className="h-64 w-full"
+        className="h-full w-full md:h-60"
       >
         {heroImages.map((image, i) => (
           <SwiperSlide key={i}>
