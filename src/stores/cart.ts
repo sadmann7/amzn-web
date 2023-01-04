@@ -21,7 +21,7 @@ export const useCartStore = create<CartState>()(
         },
       }),
       {
-        name: "cart-storage",
+        name: "cart",
         storage: createJSONStorage(() => sessionStorage),
       }
     )

@@ -44,6 +44,7 @@ model User {
   active        Boolean   @default(true)
   accounts      Account[]
   sessions      Session[]
+  Cart          Cart[]
 }
 
 model VerificationToken {
@@ -57,4 +58,37 @@ model VerificationToken {
 enum USER_ROLE {
   ADMIN
   USER
+}
+
+model Product {
+  id          Int              @id @default(sequence())
+  title       String
+  price       Float
+  category    PRODUCT_CATEGORY
+  description String
+  image       String
+  rating      Rating[]
+  cart        Cart[]
+}
+
+enum PRODUCT_CATEGORY {
+  ELECTRONICS
+  JWELLERY
+  MENS_CLOTHING
+  WOMENS_CLOTHING
+}
+
+model Rating {
+  productId Int     @id @default(sequence())
+  rate      Float
+  count     Int
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Cart {
+  id        String  @id @default(cuid())
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
 }

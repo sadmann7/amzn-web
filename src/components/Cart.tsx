@@ -3,6 +3,7 @@ import type { Product } from "@/types/globals";
 import { formatCurrency } from "@/utils/format";
 import Image from "next/image";
 import Link from "next/link";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
 type CartProps = {
   products: Product[];
@@ -17,11 +18,6 @@ const Cart = ({ products, status }: CartProps) => {
   );
   const roundedTotalPrice =
     Math.round((totalPrice + Number.EPSILON) * 100) / 100;
-
-  // zustand
-  const cartStore = useCartStore((state) => ({
-    removeProduct: state.removeById,
-  }));
 
   return (
     <div className="mx-auto w-full sm:w-[95vw]">
@@ -56,63 +52,7 @@ const Cart = ({ products, status }: CartProps) => {
             </div>
             <div className="grid gap-5">
               {products.map((product) => (
-                <div
-                  key={crypto.randomUUID()}
-                  className="flex flex-col gap-4 border-b-2 pb-4 md:flex-row md:items-center md:justify-between md:border-neutral-200"
-                >
-                  <div className="flex gap-2">
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      className="h-28 min-w-[112px] object-contain"
-                      width={112}
-                      height={112}
-                      loading="lazy"
-                    />
-                    <div className="flex flex-col gap-1.5">
-                      <span className="text-base font-medium text-title line-clamp-2 md:text-lg">
-                        {product.title}
-                      </span>
-                      <span className="block text-base font-bold text-text md:hidden">
-                        {product.price
-                          ? formatCurrency(product.price, "USD")
-                          : "-"}
-                      </span>
-                      <span className="text-xs font-bold capitalize text-text">
-                        {product.category}
-                      </span>
-                      <div className="mt-3 flex gap-5 divide-x-2 divide-neutral-200">
-                        <select
-                          name="quantity"
-                          id="product-quantity"
-                          className="rounded-sm py-1 text-xs font-medium text-title transition-colors hover:bg-neutral-100 active:bg-white md:text-sm"
-                        >
-                          {Array.from({ length: 10 }, (_, i) => i + 1).map(
-                            (quantity) => (
-                              <option
-                                key={quantity}
-                                value={quantity}
-                                className="font-medium"
-                              >
-                                {quantity}
-                              </option>
-                            )
-                          )}
-                        </select>
-                        <button
-                          aria-label="delete product"
-                          className="w-fit px-4 text-xs font-medium text-link hover:underline md:text-sm"
-                          onClick={() => cartStore.removeProduct(product.id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <span className="hidden self-start text-xs font-medium text-text md:block md:text-sm">
-                    {product.price ? formatCurrency(product.price, "USD") : "-"}
-                  </span>
-                </div>
+                <ProductCard product={product} key={crypto.randomUUID()} />
               ))}
             </div>
             <div className="ml-auto hidden text-base font-semibold md:block">
@@ -140,3 +80,78 @@ const Cart = ({ products, status }: CartProps) => {
 };
 
 export default Cart;
+
+type Inputs = {
+  quantity: number;
+};
+
+const ProductCard = ({ product }: { product: Product }) => {
+  // zustand
+  const cartStore = useCartStore((state) => ({
+    removeProduct: state.removeById,
+  }));
+
+  // react-hook-form
+  const { register, handleSubmit } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
+  };
+
+  return (
+    <div className="flex flex-col gap-4 border-b-2 pb-4 md:flex-row md:items-center md:justify-between md:border-neutral-200">
+      <div className="flex gap-2">
+        <Image
+          src={product.image}
+          alt={product.title}
+          className="h-28 min-w-[112px] object-contain"
+          width={112}
+          height={112}
+          loading="lazy"
+        />
+        <div className="flex flex-col gap-1.5">
+          <span className="text-base font-medium text-title line-clamp-2 md:text-lg">
+            {product.title}
+          </span>
+          <span className="block text-base font-bold text-text md:hidden">
+            {product.price ? formatCurrency(product.price, "USD") : "-"}
+          </span>
+          <span className="text-xs font-bold capitalize text-text">
+            {product.category}
+          </span>
+          <div className="mt-2.5 flex flex-wrap gap-5 divide-x-2 divide-neutral-200">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <select
+                id="product-quantity"
+                className="cursor-pointer rounded-sm py-1 text-xs font-medium text-title transition-colors hover:bg-neutral-100 active:bg-white md:text-sm"
+                {...register("quantity", {
+                  required: true,
+                  valueAsNumber: true,
+                })}
+              >
+                {Array.from({ length: 10 }, (_, i) => i + 1).map((quantity) => (
+                  <option
+                    key={quantity}
+                    value={quantity}
+                    className="font-medium"
+                  >
+                    {quantity}
+                  </option>
+                ))}
+              </select>
+            </form>
+            <button
+              aria-label="delete product"
+              className="w-fit px-4 text-xs font-medium text-link hover:underline md:text-sm"
+              onClick={() => cartStore.removeProduct(product.id)}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+      <span className="hidden self-start text-xs font-medium text-text md:block md:text-sm">
+        {product.price ? formatCurrency(product.price, "USD") : "-"}
+      </span>
+    </div>
+  );
+};
