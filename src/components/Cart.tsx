@@ -33,7 +33,7 @@ const Cart = ({ products, status }: CartProps) => {
             Your Shopping Cart lives to serve. Give it purpose — fill it with
             groceries, clothing, household supplies, electronics, and more.
             Continue shopping on the{" "}
-            <Link href={`/`} className="text-blue-700">
+            <Link href={`/`} className="text-link hover:underline">
               Amzn-web.com homepage
             </Link>
             , learn about {`today's`}
@@ -48,7 +48,7 @@ const Cart = ({ products, status }: CartProps) => {
                 <h1 className="text-xl text-title md:text-3xl">
                   Shopping Cart
                 </h1>
-                <button className="w-fit text-xs font-medium text-blue-700 transition hover:text-primary hover:underline md:text-sm">
+                <button className="text-link w-fit text-xs font-medium transition hover:text-primary hover:underline md:text-sm">
                   Deselect all items
                 </button>
               </div>
@@ -63,7 +63,7 @@ const Cart = ({ products, status }: CartProps) => {
                   className="flex flex-col gap-4 border-b-2 pb-4 md:flex-row md:items-center md:justify-between md:border-neutral-200"
                 >
                   <div className="flex items-center gap-2">
-                    <input type="checkbox" className="h-4 w-4" />
+                    <input type="checkbox" className="text-link h-4 w-4" />
                     <Image
                       src={product.image}
                       alt={product.title}
@@ -84,7 +84,7 @@ const Cart = ({ products, status }: CartProps) => {
                       <span className="text-xs font-bold capitalize text-text">
                         {product.category}
                       </span>
-                      <button className="w-fit text-xs font-medium text-blue-700 hover:underline md:text-sm">
+                      <button className="text-link w-fit text-xs font-medium hover:underline md:text-sm">
                         Delete
                       </button>
                     </div>

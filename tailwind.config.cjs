@@ -17,6 +17,7 @@ module.exports = {
         lowkey: "hsl(0, 0%, 45%)",
         title: "hsl(0, 0%, 15%)",
         text: "hsl(0, 0%, 25%)",
+        link: "hsl(193, 82%, 31%)",
       },
       screens: {
         xs: "480px",
