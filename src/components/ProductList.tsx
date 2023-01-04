@@ -1,7 +1,7 @@
 import { useCartStore } from "@/stores/cart";
-import type { Product } from "@/types/globals";
 import { formatCurrency, truncateText } from "@/utils/format";
 import { renderStars } from "@/utils/render";
+import type { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -12,7 +12,7 @@ import Button from "./Button";
 
 type ProductListProps = {
   products: Product[];
-  status: "error" | "success";
+  status: "error" | "success" | "loading";
 };
 
 const ProductList = ({ products, status }: ProductListProps) => {
@@ -89,7 +89,7 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
             />
           </Link>
           <div className="flex items-center gap-1">
-            {product.rating.rate ? renderStars(product.rating.rate) : null}
+            {product.rate ? renderStars(product.rate) : null}
           </div>
           <Link href={`/app/products/${product.id}`}>
             <h2 className="text-sm font-medium text-title transition-colors line-clamp-1 hover:text-primary md:text-base">

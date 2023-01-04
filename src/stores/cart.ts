@@ -1,4 +1,4 @@
-import type { Product } from "@/types/globals";
+import type { Product } from "@prisma/client";
 import create from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 

@@ -1,24 +1,15 @@
 import type { NextPageWithLayout } from "@/pages/_app";
-import type { Category } from "@/types/globals";
-import { getCategories } from "@/utils/queryFns";
-import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
-import type { GetServerSideProps } from "next";
 import Head from "next/head";
 
 // components imports
 import CategoryList from "@/components/CategoryList";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
+import { trpc } from "@/utils/trpc";
 
-type CategoriesProps = {
-  categories: Category[];
-};
-
-const Categories: NextPageWithLayout<CategoriesProps> = (props) => {
-  // tanstack/react-query
-  const { data: categories, status } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-    initialData: props.categories,
+const Categories: NextPageWithLayout = () => {
+  // trpc
+  const categoriesQuery = trpc.products.findCategories.useQuery(undefined, {
+    staleTime: Infinity,
   });
 
   return (
@@ -27,7 +18,12 @@ const Categories: NextPageWithLayout<CategoriesProps> = (props) => {
         <title>Categories | Amzn Store</title>
       </Head>
       <main className="min-h-screen bg-bg-gray pt-56 pb-14 md:pt-48">
-        <CategoryList categories={categories} status={status} />
+        {categoriesQuery.isSuccess ? (
+          <CategoryList
+            categories={categoriesQuery.data}
+            status={categoriesQuery.status}
+          />
+        ) : null}
       </main>
     </>
   );
@@ -36,16 +32,3 @@ const Categories: NextPageWithLayout<CategoriesProps> = (props) => {
 export default Categories;
 
 Categories.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-  });
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  };
-};

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 
 export const productsRouter = router({
-  getAll: publicProcedure.query(async ({ ctx }) => {
+  get: publicProcedure.query(async ({ ctx }) => {
     const products = await ctx.prisma.product.findMany();
     return products;
   }),
@@ -17,6 +17,13 @@ export const productsRouter = router({
     return product;
   }),
 
+  getUniqueCategories: publicProcedure.query(async ({ ctx }) => {
+    const products = await ctx.prisma.product.findMany();
+    const categories = products.map((product) => product.category);
+    const uniqueCategories = [...new Set(categories)];
+    return uniqueCategories;
+  }),
+
   getByCategory: publicProcedure
     .input(z.nativeEnum(PRODUCT_CATEGORY))
     .query(async ({ ctx, input }) => {
@@ -26,30 +33,5 @@ export const productsRouter = router({
         },
       });
       return products;
-    }),
-
-  create: publicProcedure
-    .input(
-      z.object({
-        title: z.string(),
-        price: z.number(),
-        category: z.nativeEnum(PRODUCT_CATEGORY),
-        description: z.string(),
-        image: z.string(),
-        rate: z.number(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const product = await ctx.prisma.product.create({
-        data: {
-          title: input.title,
-          price: input.price,
-          category: input.category,
-          description: input.description,
-          image: input.image,
-          rate: input.rate,
-        },
-      });
-      return product;
     }),
 });
