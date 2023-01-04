@@ -24,7 +24,6 @@ const Checkout: NextPageWithLayout<CheckoutProps> = (props) => {
     queryFn: getProducts,
     initialData: props.products,
   });
-  console.log(productsQuery.data);
 
   //  zustand
   const cartStore = useCartStore((state) => ({

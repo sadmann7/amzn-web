@@ -36,10 +36,7 @@ export const productsRouter = router({
         category: z.nativeEnum(PRODUCT_CATEGORY),
         description: z.string(),
         image: z.string(),
-        rating: z.object({
-          rate: z.number(),
-          count: z.number(),
-        }),
+        rate: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -50,12 +47,7 @@ export const productsRouter = router({
           category: input.category,
           description: input.description,
           image: input.image,
-          rating: {
-            create: {
-              rate: input.rating.rate,
-              count: input.rating.count,
-            },
-          },
+          rate: input.rate,
         },
       });
       return product;

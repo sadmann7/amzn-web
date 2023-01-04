@@ -67,8 +67,9 @@ model Product {
   category    PRODUCT_CATEGORY
   description String
   image       String
-  rating      Rating[]
-  cart        Cart[]
+  rate        Float            @default(0)
+  quantity    Int              @default(1)
+  Cart        Cart[]
 }
 
 enum PRODUCT_CATEGORY {
@@ -78,17 +79,11 @@ enum PRODUCT_CATEGORY {
   WOMENS_CLOTHING
 }
 
-model Rating {
-  productId Int     @id @default(sequence())
-  rate      Float
-  count     Int
-  product   Product @relation(fields: [productId], references: [id])
-}
-
 model Cart {
   id        String  @id @default(cuid())
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int
-  user      User    @relation(fields: [userId], references: [id])
   userId    String
+  productId Int
+  quantity  Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
