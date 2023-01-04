@@ -1,13 +1,14 @@
+import { useCartStore } from "@/stores/cart";
 import type { Product } from "@/types/globals";
-import { formatCurrency } from "@/utils/format";
+import { formatCurrency, truncateText } from "@/utils/format";
+import { renderStars } from "@/utils/render";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
-import { renderStars } from "@/utils/render";
+import { toast } from "react-toastify";
 
 // components imports
 import Button from "./Button";
-import { useCartStore } from "@/stores/cart";
 
 type ProductListProps = {
   products: Product[];
@@ -104,10 +105,13 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
             </p>
           ) : null}
           <Button
-            aria-label="add product to cart"
+            aria-label="add item to cart"
             className="w-full bg-orange-300 text-title transition-colors hover:bg-primary active:bg-orange-300"
             onClick={() => {
               cartStore.setProducts([...cartStore.products, product]);
+              toast.success(
+                `${truncateText(product.title, 10)}... added to cart`
+              );
             }}
           >
             Add to Cart

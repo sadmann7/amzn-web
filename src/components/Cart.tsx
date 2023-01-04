@@ -10,6 +10,7 @@ type CartProps = {
 };
 
 const Cart = ({ products, status }: CartProps) => {
+  // total price
   const totalPrice = products.reduce(
     (acc, product) => acc + (product.price || 0),
     0
@@ -48,29 +49,18 @@ const Cart = ({ products, status }: CartProps) => {
         <div className="flex flex-col-reverse justify-between md:flex-row md:gap-5">
           <div className="grid flex-[0.8] gap-5 bg-white px-5 pb-10 pt-5 md:pt-8">
             <div className="flex justify-between gap-4 md:border-b-2 md:border-neutral-200 md:pb-4">
-              <div className="grid gap-1.5">
-                <h1 className="text-xl text-title md:text-3xl">
-                  Shopping Cart
-                </h1>
-                <button className="w-fit text-xs font-medium text-link transition hover:text-primary hover:underline md:text-sm">
-                  Deselect all items
-                </button>
-              </div>
+              <h1 className="text-xl text-title md:text-3xl">Shopping Cart</h1>
               <span className="hidden place-self-end text-xs font-medium text-text md:block md:text-sm">
                 Price
               </span>
             </div>
             <div className="grid gap-5">
-              {products.slice(0, 4).map((product) => (
+              {products.map((product) => (
                 <div
-                  key={product.id}
+                  key={crypto.randomUUID()}
                   className="flex flex-col gap-4 border-b-2 pb-4 md:flex-row md:items-center md:justify-between md:border-neutral-200"
                 >
                   <div className="flex gap-2">
-                    <input
-                      type="checkbox"
-                      className="my-auto h-4 w-4 text-link"
-                    />
                     <Image
                       src={product.image}
                       alt={product.title}
@@ -79,27 +69,44 @@ const Cart = ({ products, status }: CartProps) => {
                       height={112}
                       loading="lazy"
                     />
-                    <div className="flex flex-col justify-between gap-1.5">
-                      <div className="grid gap-1.5">
-                        <span className="text-base font-medium text-title line-clamp-2 md:text-lg">
-                          {product.title}
-                        </span>
-                        <span className="block text-base font-bold text-text md:hidden">
-                          {product.price
-                            ? formatCurrency(product.price, "USD")
-                            : "-"}
-                        </span>
-                        <span className="text-xs font-bold capitalize text-text">
-                          {product.category}
-                        </span>
+                    <div className="flex flex-col gap-1.5">
+                      <span className="text-base font-medium text-title line-clamp-2 md:text-lg">
+                        {product.title}
+                      </span>
+                      <span className="block text-base font-bold text-text md:hidden">
+                        {product.price
+                          ? formatCurrency(product.price, "USD")
+                          : "-"}
+                      </span>
+                      <span className="text-xs font-bold capitalize text-text">
+                        {product.category}
+                      </span>
+                      <div className="mt-3 flex gap-5 divide-x-2 divide-neutral-200">
+                        <select
+                          name="quantity"
+                          id="product-quantity"
+                          className="rounded-sm py-1 text-xs font-medium text-title transition-colors hover:bg-neutral-100 active:bg-white md:text-sm"
+                        >
+                          {Array.from({ length: 10 }, (_, i) => i + 1).map(
+                            (quantity) => (
+                              <option
+                                key={quantity}
+                                value={quantity}
+                                className="font-medium"
+                              >
+                                {quantity}
+                              </option>
+                            )
+                          )}
+                        </select>
+                        <button
+                          aria-label="delete product"
+                          className="w-fit px-4 text-xs font-medium text-link hover:underline md:text-sm"
+                          onClick={() => cartStore.removeProduct(product.id)}
+                        >
+                          Delete
+                        </button>
                       </div>
-                      <button
-                        aria-label="delete product"
-                        className="w-fit text-xs font-medium text-link hover:underline md:text-sm"
-                        onClick={() => cartStore.removeProduct(product.id)}
-                      >
-                        Delete
-                      </button>
                     </div>
                   </div>
                   <span className="hidden self-start text-xs font-medium text-text md:block md:text-sm">

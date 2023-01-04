@@ -1,6 +1,6 @@
 import type { Product } from "@/types/globals";
 import create from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 type CartState = {
   products: Product[];
@@ -22,7 +22,7 @@ export const useCartStore = create<CartState>()(
       }),
       {
         name: "cart-storage",
-        getStorage: () => localStorage,
+        storage: createJSONStorage(() => sessionStorage),
       }
     )
   )
