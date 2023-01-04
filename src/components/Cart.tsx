@@ -1,6 +1,6 @@
 import { useCartStore } from "@/stores/cart";
-import type { Product } from "@/types/globals";
 import { formatCurrency } from "@/utils/format";
+import type { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm, type SubmitHandler } from "react-hook-form";

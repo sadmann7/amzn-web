@@ -1,16 +1,19 @@
 import type { NextPageWithLayout } from "@/pages/_app";
+import { trpc } from "@/utils/trpc";
 import Head from "next/head";
 
 // components imports
 import CategoryList from "@/components/CategoryList";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import { trpc } from "@/utils/trpc";
 
 const Categories: NextPageWithLayout = () => {
   // trpc
-  const categoriesQuery = trpc.products.findCategories.useQuery(undefined, {
-    staleTime: Infinity,
-  });
+  const categoriesQuery = trpc.products.getUniqueCategories.useQuery(
+    undefined,
+    {
+      staleTime: Infinity,
+    }
+  );
 
   return (
     <>

@@ -89,7 +89,7 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
             />
           </Link>
           <div className="flex items-center gap-1">
-            {product.rate ? renderStars(product.rate) : null}
+            {product.rating ? renderStars(product.rating) : null}
           </div>
           <Link href={`/app/products/${product.id}`}>
             <h2 className="text-sm font-medium text-title transition-colors line-clamp-1 hover:text-primary md:text-base">

@@ -1,3 +1,5 @@
+import { trpc } from "@/utils/trpc";
+import type { PRODUCT_CATEGORY } from "@prisma/client";
 import Head from "next/head";
 import Router from "next/router";
 import type { NextPageWithLayout } from "../../_app";
@@ -5,8 +7,6 @@ import type { NextPageWithLayout } from "../../_app";
 // components imports
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
-import { trpc } from "@/utils/trpc";
-import type { PRODUCT_CATEGORY } from "@prisma/client";
 
 const ShowCategory: NextPageWithLayout = () => {
   //  trpc

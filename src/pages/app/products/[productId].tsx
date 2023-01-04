@@ -1,5 +1,5 @@
-import type { Product } from "@/types/globals";
 import { getProduct } from "@/utils/queryFns";
+import type { Product } from "@prisma/client";
 import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";

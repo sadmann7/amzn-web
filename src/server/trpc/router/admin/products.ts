@@ -11,7 +11,7 @@ export const productsAdminRouter = router({
         category: z.nativeEnum(PRODUCT_CATEGORY),
         description: z.string(),
         image: z.string(),
-        rate: z.number(),
+        rating: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -22,7 +22,7 @@ export const productsAdminRouter = router({
           category: input.category,
           description: input.description,
           image: input.image,
-          rate: input.rate,
+          rating: input.rating,
         },
       });
       return product;
@@ -37,7 +37,7 @@ export const productsAdminRouter = router({
         category: z.nativeEnum(PRODUCT_CATEGORY),
         description: z.string(),
         image: z.string(),
-        rate: z.number(),
+        rating: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -51,7 +51,7 @@ export const productsAdminRouter = router({
           category: input.category,
           description: input.description,
           image: input.image,
-          rate: input.rate,
+          rating: input.rating,
         },
       });
       return product;

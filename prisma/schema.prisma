@@ -45,6 +45,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Cart          Cart[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model VerificationToken {
@@ -67,9 +69,11 @@ model Product {
   category    PRODUCT_CATEGORY
   description String
   image       String
-  rate        Float            @default(0)
+  rating      Float            @default(0)
   quantity    Int              @default(1)
   Cart        Cart[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 }
 
 enum PRODUCT_CATEGORY {
@@ -80,10 +84,12 @@ enum PRODUCT_CATEGORY {
 }
 
 model Cart {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   userId    String
   productId Int
   quantity  Int
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

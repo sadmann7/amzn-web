@@ -4,7 +4,11 @@ import { publicProcedure, router } from "../trpc";
 
 export const productsRouter = router({
   get: publicProcedure.query(async ({ ctx }) => {
-    const products = await ctx.prisma.product.findMany();
+    const products = await ctx.prisma.product.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
     return products;
   }),
 
@@ -18,7 +22,11 @@ export const productsRouter = router({
   }),
 
   getUniqueCategories: publicProcedure.query(async ({ ctx }) => {
-    const products = await ctx.prisma.product.findMany();
+    const products = await ctx.prisma.product.findMany({
+      orderBy: {
+        category: "asc",
+      },
+    });
     const categories = products.map((product) => product.category);
     const uniqueCategories = [...new Set(categories)];
     return uniqueCategories;
