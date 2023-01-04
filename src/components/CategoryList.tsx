@@ -1,4 +1,4 @@
-import { formatText } from "@/utils/format";
+import { formatEnum } from "@/utils/format";
 import type { PRODUCT_CATEGORY } from "@prisma/client";
 import Link from "next/link";
 
@@ -14,7 +14,11 @@ const CategoryList = ({ categories, status }: CategoryListProps) => {
       className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]"
     >
       <h2 className="sr-only">Category list</h2>
-      {status === "error" ? (
+      {status === "loading" ? (
+        <div className="text-center text-base text-title md:text-lg">
+          Loading...
+        </div>
+      ) : status === "error" ? (
         <div className="text-center text-base text-title md:text-lg">
           Error in fetching categories
         </div>
@@ -22,8 +26,8 @@ const CategoryList = ({ categories, status }: CategoryListProps) => {
         <div className="grid grid-flow-row-dense gap-5 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {categories.map((category) => (
             <Link key={category} href={`/app/categories/${category}`}>
-              <div className="grid h-64 place-items-center bg-white p-5 text-lg font-bold capitalize text-title shadow transition-opacity hover:bg-opacity-80 active:bg-opacity-100 md:text-xl">
-                {formatText(category)}
+              <div className="grid h-64 place-items-center bg-white p-5 text-lg font-bold text-title shadow transition-opacity hover:bg-opacity-80 active:bg-opacity-100 md:text-xl">
+                {formatEnum(category)}
               </div>
             </Link>
           ))}

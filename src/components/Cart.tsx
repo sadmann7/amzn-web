@@ -3,21 +3,18 @@ import { formatCurrency } from "@/utils/format";
 import type { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useState } from "react";
 
 type CartProps = {
   products: Product[];
-  status?: "error" | "success";
+  status?: "error" | "success" | "loading";
 };
 
 const Cart = ({ products, status }: CartProps) => {
-  // total price
   const totalPrice = products.reduce(
-    (acc, product) => acc + (product.price || 0),
+    (acc, product) => acc + product.price * product.quantity,
     0
   );
-  const roundedTotalPrice =
-    Math.round((totalPrice + Number.EPSILON) * 100) / 100;
 
   return (
     <div className="mx-auto w-full sm:w-[95vw]">
@@ -58,7 +55,7 @@ const Cart = ({ products, status }: CartProps) => {
             <div className="ml-auto hidden text-base font-semibold md:block">
               Subtotal ({products.length} item) :{" "}
               <span className="font-bold">
-                {formatCurrency(roundedTotalPrice, "USD")}
+                {formatCurrency(totalPrice, "USD")}
               </span>
             </div>
           </div>
@@ -66,7 +63,7 @@ const Cart = ({ products, status }: CartProps) => {
             <div className="text-base font-semibold md:text-lg">
               Subtotal ({products.length} item) :{" "}
               <span className="font-bold">
-                {formatCurrency(roundedTotalPrice, "USD")}
+                {formatCurrency(totalPrice, "USD")}
               </span>
             </div>
             <button className="w-full rounded-md bg-yellow-300 py-2.5 text-xs font-medium text-title transition-colors hover:bg-yellow-400 active:bg-yellow-300 md:px-2 md:py-2 md:text-sm">
@@ -81,21 +78,14 @@ const Cart = ({ products, status }: CartProps) => {
 
 export default Cart;
 
-type Inputs = {
-  quantity: number;
-};
-
 const ProductCard = ({ product }: { product: Product }) => {
+  const [selectedQuantity, setSelectedQuantity] = useState(product.quantity);
+
   // zustand
   const cartStore = useCartStore((state) => ({
     removeProduct: state.removeById,
+    setQuantity: state.setQuantity,
   }));
-
-  // react-hook-form
-  const { register, handleSubmit } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
-  };
 
   return (
     <div className="flex flex-col gap-4 border-b-2 pb-4 md:flex-row md:items-center md:justify-between md:border-neutral-200">
@@ -119,26 +109,22 @@ const ProductCard = ({ product }: { product: Product }) => {
             {product.category}
           </span>
           <div className="mt-2.5 flex flex-wrap gap-5 divide-x-2 divide-neutral-200">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <select
-                id="product-quantity"
-                className="cursor-pointer rounded-sm py-1 text-xs font-medium text-title transition-colors hover:bg-neutral-100 active:bg-white md:text-sm"
-                {...register("quantity", {
-                  required: true,
-                  valueAsNumber: true,
-                })}
-              >
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((quantity) => (
-                  <option
-                    key={quantity}
-                    value={quantity}
-                    className="font-medium"
-                  >
-                    {quantity}
-                  </option>
-                ))}
-              </select>
-            </form>
+            <select
+              name="quantity"
+              id="product-quantity"
+              className="cursor-pointer rounded-sm py-1 text-xs font-medium text-title transition-colors hover:bg-neutral-100 active:bg-white md:text-sm"
+              value={selectedQuantity}
+              onChange={(e) => {
+                setSelectedQuantity(Number(e.target.value));
+                cartStore.setQuantity(product.id, Number(e.target.value));
+              }}
+            >
+              {Array.from({ length: 10 }, (_, i) => i + 1).map((quantity) => (
+                <option key={quantity} value={quantity} className="font-medium">
+                  {quantity}
+                </option>
+              ))}
+            </select>
             <button
               aria-label="delete product"
               className="w-fit px-4 text-xs font-medium text-link hover:underline md:text-sm"

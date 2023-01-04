@@ -8,7 +8,7 @@ export const formatCurrency = (
   }).format(value);
 };
 
-export const formatText = (str: string) => {
+export const formatEnum = (str: string) => {
   const words = str.split("_");
   const formattedWords = words.map((word) => {
     return word.charAt(0) + word.slice(1).toLowerCase();

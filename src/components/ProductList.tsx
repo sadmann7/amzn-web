@@ -22,7 +22,11 @@ const ProductList = ({ products, status }: ProductListProps) => {
       className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]"
     >
       <h2 className="sr-only">Product list</h2>
-      {status === "error" ? (
+      {status === "loading" ? (
+        <div className="text-center text-base text-title md:text-lg">
+          Loading...
+        </div>
+      ) : status === "error" ? (
         <div className="text-center text-base text-title md:text-lg">
           Error in fetching products
         </div>
