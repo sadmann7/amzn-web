@@ -7,6 +7,7 @@ import { renderStars } from "@/utils/render";
 
 // components imports
 import Button from "./Button";
+import { useCartStore } from "@/stores/cart";
 
 type ProductListProps = {
   products: Product[];
@@ -60,6 +61,12 @@ type SlicedProductsProps = {
 };
 
 const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
+  // zustand
+  const cartStore = useCartStore((state) => ({
+    products: state.products,
+    setProducts: state.setProducts,
+  }));
+
   return (
     <Fragment>
       {products.slice(range.from, range.to).map((product) => (
@@ -97,8 +104,11 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
             </p>
           ) : null}
           <Button
-            aria-label="add to cart"
+            aria-label="add product to cart"
             className="w-full bg-orange-300 text-title transition-colors hover:bg-primary active:bg-orange-300"
+            onClick={() => {
+              cartStore.setProducts([...cartStore.products, product]);
+            }}
           >
             Add to Cart
           </Button>

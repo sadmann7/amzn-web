@@ -1,8 +1,10 @@
 import type { NextPageWithLayout } from "@/pages/_app";
+import { useCartStore } from "@/stores/cart";
 import type { Product } from "@/types/globals";
 import { getProducts } from "@/utils/queryFns";
 import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 import type { GetServerSideProps } from "next";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 
 // components imports
@@ -14,12 +16,19 @@ type CheckoutProps = {
 };
 
 const Checkout: NextPageWithLayout<CheckoutProps> = (props) => {
+  const { status: authStatus } = useSession();
+
   // tanstack/react-query
-  const { data: products, status } = useQuery<Product[]>({
+  const productsQuery = useQuery<Product[]>({
     queryKey: ["products"],
     queryFn: getProducts,
     initialData: props.products,
   });
+
+  //  zustand
+  const cartStore = useCartStore((state) => ({
+    products: state.products,
+  }));
 
   return (
     <>
@@ -27,7 +36,16 @@ const Checkout: NextPageWithLayout<CheckoutProps> = (props) => {
         <title>Checkout | Amzn Store</title>
       </Head>
       <main className="min-h-screen bg-bg-gray pt-48 pb-14 md:pt-40 lg:pt-36">
-        <Cart products={products} status={status} />
+        {/* {authStatus === "loading" ? (
+          <div className="text-center text-base text-title md:text-lg">
+            Loading...
+          </div>
+        ) : authStatus === "authenticated" ? (
+          <Cart products={productsQuery.data} status={productsQuery.status} />
+        ) : (
+          <Cart products={cartStore.products} />
+        )} */}
+        <Cart products={cartStore.products} />
       </main>
     </>
   );

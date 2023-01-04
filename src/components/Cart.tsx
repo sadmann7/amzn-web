@@ -1,13 +1,12 @@
+import { useCartStore } from "@/stores/cart";
 import type { Product } from "@/types/globals";
 import { formatCurrency } from "@/utils/format";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import Button from "./Button";
 
 type CartProps = {
   products: Product[];
-  status: "error" | "success";
+  status?: "error" | "success";
 };
 
 const Cart = ({ products, status }: CartProps) => {
@@ -17,6 +16,11 @@ const Cart = ({ products, status }: CartProps) => {
   );
   const roundedTotalPrice =
     Math.round((totalPrice + Number.EPSILON) * 100) / 100;
+
+  // zustand
+  const cartStore = useCartStore((state) => ({
+    removeProduct: state.removeById,
+  }));
 
   return (
     <div className="mx-auto w-full sm:w-[95vw]">
@@ -48,7 +52,7 @@ const Cart = ({ products, status }: CartProps) => {
                 <h1 className="text-xl text-title md:text-3xl">
                   Shopping Cart
                 </h1>
-                <button className="text-link w-fit text-xs font-medium transition hover:text-primary hover:underline md:text-sm">
+                <button className="w-fit text-xs font-medium text-link transition hover:text-primary hover:underline md:text-sm">
                   Deselect all items
                 </button>
               </div>
@@ -62,8 +66,11 @@ const Cart = ({ products, status }: CartProps) => {
                   key={product.id}
                   className="flex flex-col gap-4 border-b-2 pb-4 md:flex-row md:items-center md:justify-between md:border-neutral-200"
                 >
-                  <div className="flex items-center gap-2">
-                    <input type="checkbox" className="text-link h-4 w-4" />
+                  <div className="flex gap-2">
+                    <input
+                      type="checkbox"
+                      className="my-auto h-4 w-4 text-link"
+                    />
                     <Image
                       src={product.image}
                       alt={product.title}
@@ -72,19 +79,25 @@ const Cart = ({ products, status }: CartProps) => {
                       height={112}
                       loading="lazy"
                     />
-                    <div className="flex flex-col gap-1.5 self-start">
-                      <span className="text-base font-medium text-title line-clamp-2 md:text-lg">
-                        {product.title}
-                      </span>
-                      <span className="block text-base font-bold text-text md:hidden">
-                        {product.price
-                          ? formatCurrency(product.price, "USD")
-                          : "-"}
-                      </span>
-                      <span className="text-xs font-bold capitalize text-text">
-                        {product.category}
-                      </span>
-                      <button className="text-link w-fit text-xs font-medium hover:underline md:text-sm">
+                    <div className="flex flex-col justify-between gap-1.5">
+                      <div className="grid gap-1.5">
+                        <span className="text-base font-medium text-title line-clamp-2 md:text-lg">
+                          {product.title}
+                        </span>
+                        <span className="block text-base font-bold text-text md:hidden">
+                          {product.price
+                            ? formatCurrency(product.price, "USD")
+                            : "-"}
+                        </span>
+                        <span className="text-xs font-bold capitalize text-text">
+                          {product.category}
+                        </span>
+                      </div>
+                      <button
+                        aria-label="delete product"
+                        className="w-fit text-xs font-medium text-link hover:underline md:text-sm"
+                        onClick={() => cartStore.removeProduct(product.id)}
+                      >
                         Delete
                       </button>
                     </div>

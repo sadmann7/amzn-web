@@ -1,3 +1,5 @@
+import { useCartStore } from "@/stores/cart";
+import type { Product } from "@/types/globals";
 import { getProducts } from "@/utils/queryFns";
 import { trpc } from "@/utils/trpc";
 import { Menu, Transition } from "@headlessui/react";
@@ -6,7 +8,6 @@ import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
-import type { Product } from "@/types/globals";
 
 // components imports
 import Loader from "../Loader";
@@ -65,12 +66,17 @@ const bottomLinks = [
 
 const Navbar = () => {
   // tanstack/react-query
-  const { data: products, status } = useQuery<Product[]>({
+  const productsQuery = useQuery<Product[]>({
     queryKey: ["products"],
     queryFn: getProducts,
   });
 
-  if (status === "loading") {
+  // zustand
+  const cartStore = useCartStore((state) => ({
+    products: state.products,
+  }));
+
+  if (productsQuery.status === "loading") {
     return <Loader />;
   }
 
@@ -88,12 +94,12 @@ const Navbar = () => {
               priority
             />
           </Link>
-          {status === "error" ? (
+          {productsQuery.status === "error" ? (
             <div className="text-xs md:text-sm">Error in fetching products</div>
           ) : (
             <Searchbar
               className="hidden md:block"
-              data={products}
+              data={productsQuery.data}
               route="products"
             />
           )}
@@ -110,17 +116,21 @@ const Navbar = () => {
                   aria-hidden="true"
                 />
                 <span className="absolute top-1 left-[1.15rem] h-5 bg-layout text-base font-medium text-primary md:text-lg">
-                  0
+                  {cartStore.products.length}
                 </span>
                 <span className="text-sm font-medium md:text-base">Cart</span>
               </button>
             </Link>
           </div>
         </div>
-        {status === "error" ? (
+        {productsQuery.status === "error" ? (
           <div className="text-xs md:text-sm">Error in fetching products</div>
         ) : (
-          <Searchbar className="md:hidden" data={products} route="products" />
+          <Searchbar
+            className="md:hidden"
+            data={productsQuery.data}
+            route="products"
+          />
         )}
       </div>
       <div className="w-full bg-layout-light">
