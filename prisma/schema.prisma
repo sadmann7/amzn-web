@@ -44,7 +44,7 @@ model User {
   active        Boolean   @default(true)
   accounts      Account[]
   sessions      Session[]
-  Cart          Cart[]
+  carts         Cart[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -57,11 +57,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-enum USER_ROLE {
-  ADMIN
-  USER
-}
-
 model Product {
   id          Int              @id @default(sequence())
   title       String
@@ -71,9 +66,23 @@ model Product {
   image       String
   rating      Float            @default(0)
   quantity    Int              @default(1)
-  Cart        Cart[]
+  carts       Cart[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+}
+
+model Cart {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum USER_ROLE {
+  ADMIN
+  USER
 }
 
 enum PRODUCT_CATEGORY {
@@ -81,15 +90,4 @@ enum PRODUCT_CATEGORY {
   JWELLERY
   MENS_CLOTHING
   WOMENS_CLOTHING
-}
-
-model Cart {
-  id        String   @id @default(cuid())
-  userId    String
-  productId Int
-  quantity  Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
