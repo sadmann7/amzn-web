@@ -25,7 +25,7 @@ const ShowCategory: NextPageWithLayout = () => {
           <div className="text-center text-base text-title md:text-lg">
             Error in fetching product
           </div>
-        ) : productsQuery.isSuccess ? (
+        ) : productsQuery.data ? (
           <ProductList
             products={productsQuery.data}
             status={productsQuery.status}

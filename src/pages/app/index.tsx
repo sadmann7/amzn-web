@@ -28,13 +28,13 @@ const App: NextPageWithLayout = () => {
       <main className="min-h-screen bg-bg-gray pt-40 md:pt-32 lg:pt-[6.7rem]">
         <Hero />
         <div className="flex flex-col gap-5 pb-14">
-          {categoriesQuery.isSuccess ? (
+          {categoriesQuery.data ? (
             <CategoryList
               categories={categoriesQuery.data}
               status={categoriesQuery.status}
             />
           ) : null}
-          {productsQuery.isSuccess ? (
+          {productsQuery.data ? (
             <ProductList
               products={productsQuery.data}
               status={productsQuery.status}

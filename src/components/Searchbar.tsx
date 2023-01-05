@@ -1,6 +1,6 @@
 import styles from "@/styles/searchbar.module.css";
-import type { Product } from "@/types/globals";
 import { Combobox, Transition } from "@headlessui/react";
+import type { Product } from "@prisma/client";
 import Router from "next/router";
 import { Fragment, useState } from "react";
 

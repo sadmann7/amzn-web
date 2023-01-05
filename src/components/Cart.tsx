@@ -1,5 +1,5 @@
 import { useCartStore } from "@/stores/cart";
-import { formatCurrency } from "@/utils/format";
+import { formatCurrency, formatEnum } from "@/utils/format";
 import type { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,22 +7,22 @@ import { useState } from "react";
 
 type CartProps = {
   products: Product[];
-  status?: "error" | "success" | "loading";
 };
 
-const Cart = ({ products, status }: CartProps) => {
+const Cart = ({ products }: CartProps) => {
   const totalPrice = products.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
   );
 
+  const totalQuantity = products.reduce(
+    (acc, product) => acc + product.quantity,
+    0
+  );
+
   return (
     <div className="mx-auto w-full sm:w-[95vw]">
-      {status === "error" ? (
-        <div className="px-5 pt-8 pb-10 text-center text-base text-title md:text-lg">
-          Error in fetching products
-        </div>
-      ) : products.length <= 0 ? (
+      {products.length <= 0 ? (
         <div className="grid gap-1.5 bg-white px-5 pt-8 pb-10">
           <h1 className="text-2xl text-title md:text-3xl">
             Your Amazon Cart is empty.
@@ -53,7 +53,8 @@ const Cart = ({ products, status }: CartProps) => {
               ))}
             </div>
             <div className="ml-auto hidden text-base font-semibold md:block">
-              Subtotal ({products.length} item) :{" "}
+              Subtotal ({totalQuantity} {totalQuantity > 1 ? "items" : "item"})
+              :{" "}
               <span className="font-bold">
                 {formatCurrency(totalPrice, "USD")}
               </span>
@@ -61,7 +62,8 @@ const Cart = ({ products, status }: CartProps) => {
           </div>
           <div className="flex flex-[0.2] flex-col gap-3 bg-white px-5 pt-5 md:h-40 md:pb-10 lg:h-36">
             <div className="text-base font-semibold md:text-lg">
-              Subtotal ({products.length} item) :{" "}
+              Subtotal ({totalQuantity} {totalQuantity > 1 ? "items" : "item"})
+              :{" "}
               <span className="font-bold">
                 {formatCurrency(totalPrice, "USD")}
               </span>
@@ -106,7 +108,7 @@ const ProductCard = ({ product }: { product: Product }) => {
             {product.price ? formatCurrency(product.price, "USD") : "-"}
           </span>
           <span className="text-xs font-bold capitalize text-text">
-            {product.category}
+            {formatEnum(product.category)}
           </span>
           <div className="mt-2.5 flex flex-wrap gap-5 divide-x-2 divide-neutral-200">
             <select

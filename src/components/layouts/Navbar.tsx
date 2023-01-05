@@ -1,9 +1,6 @@
 import { useCartStore } from "@/stores/cart";
-import type { Product } from "@/types/globals";
-import { getProducts } from "@/utils/queryFns";
 import { trpc } from "@/utils/trpc";
 import { Menu, Transition } from "@headlessui/react";
-import { useQuery } from "@tanstack/react-query";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -65,10 +62,9 @@ const bottomLinks = [
 ];
 
 const Navbar = () => {
-  // tanstack/react-query
-  const productsQuery = useQuery<Product[]>({
-    queryKey: ["products"],
-    queryFn: getProducts,
+  // trpc
+  const productsQuery = trpc.products.get.useQuery(undefined, {
+    staleTime: Infinity,
   });
 
   // zustand
@@ -76,7 +72,7 @@ const Navbar = () => {
     products: state.products,
   }));
 
-  if (productsQuery.status === "loading") {
+  if (productsQuery.isLoading) {
     return <Loader />;
   }
 
@@ -94,7 +90,7 @@ const Navbar = () => {
               priority
             />
           </Link>
-          {productsQuery.status === "error" ? (
+          {productsQuery.isError ? (
             <div className="text-xs md:text-sm">Error in fetching products</div>
           ) : (
             <Searchbar
