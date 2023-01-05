@@ -3,37 +3,16 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import type { NextPageWithLayout } from "./_app";
-import type { GetServerSideProps } from "next";
-import type { Category, Product } from "@/types/globals";
-import { getCategories, getProducts } from "@/utils/queryFns";
-import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
 
 // components imports
-import DefaultLayout from "@/components/layouts/DefaultLayout";
 import Button from "@/components/Button";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 
-type HomeProps = {
-  products: Product[];
-  categories: Category[];
-};
-
-const Home: NextPageWithLayout<HomeProps> = (props) => {
+const Home: NextPageWithLayout = () => {
   const router = useRouter();
   useEffect(() => {
     router.push("/app");
   }, [router]);
-
-  // tanstack/react-query
-  const { data: products, status: productsStatus } = useQuery<Product[]>({
-    queryKey: ["products"],
-    queryFn: getProducts,
-    initialData: props.products,
-  });
-  const { data: categories, status: categoriesStatus } = useQuery<Category[]>({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-    initialData: props.categories,
-  });
 
   return (
     <>
@@ -57,20 +36,3 @@ const Home: NextPageWithLayout<HomeProps> = (props) => {
 export default Home;
 
 Home.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
-  });
-  await queryClient.prefetchQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-  });
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  };
-};
