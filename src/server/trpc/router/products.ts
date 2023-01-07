@@ -42,44 +42,4 @@ export const productsRouter = router({
       });
       return products;
     }),
-
-  addToCart: protectedProcedure
-    .input(z.number())
-    .mutation(async ({ ctx, input }) => {
-      const product = await ctx.prisma.product.findUnique({
-        where: {
-          id: input,
-        },
-      });
-      if (!product) {
-        throw new Error("Product not found");
-      }
-      const cart = await ctx.prisma.cart.create({
-        data: {
-          products: {
-            connect: {
-              id: product.id,
-            },
-          },
-          user: {
-            connect: {
-              id: ctx.session.user.id,
-            },
-          },
-        },
-      });
-      return cart;
-    }),
-
-  getCart: protectedProcedure.query(async ({ ctx }) => {
-    const cart = await ctx.prisma.cart.findUnique({
-      where: {
-        id: ctx.session.user.id,
-      },
-      include: {
-        products: true,
-      },
-    });
-    return cart;
-  }),
 });

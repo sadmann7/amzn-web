@@ -93,21 +93,23 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
             />
           </Link>
           <div className="flex items-center gap-1">
-            {product.rating ? renderStars(product.rating) : null}
+            {product.rating ? renderStars(product.rating) : "-"}
           </div>
           <Link href={`/app/products/${product.id}`}>
             <h2 className="text-sm font-medium text-title transition-colors line-clamp-1 hover:text-primary md:text-base">
-              {product.title}
+              {product.title ?? "-"}
             </h2>
           </Link>
           <p className="text-xs font-medium text-text line-clamp-2 md:text-sm">
-            {product.description}
+            {product.description ?? "-"}
           </p>
           {product.price ? (
             <p className="text-sm font-medium text-title md:text-base">
               {formatCurrency(product.price, "USD")}
             </p>
-          ) : null}
+          ) : (
+            "-"
+          )}
           <Button
             aria-label="add item to cart"
             className="w-full bg-orange-300 text-title transition-colors hover:bg-primary active:bg-orange-300"

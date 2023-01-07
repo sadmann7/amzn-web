@@ -44,9 +44,9 @@ model User {
   active        Boolean   @default(true)
   accounts      Account[]
   sessions      Session[]
-  carts         Cart[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  orders        Order[]
 }
 
 model VerificationToken {
@@ -66,18 +66,29 @@ model Product {
   image       String
   rating      Float            @default(0)
   quantity    Int              @default(1)
-  carts       Cart[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+  items       OrderItem[]
 }
 
-model Cart {
-  id        String    @id @default(cuid())
+model Order {
+  id        Int         @id @default(sequence())
+  user      User        @relation(fields: [userId], references: [id])
   userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        Int      @id @default(sequence())
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum USER_ROLE {

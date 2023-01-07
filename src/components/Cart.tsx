@@ -1,10 +1,9 @@
 import { useCartStore } from "@/stores/cart";
 import { formatCurrency, formatEnum } from "@/utils/format";
-import { trpc } from "@/utils/trpc";
 import type { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type CartProps = {
   products: Product[];
@@ -91,9 +90,6 @@ const ProductCard = ({ product }: { product: Product }) => {
   }));
 
   // trpc
-  const addToCartMutation = trpc.products.addToCart.useMutation();
-  const getCartQuery = trpc.products.getCart.useQuery();
-  console.log(getCartQuery.data);
 
   return (
     <div className="flex flex-col gap-4 border-b-2 pb-4 md:flex-row md:items-center md:justify-between md:border-neutral-200">
