@@ -87,7 +87,8 @@ const Cart = ({ products }: { products: Product[] }) => {
             </div>
             <button
               onClick={handleCheckout}
-              className="w-full rounded-md bg-yellow-300 py-2.5 text-xs font-medium text-title transition-colors hover:bg-yellow-400 active:bg-yellow-300 md:px-2 md:py-2 md:text-sm"
+              className="w-full rounded-md bg-yellow-300 py-2.5 text-xs font-medium text-title transition-colors hover:bg-yellow-400 active:bg-yellow-300 disabled:cursor-not-allowed md:px-2 md:py-2 md:text-sm"
+              disabled={addItemsMutation.isLoading}
             >
               Proceed to checkout
             </button>

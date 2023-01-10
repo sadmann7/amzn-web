@@ -20,7 +20,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
     return (
       <div className="grid min-h-screen place-items-center">
         <div className="flex flex-col gap-5">
-          <div className="text-xl font-medium text-title md:text-3xl">
+          <div className="text-xl font-semibold text-title md:text-3xl">
             Error: {productsQuery.error.message}
           </div>
           <table>

@@ -7,6 +7,7 @@ import CategoryList from "@/components/CategoryList";
 import Hero from "@/components/Hero";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
+import Loader from "@/components/Loader";
 
 const App: NextPageWithLayout = () => {
   // trpc
@@ -20,6 +21,21 @@ const App: NextPageWithLayout = () => {
     }
   );
 
+  if (categoriesQuery.isLoading || productsQuery.isLoading) {
+    return <Loader />;
+  }
+
+  if (categoriesQuery.isError || productsQuery.isError) {
+    return (
+      <div className="grid min-h-screen place-items-center">
+        <div className="text-xl font-semibold text-title md:text-3xl">
+          Error:{" "}
+          {categoriesQuery.error?.message || productsQuery.error?.message}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Head>
@@ -28,18 +44,8 @@ const App: NextPageWithLayout = () => {
       <main className="min-h-screen bg-bg-gray pt-40 md:pt-32 lg:pt-[6.7rem]">
         <Hero />
         <div className="flex flex-col gap-5 pb-14">
-          {categoriesQuery.data ? (
-            <CategoryList
-              categories={categoriesQuery.data}
-              status={categoriesQuery.status}
-            />
-          ) : null}
-          {productsQuery.data ? (
-            <ProductList
-              products={productsQuery.data}
-              status={productsQuery.status}
-            />
-          ) : null}
+          <CategoryList categories={categoriesQuery.data} />
+          <ProductList products={productsQuery.data} />
         </div>
       </main>
     </>

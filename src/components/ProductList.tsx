@@ -10,12 +10,7 @@ import { toast } from "react-toastify";
 // components imports
 import Button from "./Button";
 
-type ProductListProps = {
-  products: Product[];
-  status: "error" | "success" | "loading";
-};
-
-const ProductList = ({ products }: ProductListProps) => {
+const ProductList = ({ products }: { products: Product[] }) => {
   return (
     <section
       aria-label="product list"
