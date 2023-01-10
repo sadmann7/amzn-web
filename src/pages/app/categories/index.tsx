@@ -11,7 +11,7 @@ const Categories: NextPageWithLayout = () => {
   const categoriesQuery = trpc.products.getUniqueCategories.useQuery(
     undefined,
     {
-      staleTime: Infinity,
+      staleTime: 1000 * 60 * 60 * 24,
     }
   );
 

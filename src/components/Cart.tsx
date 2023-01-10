@@ -29,7 +29,12 @@ const Cart = ({ products }: { products: Product[] }) => {
     if (status === "unauthenticated") {
       signIn();
     }
-    addItemsMutation.mutateAsync(products.map((product) => product.id));
+    addItemsMutation.mutateAsync(
+      products.map((product) => ({
+        productId: product.id,
+        productQuantity: product.quantity,
+      }))
+    );
   };
 
   return (

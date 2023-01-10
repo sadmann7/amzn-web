@@ -12,7 +12,9 @@ const ShowProduct: NextPageWithLayout = () => {
   const productId = Number(Router.query.productId);
   const productQuery = trpc.products.getOne.useQuery(productId);
 
-  if (productQuery.isLoading) return <Loader />;
+  if (productQuery.isLoading) {
+    return <Loader />;
+  }
 
   if (!productQuery.data)
     return (

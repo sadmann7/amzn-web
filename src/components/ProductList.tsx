@@ -15,41 +15,32 @@ type ProductListProps = {
   status: "error" | "success" | "loading";
 };
 
-const ProductList = ({ products, status }: ProductListProps) => {
+const ProductList = ({ products }: ProductListProps) => {
   return (
     <section
       aria-label="product list"
       className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]"
     >
       <h2 className="sr-only">Product list</h2>
-      {status === "loading" ? (
-        <div className="text-center text-base text-title md:text-lg">
-          Loading...
+
+      <div className="grid grid-flow-row-dense gap-5 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <SlicedProducts products={products} range={{ from: 0, to: 4 }} />
+        <Image
+          src={`/img/advertisement-one.webp`}
+          alt="advertisement one"
+          width={1500}
+          height={300}
+          className="col-span-full"
+          loading="lazy"
+        />
+        <div className="md:col-span-2">
+          <SlicedProducts products={products} range={{ from: 4, to: 5 }} />
         </div>
-      ) : status === "error" ? (
-        <div className="text-center text-base text-title md:text-lg">
-          Error in fetching products
-        </div>
-      ) : (
-        <div className="grid grid-flow-row-dense gap-5 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <SlicedProducts products={products} range={{ from: 0, to: 4 }} />
-          <Image
-            src={`/img/advertisement-one.webp`}
-            alt="advertisement one"
-            width={1500}
-            height={300}
-            className="col-span-full"
-            loading="lazy"
-          />
-          <div className="md:col-span-2">
-            <SlicedProducts products={products} range={{ from: 4, to: 5 }} />
-          </div>
-          <SlicedProducts
-            products={products}
-            range={{ from: 5, to: products.length }}
-          />
-        </div>
-      )}
+        <SlicedProducts
+          products={products}
+          range={{ from: 5, to: products.length }}
+        />
+      </div>
     </section>
   );
 };

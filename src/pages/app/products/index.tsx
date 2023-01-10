@@ -9,7 +9,7 @@ import ProductList from "@/components/ProductList";
 const Products: NextPageWithLayout = () => {
   // trpc
   const productsQuery = trpc.products.get.useQuery(undefined, {
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 60 * 24,
   });
 
   return (

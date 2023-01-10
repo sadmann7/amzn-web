@@ -9,7 +9,7 @@ import Navbar from "./Navbar";
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
   // trpc
   const productsQuery = trpc.products.get.useQuery(undefined, {
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 60 * 24,
   });
 
   if (productsQuery.isLoading) {
@@ -21,7 +21,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
       <div className="grid min-h-screen place-items-center">
         <div className="flex flex-col gap-5">
           <div className="text-xl font-medium text-title md:text-3xl">
-            Error in fetching products
+            Error: {productsQuery.error.message}
           </div>
           <table>
             <thead className="text-sm font-medium text-text md:text-base">
