@@ -72,6 +72,11 @@ const Navbar = () => {
     products: state.products,
   }));
 
+  const totalQuantity = cartStore.products.reduce(
+    (acc, product) => acc + product.quantity,
+    0
+  );
+
   if (productsQuery.isLoading) {
     return <Loader />;
   }
@@ -90,7 +95,7 @@ const Navbar = () => {
               priority
             />
           </Link>
-          {productsQuery.isError ? (
+          {!productsQuery.isSuccess ? (
             <div className="text-xs md:text-sm">Error in fetching products</div>
           ) : (
             <Searchbar
@@ -112,14 +117,14 @@ const Navbar = () => {
                   aria-hidden="true"
                 />
                 <span className="absolute top-1 left-[1.15rem] h-5 bg-layout text-base font-medium text-primary md:text-lg">
-                  {cartStore.products.length}
+                  {totalQuantity}
                 </span>
                 <span className="text-sm font-medium md:text-base">Cart</span>
               </button>
             </Link>
           </div>
         </div>
-        {productsQuery.status === "error" ? (
+        {productsQuery.isError ? (
           <div className="text-xs md:text-sm">Error in fetching products</div>
         ) : (
           <Searchbar

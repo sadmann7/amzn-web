@@ -46,7 +46,6 @@ model User {
   sessions      Session[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  orders        Order[]
 }
 
 model VerificationToken {
@@ -68,27 +67,6 @@ model Product {
   quantity    Int              @default(1)
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
-  items       OrderItem[]
-}
-
-model Order {
-  id        Int         @id @default(sequence())
-  user      User        @relation(fields: [userId], references: [id])
-  userId    String
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  items     OrderItem[]
-}
-
-model OrderItem {
-  id        Int      @id @default(sequence())
-  order     Order    @relation(fields: [orderId], references: [id])
-  orderId   Int
-  product   Product  @relation(fields: [productId], references: [id])
-  productId Int
-  quantity  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 enum USER_ROLE {

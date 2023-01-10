@@ -1,24 +1,36 @@
 import { useCartStore } from "@/stores/cart";
 import { formatCurrency, formatEnum } from "@/utils/format";
+import { trpc } from "@/utils/trpc";
 import type { Product } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
-type CartProps = {
-  products: Product[];
-};
-
-const Cart = ({ products }: CartProps) => {
+const Cart = ({ products }: { products: Product[] }) => {
   const totalPrice = products.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
   );
-
   const totalQuantity = products.reduce(
     (acc, product) => acc + product.quantity,
     0
   );
+
+  // trpc
+  const { status } = useSession();
+  const addItemsMutation = trpc.products.addItems.useMutation({
+    onSuccess: () => toast.success("Product added to order"),
+    onError: (err) => toast.error(err.message),
+  });
+
+  const handleCheckout = () => {
+    if (status === "unauthenticated") {
+      toast.error("Please login to checkout!");
+    }
+    addItemsMutation.mutateAsync(products.map((product) => product.id));
+  };
 
   return (
     <div className="mx-auto w-full sm:w-[95vw]">
@@ -68,7 +80,10 @@ const Cart = ({ products }: CartProps) => {
                 {formatCurrency(totalPrice, "USD")}
               </span>
             </div>
-            <button className="w-full rounded-md bg-yellow-300 py-2.5 text-xs font-medium text-title transition-colors hover:bg-yellow-400 active:bg-yellow-300 md:px-2 md:py-2 md:text-sm">
+            <button
+              onClick={handleCheckout}
+              className="w-full rounded-md bg-yellow-300 py-2.5 text-xs font-medium text-title transition-colors hover:bg-yellow-400 active:bg-yellow-300 md:px-2 md:py-2 md:text-sm"
+            >
               Proceed to checkout
             </button>
           </div>
@@ -88,8 +103,6 @@ const ProductCard = ({ product }: { product: Product }) => {
     removeProduct: state.removeById,
     setQuantity: state.setQuantity,
   }));
-
-  // trpc
 
   return (
     <div className="flex flex-col gap-4 border-b-2 pb-4 md:flex-row md:items-center md:justify-between md:border-neutral-200">
