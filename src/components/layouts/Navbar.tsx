@@ -160,13 +160,13 @@ const Dropdown = () => {
   return (
     <Menu as="div" className="relative z-10 inline-block text-left">
       <div>
-        <Menu.Button className="hidden w-full flex-col justify-center whitespace-nowrap rounded-sm p-2 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white md:inline-flex">
-          <span className="text-xs">
-            Hello,{" "}
+        <Menu.Button className="inline-flex w-full items-center gap-0.5 whitespace-nowrap rounded-sm px-2 py-4 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white md:flex-col md:items-start md:justify-center md:gap-0 md:p-2">
+          <span className="text-sm md:inline-flex md:gap-0.5 md:text-xs">
+            <span className="hidden md:inline-block">Hello,</span>
             {sessionMutation.data ? sessionMutation.data.user?.name : "sign in"}
           </span>
-          <span className="flex items-center gap-0.5">
-            <span className="text-xs font-medium md:text-sm">
+          <span className="md:inline-flex md:items-center md:gap-0.5">
+            <span className="hidden text-sm font-medium md:inline-block">
               Accounts & Lists
             </span>
             <ChevronDownIcon
@@ -174,15 +174,6 @@ const Dropdown = () => {
               aria-hidden="true"
             />
           </span>
-        </Menu.Button>
-        <Menu.Button className="flex w-full items-center gap-0.5 whitespace-nowrap rounded-sm px-2 py-4 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white md:hidden">
-          <span className="text-xs">
-            {sessionMutation.data ? sessionMutation.data.user?.name : "Sign in"}
-          </span>
-          <ChevronDownIcon
-            className="aspect-square w-5 text-violet-200 transition hover:text-violet-100 ui-open:rotate-180"
-            aria-hidden="true"
-          />
         </Menu.Button>
       </div>
       <Transition
@@ -200,7 +191,7 @@ const Dropdown = () => {
               <Menu.Item key={link.name}>
                 <Link
                   href={link.href}
-                  className="w-full text-xs text-title transition ui-active:text-primary ui-active:underline md:text-sm"
+                  className="w-full text-sm text-title transition ui-active:text-primary ui-active:underline"
                 >
                   {link.name}
                 </Link>

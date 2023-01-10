@@ -18,7 +18,7 @@ export const ordersRouter = router({
         },
       });
       if (!order) {
-        throw new Error("Order not found");
+        throw new Error("Order not found!");
       }
       const orderItems = await Promise.all(
         input.map(async ({ productId, productQuantity }) => {
@@ -28,7 +28,7 @@ export const ordersRouter = router({
             },
           });
           if (!product) {
-            throw new Error("Product not found");
+            throw new Error("Product not found!");
           }
           const orderItem = await ctx.prisma.orderItem.create({
             data: {

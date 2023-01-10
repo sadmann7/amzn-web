@@ -101,9 +101,7 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
             className="w-full bg-orange-300 text-title transition-colors hover:bg-primary active:bg-orange-300"
             onClick={() => {
               cartStore.setProducts([...cartStore.products, product]);
-              toast.success(
-                `${truncateText(product.title, 10)}... added to cart`
-              );
+              toast.success(`${truncateText(product.title, 16)} added to cart`);
             }}
           >
             Add to Cart

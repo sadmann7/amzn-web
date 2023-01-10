@@ -6,6 +6,7 @@ type CartState = {
   products: Product[];
   setProducts: (products: Product[]) => void;
   removeById: (id: number) => void;
+  removeManyById: (ids: number[]) => void;
   setQuantity: (id: number, quantity: number) => void;
 };
 
@@ -18,6 +19,13 @@ export const useCartStore = create<CartState>()(
         removeById: (id: number) => {
           set((state) => ({
             products: state.products.filter((product) => product.id !== id),
+          }));
+        },
+        removeManyById: (ids: number[]) => {
+          set((state) => ({
+            products: state.products.filter(
+              (product) => !ids.includes(product.id)
+            ),
           }));
         },
         setQuantity: (id: number, quantity: number) => {
