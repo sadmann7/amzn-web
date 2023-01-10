@@ -20,7 +20,7 @@ const Cart = ({ products }: { products: Product[] }) => {
 
   // trpc
   const { status } = useSession();
-  const addItemsMutation = trpc.products.addItems.useMutation({
+  const addItemsMutation = trpc.orders.addOrder.useMutation({
     onSuccess: () => toast.success("Product added to order"),
     onError: (err) => toast.error(err.message),
   });

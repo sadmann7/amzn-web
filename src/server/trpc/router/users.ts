@@ -1,22 +1,28 @@
 import { z } from "zod";
-import { protectedProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const usersRouter = router({
-  getAll: protectedProcedure.query(async ({ ctx }) => {
+  getSession: publicProcedure.query(({ ctx }) => {
+    return ctx.session;
+  }),
+
+  getUsers: protectedProcedure.query(async ({ ctx }) => {
     const users = await ctx.prisma.user.findMany();
     return users;
   }),
 
-  getOne: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
-    const user = await ctx.prisma.user.findUnique({
-      where: {
-        id: input,
-      },
-    });
-    return user;
-  }),
+  getUser: protectedProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: input,
+        },
+      });
+      return user;
+    }),
 
-  updateOne: protectedProcedure
+  updateUser: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -37,7 +43,7 @@ export const usersRouter = router({
       return user;
     }),
 
-  deleteOne: protectedProcedure
+  deleteUser: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.delete({

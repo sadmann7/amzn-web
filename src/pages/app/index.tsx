@@ -11,7 +11,7 @@ import Loader from "@/components/Loader";
 
 const App: NextPageWithLayout = () => {
   // trpc
-  const productsQuery = trpc.products.get.useQuery(undefined, {
+  const productsQuery = trpc.products.getProducts.useQuery(undefined, {
     staleTime: Infinity,
   });
   const categoriesQuery = trpc.products.getUniqueCategories.useQuery(

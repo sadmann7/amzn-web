@@ -155,7 +155,7 @@ const dropLinks = [
 
 const Dropdown = () => {
   // trpc
-  const sessionMutation = trpc.auth.getSession.useQuery();
+  const sessionMutation = trpc.users.getSession.useQuery();
 
   return (
     <Menu as="div" className="relative z-10 inline-block text-left">

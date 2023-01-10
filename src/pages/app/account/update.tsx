@@ -24,9 +24,9 @@ type Inputs = z.infer<typeof schema>;
 
 const Update: NextPageWithLayout = () => {
   // trpc
-  const sessionMutation = trpc.auth.getSession.useQuery();
+  const sessionMutation = trpc.users.getSession.useQuery();
   // update user mutation
-  const updateUserMutation = trpc.users.updateOne.useMutation({
+  const updateUserMutation = trpc.users.updateUser.useMutation({
     onSuccess: async () => {
       sessionMutation.refetch();
       toast.success("User updated!");
@@ -36,7 +36,7 @@ const Update: NextPageWithLayout = () => {
     },
   });
   // delete user mutation
-  const deleteUserMutation = trpc.users.deleteOne.useMutation({
+  const deleteUserMutation = trpc.users.deleteUser.useMutation({
     onSuccess: async () => {
       await Router.push("/app");
       await signOut();

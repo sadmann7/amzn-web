@@ -8,7 +8,7 @@ import Navbar from "./Navbar";
 
 const StaticLayout = ({ children }: { children: ReactNode }) => {
   // trpc
-  const productsQuery = trpc.products.get.useQuery(undefined, {
+  const productsQuery = trpc.products.getProducts.useQuery(undefined, {
     staleTime: 1000 * 60 * 60 * 24,
   });
 

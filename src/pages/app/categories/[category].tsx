@@ -7,13 +7,28 @@ import type { NextPageWithLayout } from "../../_app";
 // components imports
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
+import Loader from "@/components/Loader";
 
 const ShowCategory: NextPageWithLayout = () => {
   //  trpc
   const category = Router.query.category as PRODUCT_CATEGORY;
-  const productsQuery = trpc.products.getByCategory.useQuery(category, {
+  const productsQuery = trpc.products.getProductsByCategory.useQuery(category, {
     staleTime: Infinity,
   });
+
+  if (productsQuery.isLoading) {
+    return <Loader />;
+  }
+
+  if (productsQuery.isError) {
+    return (
+      <div className="grid min-h-screen place-items-center">
+        <div className="text-xl font-semibold text-title md:text-3xl">
+          Error: {productsQuery.error.message}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -21,16 +36,7 @@ const ShowCategory: NextPageWithLayout = () => {
         <title>Products | Amzn Store</title>
       </Head>
       <main className="min-h-screen bg-bg-gray pt-48 pb-14 md:pt-40 lg:pt-36">
-        {productsQuery.isError ? (
-          <div className="text-center text-base text-title md:text-lg">
-            Error in fetching product
-          </div>
-        ) : productsQuery.data ? (
-          <ProductList
-            products={productsQuery.data}
-            status={productsQuery.status}
-          />
-        ) : null}
+        <ProductList products={productsQuery.data} />
       </main>
     </>
   );

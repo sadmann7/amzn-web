@@ -10,7 +10,7 @@ import Loader from "@/components/Loader";
 const ShowProduct: NextPageWithLayout = () => {
   // trpc
   const productId = Number(Router.query.productId);
-  const productQuery = trpc.products.getOne.useQuery(productId);
+  const productQuery = trpc.products.getProduct.useQuery(productId);
 
   if (productQuery.isLoading) {
     return <Loader />;
