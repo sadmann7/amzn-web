@@ -26,21 +26,9 @@ const Cart = ({ products }: { products: Product[] }) => {
   // trpc
   const { status } = useSession();
   const addOrderMutation = trpc.orders.addOrder.useMutation({
-    onSuccess: () => toast.success("Products added to order!"),
-    onError: (err) => toast.error(err.message),
+    onSuccess: async () => toast.success("Products added to order!"),
+    onError: async (err) => toast.error(err.message),
   });
-
-  const handleCheckout = () => {
-    if (status === "unauthenticated") {
-      signIn();
-    }
-    addOrderMutation.mutateAsync(
-      products.map((product) => ({
-        productId: product.id,
-        productQuantity: product.quantity,
-      }))
-    );
-  };
 
   return (
     <div className="mx-auto w-full px-2 sm:w-[95vw]">
@@ -97,7 +85,7 @@ const Cart = ({ products }: { products: Product[] }) => {
               </span>
             </div>
           </div>
-          <div className="flex flex-[0.2] flex-col gap-3 bg-white px-5 pt-5 md:h-48 md:pb-10 lg:h-40">
+          <div className="flex flex-[0.2] flex-col gap-4 bg-white px-5 pt-5 md:h-40 md:pb-10 2xl:h-32">
             <div className="text-base font-semibold md:text-lg">
               Subtotal ({totalQuantity} {totalQuantity > 1 ? "items" : "item"})
               :{" "}
@@ -106,8 +94,17 @@ const Cart = ({ products }: { products: Product[] }) => {
               </span>
             </div>
             <button
-              onClick={handleCheckout}
-              className="w-full rounded-md bg-yellow-300 py-2.5 text-xs font-medium text-title transition-colors hover:bg-yellow-400 active:bg-yellow-300 disabled:cursor-not-allowed md:px-3 md:py-2 md:text-sm"
+              className="w-full rounded-md bg-yellow-300 py-2.5 text-xs font-medium text-title transition-colors hover:bg-yellow-400 active:bg-yellow-300 disabled:cursor-not-allowed md:whitespace-nowrap md:px-5 md:py-2 md:text-sm"
+              onClick={() =>
+                status === "unauthenticated"
+                  ? signIn()
+                  : addOrderMutation.mutateAsync(
+                      products.map((product) => ({
+                        productId: product.id,
+                        productQuantity: product.quantity,
+                      }))
+                    )
+              }
               disabled={addOrderMutation.isLoading}
             >
               {addOrderMutation.isLoading ? (

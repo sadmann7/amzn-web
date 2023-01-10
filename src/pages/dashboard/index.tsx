@@ -1,8 +1,24 @@
 import Head from "next/head";
+import Link from "next/link";
 import type { NextPageWithLayout } from "../_app";
 
 // components imports
 import DefaultLayout from "@/components/layouts/DefaultLayout";
+
+const dashboardRoutes = [
+  {
+    name: "Users",
+    path: "/dashboard/users",
+  },
+  {
+    name: "Products",
+    path: "/dashboard/products",
+  },
+  {
+    name: "Orders",
+    path: "/dashboard/orders",
+  },
+];
 
 const Dashboard: NextPageWithLayout = () => {
   return (
@@ -10,8 +26,17 @@ const Dashboard: NextPageWithLayout = () => {
       <Head>
         <title>Dashboard | Amzn Store</title>
       </Head>
-      <main className="mx-auto min-h-screen w-[95vw] max-w-screen-2xl">
-        <div>Dashboard page</div>
+      <main className="mx-auto min-h-screen w-[95vw] max-w-[200px] pt-52 pb-14 md:pt-40">
+        <ul className="flex flex-col gap-2">
+          {dashboardRoutes.map((route) => (
+            <li
+              key={route.name}
+              className="bg-primary px-4 py-2 text-center font-medium text-white hover:bg-opacity-80 active:bg-opacity-90"
+            >
+              <Link href={route.path}>{route.name}</Link>
+            </li>
+          ))}
+        </ul>
       </main>
     </>
   );

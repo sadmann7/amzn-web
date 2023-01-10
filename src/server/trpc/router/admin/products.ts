@@ -6,12 +6,13 @@ export const productsAdminRouter = router({
   create: adminProcedure
     .input(
       z.object({
-        title: z.string(),
-        price: z.number(),
+        title: z.string().min(3),
+        price: z.number().min(0),
         category: z.nativeEnum(PRODUCT_CATEGORY),
-        description: z.string(),
-        image: z.string(),
-        rating: z.number(),
+        description: z.string().min(3),
+        image: z.string().url(),
+        rating: z.number().min(0).max(5),
+        quantity: z.number().default(1),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -23,6 +24,7 @@ export const productsAdminRouter = router({
           description: input.description,
           image: input.image,
           rating: input.rating,
+          quantity: input.quantity,
         },
       });
       return product;
@@ -38,6 +40,7 @@ export const productsAdminRouter = router({
         description: z.string(),
         image: z.string(),
         rating: z.number(),
+        quantity: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -52,6 +55,7 @@ export const productsAdminRouter = router({
           description: input.description,
           image: input.image,
           rating: input.rating,
+          quantity: input.quantity,
         },
       });
       return product;

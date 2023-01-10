@@ -12,12 +12,12 @@ import Loader from "@/components/Loader";
 const App: NextPageWithLayout = () => {
   // trpc
   const productsQuery = trpc.products.getProducts.useQuery(undefined, {
-    staleTime: Infinity,
+    staleTime: 1000 * 60 * 60 * 24,
   });
   const categoriesQuery = trpc.products.getUniqueCategories.useQuery(
     undefined,
     {
-      staleTime: Infinity,
+      staleTime: 1000 * 60 * 60 * 24,
     }
   );
 

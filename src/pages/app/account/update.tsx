@@ -13,7 +13,6 @@ import Button from "@/components/Button";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const schema = z.object({
-  id: z.any(),
   name: z
     .string()
     .min(3, { message: "Name must be at least 3 charachters" })
@@ -42,8 +41,8 @@ const Update: NextPageWithLayout = () => {
       await signOut();
       toast.success("User deleted!");
     },
-    onError: async (e) => {
-      toast.error(e.message);
+    onError: async (err) => {
+      toast.error(err.message);
     },
   });
   // react-hook-form
@@ -53,9 +52,8 @@ const Update: NextPageWithLayout = () => {
     formState: { errors },
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    if (!sessionMutation.data?.user) return;
     await updateUserMutation.mutateAsync({
-      id: sessionMutation.data.user.id,
+      id: sessionMutation.data?.user?.id as string,
       name: data.name,
       email: data.email,
     });
@@ -143,7 +141,7 @@ const Update: NextPageWithLayout = () => {
                 className="w-full"
                 disabled={updateUserMutation.isLoading}
               >
-                {updateUserMutation.isLoading ? "Loading..." : "Update"}
+                {updateUserMutation.isLoading ? "Loading..." : "Update user"}
               </Button>
             </form>{" "}
             <Button
@@ -153,6 +151,7 @@ const Update: NextPageWithLayout = () => {
                   sessionMutation.data?.user?.id as string
                 )
               }
+              disabled={deleteUserMutation.isLoading}
             >
               {deleteUserMutation.isLoading ? "Deleting..." : "Delete account"}
             </Button>
