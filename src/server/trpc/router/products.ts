@@ -75,8 +75,8 @@ export const productsRouter = router({
   addItems: protectedProcedure
     .input(z.array(z.number()))
     .mutation(async ({ ctx, input }) => {
-      const order = await ctx.prisma.order.findFirst({
-        where: {
+      const order = await ctx.prisma.order.create({
+        data: {
           userId: ctx.session.user.id,
         },
       });

@@ -2,7 +2,7 @@ import { useCartStore } from "@/stores/cart";
 import { formatCurrency, formatEnum } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 import type { Product } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -25,9 +25,9 @@ const Cart = ({ products }: { products: Product[] }) => {
     onError: (err) => toast.error(err.message),
   });
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (status === "unauthenticated") {
-      toast.error("Please login to checkout!");
+      signIn();
     }
     addItemsMutation.mutateAsync(products.map((product) => product.id));
   };

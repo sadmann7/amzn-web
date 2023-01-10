@@ -1,13 +1,13 @@
 import { useCartStore } from "@/stores/cart";
 import { trpc } from "@/utils/trpc";
 import { Menu, Transition } from "@headlessui/react";
+import type { Product } from "@prisma/client";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
 
 // components imports
-import Loader from "../Loader";
 import Searchbar from "../Searchbar";
 
 // icons imports
@@ -61,12 +61,7 @@ const bottomLinks = [
   },
 ];
 
-const Navbar = () => {
-  // trpc
-  const productsQuery = trpc.products.get.useQuery(undefined, {
-    staleTime: Infinity,
-  });
-
+const Navbar = ({ data: products }: { data: Product[] }) => {
   // zustand
   const cartStore = useCartStore((state) => ({
     products: state.products,
@@ -76,10 +71,6 @@ const Navbar = () => {
     (acc, product) => acc + product.quantity,
     0
   );
-
-  if (productsQuery.isLoading) {
-    return <Loader />;
-  }
 
   return (
     <nav className="fixed top-0 left-0 z-50 w-full bg-layout text-white">
@@ -95,15 +86,11 @@ const Navbar = () => {
               priority
             />
           </Link>
-          {!productsQuery.isSuccess ? (
-            <div className="text-xs md:text-sm">Error in fetching products</div>
-          ) : (
-            <Searchbar
-              className="hidden md:block"
-              data={productsQuery.data}
-              route="products"
-            />
-          )}
+          <Searchbar
+            className="hidden md:block"
+            data={products}
+            route="products"
+          />
           <div className="flex items-center gap-1 md:gap-2">
             <Dropdown />
             <button className="hidden flex-col gap-0.5 whitespace-nowrap rounded-sm p-2 transition hover:ring-1 hover:ring-white md:flex">
@@ -124,15 +111,7 @@ const Navbar = () => {
             </Link>
           </div>
         </div>
-        {productsQuery.isError ? (
-          <div className="text-xs md:text-sm">Error in fetching products</div>
-        ) : (
-          <Searchbar
-            className="md:hidden"
-            data={productsQuery.data}
-            route="products"
-          />
-        )}
+        <Searchbar className="md:hidden" data={products} route="products" />
       </div>
       <div className="w-full bg-layout-light">
         <div className="mx-auto flex w-[95vw] max-w-screen-2xl items-center justify-between gap-4 overflow-x-auto whitespace-nowrap py-2 px-1 md:justify-start ">
