@@ -5,6 +5,7 @@ import type { Product } from "@prisma/client";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import Router from "next/router";
 import { Fragment } from "react";
 
 // components imports
@@ -187,6 +188,17 @@ const Dropdown = () => {
       >
         <Menu.Items className="absolute right-0 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-sm bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="flex flex-col gap-2 px-5 py-4">
+            {sessionMutation.data?.user?.role === "ADMIN" ? (
+              <Menu.Item>
+                <span
+                  aria-label="Sign out"
+                  className="w-full cursor-pointer text-sm text-title transition ui-active:text-primary ui-active:underline"
+                  onClick={() => Router.push("/dashboard")}
+                >
+                  Dashboard
+                </span>
+              </Menu.Item>
+            ) : null}
             {dropLinks.map((link) => (
               <Menu.Item key={link.name}>
                 <Link
@@ -200,7 +212,7 @@ const Dropdown = () => {
             <Menu.Item>
               <span
                 aria-label="Sign out"
-                className="w-full cursor-pointer text-xs text-title transition ui-active:text-primary ui-active:underline md:text-sm"
+                className="w-full cursor-pointer text-sm text-title transition ui-active:text-primary ui-active:underline"
                 onClick={() => (sessionMutation.data ? signOut() : signIn())}
               >
                 {sessionMutation.data ? "Sign out" : "Sign in"}

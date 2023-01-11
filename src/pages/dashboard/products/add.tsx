@@ -42,12 +42,7 @@ const AddProduct: NextPageWithLayout = () => {
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await addProductMutation.mutateAsync({
-      title: data.title,
-      price: data.price,
-      category: data.category,
-      description: data.description,
-      image: data.image,
-      rating: data.rating,
+      ...data,
       quantity: 1,
     });
   };
@@ -55,7 +50,7 @@ const AddProduct: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Change Name, E-mail, and Delete Account | Amzn Store</title>
+        <title>Add Product | Amzn Store</title>
       </Head>
       <main className="mx-auto min-h-screen w-[95vw] max-w-screen-sm px-2 pt-52 pb-14 md:pt-40">
         {addProductMutation.isLoading ? (
@@ -135,7 +130,7 @@ const AddProduct: NextPageWithLayout = () => {
                   {...register("category", { required: true })}
                 >
                   <option value="" hidden>
-                    Select store type
+                    Select category
                   </option>
                   {Object.values(PRODUCT_CATEGORY).map((category) => (
                     <option key={category} value={category}>
@@ -210,7 +205,7 @@ const AddProduct: NextPageWithLayout = () => {
                 ) : null}
               </div>
               <Button
-                aria-label="update store"
+                aria-label="add product"
                 className="w-full"
                 disabled={addProductMutation.isLoading}
               >

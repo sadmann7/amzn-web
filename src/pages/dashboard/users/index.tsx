@@ -9,21 +9,21 @@ import Loader from "@/components/Loader";
 import ProductList from "@/components/ProductList";
 import Router from "next/router";
 
-const Products: NextPageWithLayout = () => {
+const Users: NextPageWithLayout = () => {
   // trpc
-  const productsQuery = trpc.products.getProducts.useQuery(undefined, {
+  const usersQuery = trpc.users.getUsers.useQuery(undefined, {
     staleTime: 1000 * 60 * 60 * 24,
   });
 
-  if (productsQuery.isLoading) {
+  if (usersQuery.isLoading) {
     return <Loader />;
   }
 
-  if (productsQuery.isError) {
+  if (usersQuery.isError) {
     return (
       <div className="grid min-h-screen place-items-center">
         <div className="text-xl font-semibold text-title md:text-3xl">
-          Error: {productsQuery.error.message}
+          Error: {usersQuery.error.message}
         </div>
       </div>
     );
@@ -32,22 +32,31 @@ const Products: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Products | Amzn Store</title>
+        <title>Users| Amzn Store</title>
       </Head>
       <main className="min-h-screen bg-bg-gray pt-48 pb-14 md:pt-36">
         <div className="flex flex-col gap-5 pb-14">
           <div className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]">
-            <Button onClick={() => Router.push("/dashboard/products/add")}>
-              Add product
-            </Button>
+            <div className="flex flex-col gap-2">
+              {usersQuery.data.map((user) => (
+                <div key={user.id} className="flex items-center gap-2">
+                  <Button
+                    onClick={() => Router.push(`/dashboard/users/${user.id}`)}
+                  >
+                    Edit user
+                  </Button>
+                  <p>{user.name}</p>
+                  <p>{user.email}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <ProductList products={productsQuery.data} />
         </div>
       </main>
     </>
   );
 };
 
-export default Products;
+export default Users;
 
-Products.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
+Users.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;

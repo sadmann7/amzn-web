@@ -29,11 +29,13 @@ const Dashboard: NextPageWithLayout = () => {
       <main className="mx-auto min-h-screen w-[95vw] max-w-[200px] pt-52 pb-14 md:pt-40">
         <ul className="flex flex-col gap-2">
           {dashboardRoutes.map((route) => (
-            <li
-              key={route.name}
-              className="bg-primary px-4 py-2 text-center font-medium text-white hover:bg-opacity-80 active:bg-opacity-90"
-            >
-              <Link href={route.path}>{route.name}</Link>
+            <li key={route.name}>
+              <Link
+                href={route.path}
+                className="block bg-primary px-4 py-2 text-center font-medium text-white hover:bg-opacity-80 active:bg-opacity-90"
+              >
+                {route.name}
+              </Link>
             </li>
           ))}
         </ul>

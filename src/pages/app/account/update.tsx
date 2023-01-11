@@ -22,7 +22,6 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema>;
 
 const Update: NextPageWithLayout = () => {
-  // trpc
   const sessionMutation = trpc.users.getSession.useQuery();
   // update user mutation
   const updateUserMutation = trpc.users.updateUser.useMutation({
@@ -45,6 +44,7 @@ const Update: NextPageWithLayout = () => {
       toast.error(err.message);
     },
   });
+
   // react-hook-form
   const {
     register,
@@ -137,7 +137,7 @@ const Update: NextPageWithLayout = () => {
                 ) : null}
               </div>
               <Button
-                aria-label="update store"
+                aria-label="update user"
                 className="w-full"
                 disabled={updateUserMutation.isLoading}
               >
