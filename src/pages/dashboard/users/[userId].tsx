@@ -20,7 +20,7 @@ const schema = z.object({
 });
 type Inputs = z.infer<typeof schema>;
 
-const EditUser: NextPageWithLayout = () => {
+const UpdateUser: NextPageWithLayout = () => {
   const userId = Router.query.userId as string;
 
   //   trpc
@@ -69,7 +69,7 @@ const EditUser: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Edit User | Amzn Store</title>
+        <title>Update User | Amzn Store</title>
       </Head>
       <main className="mx-auto min-h-screen w-[95vw] max-w-screen-sm px-2 pt-52 pb-14 md:pt-40">
         {userQuery.isLoading ? (
@@ -128,7 +128,7 @@ const EditUser: NextPageWithLayout = () => {
                 className="w-full"
                 disabled={updateRoleMutation.isLoading}
               >
-                Update role
+                {updateRoleMutation.isLoading ? "Loading..." : "Update role"}
               </Button>
             </form>
             <Button
@@ -142,7 +142,11 @@ const EditUser: NextPageWithLayout = () => {
               }
               disabled={updateStatusMutation.isLoading}
             >
-              {userQuery.data?.active ? "Deactivate" : "Activate"}
+              {updateStatusMutation.isLoading
+                ? "Loading..."
+                : userQuery.data?.active
+                ? "Deactivate"
+                : "Activate"}
             </Button>
           </div>
         )}
@@ -151,6 +155,6 @@ const EditUser: NextPageWithLayout = () => {
   );
 };
 
-export default EditUser;
+export default UpdateUser;
 
-EditUser.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
+UpdateUser.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;

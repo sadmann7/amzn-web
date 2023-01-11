@@ -1,13 +1,13 @@
 import type { NextPageWithLayout } from "@/pages/_app";
 import { trpc } from "@/utils/trpc";
 import Head from "next/head";
+import Router from "next/router";
 
 // components imports
 import Button from "@/components/Button";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import Loader from "@/components/Loader";
 import ProductList from "@/components/ProductList";
-import Router from "next/router";
 
 const Products: NextPageWithLayout = () => {
   // trpc

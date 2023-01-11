@@ -31,6 +31,7 @@ const Dashboard: NextPageWithLayout = () => {
           {dashboardRoutes.map((route) => (
             <li key={route.name}>
               <Link
+                aria-label={`navigate to ${route.name} page`}
                 href={route.path}
                 className="block bg-primary px-4 py-2 text-center font-medium text-white hover:bg-opacity-80 active:bg-opacity-90"
               >
