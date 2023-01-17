@@ -6,7 +6,7 @@ import type { NextPageWithLayout } from "../../_app";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const UpdateProduct: NextPageWithLayout = () => {
-  const productId = Router.query.productId as string;
+  const productId = Number(Router.query.productId);
 
   return (
     <>

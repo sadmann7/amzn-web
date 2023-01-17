@@ -95,9 +95,8 @@ const Products: NextPageWithLayout = () => {
           ?.value as NumberField,
         category: columnFilters.find((f) => f.id === "category")
           ?.value as CategoryField,
-        rating: columnFilters.find((f) => f.id === "rating")?.value as
-          | number
-          | undefined,
+        rating: columnFilters.find((f) => f.id === "rating")
+          ?.value as NumberField,
         sortBy: sorting[0]?.id as
           | "title"
           | "category"
@@ -150,8 +149,8 @@ const Products: NextPageWithLayout = () => {
             disableGlobalFilter
             bodyRowProps={(row) => ({
               onClick: () => {
-                const productId = row.getValue("id") as number;
-                Router.push("/dashboard/products/" + productId);
+                const productId = Number(row.getValue("id"));
+                Router.push(`/dashboard/products/${productId}`);
               },
             })}
           />

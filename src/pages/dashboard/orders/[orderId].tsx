@@ -6,7 +6,7 @@ import type { NextPageWithLayout } from "../../_app";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const UpdateOrder: NextPageWithLayout = () => {
-  const orderId = Router.query.orderId as string;
+  const orderId = Number(Router.query.orderId);
 
   return (
     <>
