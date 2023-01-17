@@ -5,7 +5,8 @@ import Head from "next/head";
 // components imports
 import CategoryList from "@/components/CategoryList";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import Loader from "@/components/Loader";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const Categories: NextPageWithLayout = () => {
   // trpc
@@ -17,17 +18,11 @@ const Categories: NextPageWithLayout = () => {
   );
 
   if (categoriesQuery.isLoading) {
-    return <Loader />;
+    return <LoadingScreen />;
   }
 
   if (categoriesQuery.isError) {
-    return (
-      <div className="grid min-h-screen place-items-center">
-        <div className="text-xl font-semibold text-title md:text-3xl">
-          Error: {categoriesQuery.error.message}
-        </div>
-      </div>
-    );
+    return <ErrorScreen />;
   }
 
   return (

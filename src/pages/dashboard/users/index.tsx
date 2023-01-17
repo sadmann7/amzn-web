@@ -1,10 +1,12 @@
 import type { NextPageWithLayout } from "@/pages/_app";
 import { formatEnum } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
-import type { User } from "@prisma/client";
+import type { User, USER_ROLE } from "@prisma/client";
 import type {
   ColumnDef,
   ColumnFiltersState,
+  PaginationState,
+  SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
@@ -15,22 +17,31 @@ import { useMemo, useState } from "react";
 // components imports
 import CustomTable from "@/components/CustomTable";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import Loader from "@/components/Loader";
+
+type fieldValue = string | undefined;
 
 const Users: NextPageWithLayout = () => {
-  // trpc
-  const usersQuery = trpc.users.getUsers.useQuery(undefined, {
-    staleTime: 1000 * 60 * 60 * 24,
-  });
-
   // tanstack/react-table
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "createdAt", desc: true },
+  ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
-    createdBy: false,
     updatedBy: false,
-    updatedAt: false,
   });
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const pagination = useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  );
+
   const columns = useMemo<ColumnDef<User, any>[]>(
     () => [
       {
@@ -66,19 +77,26 @@ const Users: NextPageWithLayout = () => {
     []
   );
 
-  if (usersQuery.isLoading) {
-    return <Loader />;
-  }
-
-  if (usersQuery.isError) {
-    return (
-      <div className="grid min-h-screen place-items-center">
-        <div className="text-xl font-semibold text-title md:text-3xl">
-          Error: {usersQuery.error.message}
-        </div>
-      </div>
+  // trpc
+  const { data, isLoading, isError, isRefetching } =
+    trpc.admin.users.getUsers.useQuery(
+      {
+        page: pagination.pageIndex,
+        perPage: pagination.pageSize,
+        name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
+        email: columnFilters.find((f) => f.id === "email")?.value as fieldValue,
+        role: columnFilters.find((f) => f.id === "role")?.value as USER_ROLE,
+        sortBy: sorting[0]?.id as
+          | "name"
+          | "email"
+          | "role"
+          | "active"
+          | "createdAt"
+          | undefined,
+        sortDesc: sorting[0]?.desc,
+      },
+      { refetchOnWindowFocus: false }
     );
-  }
 
   return (
     <>
@@ -88,22 +106,31 @@ const Users: NextPageWithLayout = () => {
       <main className="min-h-screen bg-bg-gray pt-48 pb-14 md:pt-36">
         <div className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]">
           <CustomTable<User>
-            tableTitle={`Users (${usersQuery.data?.length ?? 0} entries)`}
+            tableTitle={`Users (${data?.count ?? 0} entries)`}
             columns={columns}
-            data={usersQuery.data ?? []}
+            data={data?.users ?? []}
             state={{
+              sorting,
+              pagination,
               columnVisibility,
               columnFilters,
             }}
+            setSorting={setSorting}
             setColumnFilters={setColumnFilters}
             setColumnVisibility={setColumnVisibility}
-            isLoading={usersQuery.isLoading}
-            isError={usersQuery.isError}
+            setPagination={setPagination}
+            isLoading={isLoading}
+            isRefetching={isRefetching}
+            isError={isError}
+            manualFiltering
+            manualPagination
+            manualSorting
             rowHoverEffect
+            disableGlobalFilter
             bodyRowProps={(row) => ({
               onClick: () => {
-                const id = row.original.id as string;
-                Router.push(`/dashboard/users/${id}`);
+                const userId = row.original.id as string;
+                Router.push(`/dashboard/users/${userId}`);
               },
             })}
           />

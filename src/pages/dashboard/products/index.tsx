@@ -6,8 +6,9 @@ import Router from "next/router";
 // components imports
 import Button from "@/components/Button";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import Loader from "@/components/Loader";
 import ProductList from "@/components/ProductList";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const Products: NextPageWithLayout = () => {
   // trpc
@@ -16,17 +17,11 @@ const Products: NextPageWithLayout = () => {
   });
 
   if (productsQuery.isLoading) {
-    return <Loader />;
+    return <LoadingScreen />;
   }
 
   if (productsQuery.isError) {
-    return (
-      <div className="grid min-h-screen place-items-center">
-        <div className="text-xl font-semibold text-title md:text-3xl">
-          Error: {productsQuery.error.message}
-        </div>
-      </div>
-    );
+    return <ErrorScreen />;
   }
 
   return (

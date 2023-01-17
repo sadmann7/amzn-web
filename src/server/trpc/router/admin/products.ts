@@ -1,8 +1,57 @@
+import type { Prisma } from "@prisma/client";
 import { PRODUCT_CATEGORY } from "@prisma/client";
 import { z } from "zod";
 import { adminProcedure, router } from "../../trpc";
 
 export const productsAdminRouter = router({
+  getProducts: adminProcedure
+    .input(
+      z.object({
+        page: z.number().int().default(0),
+        perPage: z.number().int().default(10),
+        title: z.string().optional(),
+        rating: z.number().optional(),
+        sortBy: z
+          .enum([
+            "title",
+            "category",
+            "quantity",
+            "price",
+            "rating",
+            "createdAt",
+          ])
+          .optional(),
+        sortDesc: z.boolean().default(false),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const needFilter = input.rating || input.title;
+
+      const params: Prisma.ProductFindManyArgs = {
+        orderBy: input.sortBy
+          ? { [input.sortBy]: input.sortDesc ? "desc" : "asc" }
+          : undefined,
+        where: needFilter
+          ? {
+              AND: {
+                title: input.title ? { contains: input.title } : undefined,
+                rating: input.rating ? { equals: input.rating } : undefined,
+              },
+            }
+          : undefined,
+      };
+
+      const [count, products] = await ctx.prisma.$transaction([
+        ctx.prisma.product.count({ where: params.where }),
+        ctx.prisma.product.findMany({
+          ...params,
+          skip: input.page * input.perPage,
+          take: input.perPage,
+        }),
+      ]);
+      return { count, products };
+    }),
+
   create: adminProcedure
     .input(
       z.object({

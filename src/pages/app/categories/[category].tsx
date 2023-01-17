@@ -7,7 +7,8 @@ import type { NextPageWithLayout } from "../../_app";
 // components imports
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
-import Loader from "@/components/Loader";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const ShowCategory: NextPageWithLayout = () => {
   //  trpc
@@ -17,17 +18,11 @@ const ShowCategory: NextPageWithLayout = () => {
   });
 
   if (productsQuery.isLoading) {
-    return <Loader />;
+    return <LoadingScreen />;
   }
 
   if (productsQuery.isError) {
-    return (
-      <div className="grid min-h-screen place-items-center">
-        <div className="text-xl font-semibold text-title md:text-3xl">
-          Error: {productsQuery.error.message}
-        </div>
-      </div>
-    );
+    return <ErrorScreen />;
   }
 
   return (

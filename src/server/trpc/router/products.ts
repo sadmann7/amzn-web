@@ -12,28 +12,6 @@ export const productsRouter = router({
     return products;
   }),
 
-  getPaginatedProducts: publicProcedure
-    .input(
-      z.object({
-        page: z.number().min(1),
-        limit: z.number().min(1),
-        sortBy: z.string().optional(),
-        sortDirection: z.string().optional(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const { page, limit, sortBy, sortDirection } = input;
-      const offset = (page - 1) * limit;
-      const products = await ctx.prisma.product.findMany({
-        orderBy: {
-          [sortBy || "createdAt"]: sortDirection || "desc",
-        },
-        skip: offset,
-        take: limit,
-      });
-      return products;
-    }),
-
   getProduct: publicProcedure
     .input(z.number())
     .query(async ({ ctx, input }) => {

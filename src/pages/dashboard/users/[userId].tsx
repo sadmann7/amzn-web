@@ -14,6 +14,8 @@ import type { NextPageWithLayout } from "../../_app";
 // components imports
 import Button from "@/components/Button";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const schema = z.object({
   role: z.nativeEnum(USER_ROLE),
@@ -66,90 +68,82 @@ const UpdateUser: NextPageWithLayout = () => {
     }
   }, [number, userId, utils]);
 
+  if (userQuery.isLoading) {
+    return <LoadingScreen />;
+  }
+
+  if (userQuery.isError) {
+    return <ErrorScreen />;
+  }
+
   return (
     <>
       <Head>
         <title>Update User | Amzn Store</title>
       </Head>
       <main className="mx-auto min-h-screen w-[95vw] max-w-screen-sm px-2 pt-52 pb-14 md:pt-40">
-        {userQuery.isLoading ? (
-          <div
-            role="status"
-            className="text-sm font-medium text-title md:text-base"
+        <div className="grid gap-4">
+          <form
+            aria-label="update user form"
+            className="grid gap-2.5 whitespace-nowrap"
+            onSubmit={handleSubmit(onSubmit)}
           >
-            Loading...
-          </div>
-        ) : userQuery.isError ? (
-          <div
-            role="status"
-            className="text-sm font-medium text-title md:text-base"
-          >
-            {`${userQuery.error.message} | ${userQuery.error.data?.httpStatus}`}
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            <form
-              aria-label="update user form"
-              className="grid gap-2.5 whitespace-nowrap"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <div className="grid gap-2">
-                <label
-                  htmlFor="update-user-role"
-                  className="text-xs font-medium text-title md:text-sm"
-                >
-                  Product category
-                </label>
-                <select
-                  id="update-user-role"
-                  className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
-                  {...register("role", { required: true })}
-                  defaultValue={
-                    updateRoleMutation.isLoading ? "" : userQuery.data?.role
-                  }
-                >
-                  <option value="" hidden>
-                    Select role
-                  </option>
-                  {Object.values(USER_ROLE).map((role) => (
-                    <option key={role} value={role}>
-                      {formatEnum(role)}
-                    </option>
-                  ))}
-                </select>
-                {errors.role ? (
-                  <p className="text-sm font-medium text-danger">
-                    {errors.role.message}
-                  </p>
-                ) : null}
-              </div>
-              <Button
-                aria-label="Update role"
-                className="w-full"
-                disabled={updateRoleMutation.isLoading}
+            <div className="grid gap-2">
+              <label
+                htmlFor="update-user-role"
+                className="text-xs font-medium text-title md:text-sm"
               >
-                {updateRoleMutation.isLoading ? "Loading..." : "Update role"}
-              </Button>
-            </form>
+                Product category
+              </label>
+              <select
+                id="update-user-role"
+                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
+                {...register("role", { required: true })}
+                defaultValue={
+                  updateRoleMutation.isLoading ? "" : userQuery.data?.role
+                }
+              >
+                <option value="" hidden>
+                  Select role
+                </option>
+                {Object.values(USER_ROLE).map((role) => (
+                  <option key={role} value={role}>
+                    {formatEnum(role)}
+                  </option>
+                ))}
+              </select>
+              {errors.role ? (
+                <p className="text-sm font-medium text-danger">
+                  {errors.role.message}
+                </p>
+              ) : null}
+            </div>
             <Button
-              aria-label="Update status"
+              aria-label="Update role"
               className="w-full"
-              onClick={() =>
-                updateStatusMutation.mutateAsync({
-                  id: userId,
-                  status: !userQuery.data?.active,
-                })
-              }
-              disabled={updateStatusMutation.isLoading}
+              disabled={updateRoleMutation.isLoading}
             >
-              {updateStatusMutation.isLoading
-                ? "Loading..."
-                : userQuery.data?.active
-                ? "Deactivate"
-                : "Activate"}
+              {updateRoleMutation.isLoading ? "Loading..." : "Update role"}
             </Button>
-          </div>
-        )}
+          </form>
+          <Button
+            aria-label="Update status"
+            className="w-full"
+            onClick={() =>
+              updateStatusMutation.mutateAsync({
+                id: userId,
+                status: !userQuery.data?.active,
+              })
+            }
+            disabled={updateStatusMutation.isLoading}
+          >
+            {updateStatusMutation.isLoading
+              ? "Loading..."
+              : userQuery.data?.active
+              ? "Deactivate"
+              : "Activate"}
+          </Button>
+        </div>
       </main>
     </>
   );

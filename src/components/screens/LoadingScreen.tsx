@@ -1,6 +1,6 @@
 import React from "react";
 
-const Loader = () => {
+const LoadingScreen = () => {
   return (
     <div
       aria-label="progressbar"
@@ -12,4 +12,4 @@ const Loader = () => {
   );
 };
 
-export default Loader;
+export default LoadingScreen;

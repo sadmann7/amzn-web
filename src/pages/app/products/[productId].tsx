@@ -5,7 +5,8 @@ import type { NextPageWithLayout } from "../../_app";
 
 // components imports
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import Loader from "@/components/Loader";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const ShowProduct: NextPageWithLayout = () => {
   // trpc
@@ -13,17 +14,12 @@ const ShowProduct: NextPageWithLayout = () => {
   const productQuery = trpc.products.getProduct.useQuery(productId);
 
   if (productQuery.isLoading) {
-    return <Loader />;
+    return <LoadingScreen />;
   }
 
-  if (!productQuery.data)
-    return (
-      <div className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]">
-        <div className="text-center text-base text-title md:text-lg">
-          Product not found
-        </div>
-      </div>
-    );
+  if (!productQuery.data) {
+    return <ErrorScreen />;
+  }
 
   return (
     <>
