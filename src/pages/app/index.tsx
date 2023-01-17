@@ -2,7 +2,7 @@ import { trpc } from "@/utils/trpc";
 import Head from "next/head";
 import type { NextPageWithLayout } from "../_app";
 
-// components imports
+// imports: components
 import CategoryList from "@/components/CategoryList";
 import Hero from "@/components/Hero";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
