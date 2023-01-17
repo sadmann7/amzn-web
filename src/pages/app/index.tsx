@@ -6,8 +6,8 @@ import type { NextPageWithLayout } from "../_app";
 import CategoryList from "@/components/CategoryList";
 import Hero from "@/components/Hero";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import ProductList from "@/components/ProductList";
 import Loader from "@/components/Loader";
+import ProductList from "@/components/ProductList";
 
 const App: NextPageWithLayout = () => {
   // trpc
@@ -41,7 +41,7 @@ const App: NextPageWithLayout = () => {
       <Head>
         <title>Amzn Store</title>
       </Head>
-      <main className="min-h-screen bg-bg-gray pt-40 md:pt-32 lg:pt-[6.7rem]">
+      <main className="min-h-screen bg-bg-gray pt-40 md:pt-24">
         <Hero />
         <div className="flex flex-col gap-5 pb-14">
           <CategoryList categories={categoriesQuery.data} />

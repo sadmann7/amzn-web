@@ -6,7 +6,7 @@ import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { NavigationOptions } from "swiper/types/modules/navigation";
 
-// icons imports
+// imports: icons
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const heroImages = [
@@ -31,12 +31,12 @@ const Hero = () => {
   return (
     <section
       aria-label="hero carousel"
-      className="relative mx-auto w-full max-w-screen-2xl sm:w-[95vw]"
+      className="relative mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]"
     >
-      <div className="absolute bottom-0 z-20 h-32 w-full bg-gradient-to-t from-bg-gray to-transparent" />
+      <div className="absolute bottom-0 z-20 hidden h-32 w-full bg-gradient-to-t from-bg-gray to-transparent md:block" />
       <button
         aria-label="navigate to right"
-        className="absolute left-0 z-20 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
+        className="absolute left-0 z-20 mx-2 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
         ref={leftArrowRef}
       >
         <ChevronLeftIcon
@@ -46,7 +46,7 @@ const Hero = () => {
       </button>
       <button
         aria-label="navigate to left"
-        className="absolute right-0 z-20 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
+        className="absolute right-0 z-20 mx-2 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
         ref={rightArrowRef}
       >
         <ChevronRightIcon
@@ -71,8 +71,8 @@ const Hero = () => {
         modules={[Autoplay, Navigation]}
         className="h-full w-full md:h-60"
       >
-        {heroImages.map((image, i) => (
-          <SwiperSlide key={i}>
+        {heroImages.map((image) => (
+          <SwiperSlide key={image.src}>
             <Image
               src={image.src}
               alt={image.alt}
