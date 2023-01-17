@@ -9,10 +9,10 @@ export const usersAdminRouter = router({
       z.object({
         page: z.number().int().default(0),
         perPage: z.number().int().default(10),
-        email: z.string().optional(),
         name: z.string().optional(),
-        active: z.boolean().optional(),
+        email: z.string().optional(),
         role: z.nativeEnum(USER_ROLE).optional(),
+        active: z.boolean().optional(),
         sortBy: z
           .enum(["email", "name", "role", "active", "createdAt"])
           .optional(),
@@ -20,7 +20,7 @@ export const usersAdminRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      const needFilter = input.email || input.name || input.role;
+      const needFilter = input.name || input.email || input.role;
 
       const params: Prisma.UserFindManyArgs = {
         orderBy: input.sortBy
@@ -29,9 +29,9 @@ export const usersAdminRouter = router({
         where: needFilter
           ? {
               AND: {
-                email: input.email ? { contains: input.email } : undefined,
                 name: input.name ? { contains: input.name } : undefined,
-                role: input.role,
+                email: input.email ? { contains: input.email } : undefined,
+                role: input.role ? { equals: input.role } : undefined,
               },
             }
           : undefined,

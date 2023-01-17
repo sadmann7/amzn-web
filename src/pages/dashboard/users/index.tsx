@@ -18,7 +18,8 @@ import { useMemo, useState } from "react";
 import CustomTable from "@/components/CustomTable";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 
-type fieldValue = string | undefined;
+type TextField = string | undefined;
+type CategoryField = USER_ROLE | undefined;
 
 const Users: NextPageWithLayout = () => {
   // tanstack/react-table
@@ -28,7 +29,6 @@ const Users: NextPageWithLayout = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
-    updatedBy: false,
   });
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -83,9 +83,10 @@ const Users: NextPageWithLayout = () => {
       {
         page: pagination.pageIndex,
         perPage: pagination.pageSize,
-        name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
-        email: columnFilters.find((f) => f.id === "email")?.value as fieldValue,
-        role: columnFilters.find((f) => f.id === "role")?.value as USER_ROLE,
+        name: columnFilters.find((f) => f.id === "name")?.value as TextField,
+        email: columnFilters.find((f) => f.id === "email")?.value as TextField,
+        role: columnFilters.find((f) => f.id === "role")
+          ?.value as CategoryField,
         sortBy: sorting[0]?.id as
           | "name"
           | "email"

@@ -10,7 +10,9 @@ export const productsAdminRouter = router({
         page: z.number().int().default(0),
         perPage: z.number().int().default(10),
         title: z.string().optional(),
-        rating: z.number().optional(),
+        price: z.number().optional(),
+        category: z.nativeEnum(PRODUCT_CATEGORY).optional(),
+        rating: z.number().min(0).max(5).optional(),
         sortBy: z
           .enum([
             "title",
@@ -25,7 +27,8 @@ export const productsAdminRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      const needFilter = input.rating || input.title;
+      const needFilter =
+        input.title || input.price || input.category || input.rating;
 
       const params: Prisma.ProductFindManyArgs = {
         orderBy: input.sortBy
@@ -35,6 +38,10 @@ export const productsAdminRouter = router({
           ? {
               AND: {
                 title: input.title ? { contains: input.title } : undefined,
+                price: input.price ? { equals: input.price } : undefined,
+                category: input.category
+                  ? { equals: input.category }
+                  : undefined,
                 rating: input.rating ? { equals: input.rating } : undefined,
               },
             }
