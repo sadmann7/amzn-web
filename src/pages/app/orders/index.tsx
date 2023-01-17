@@ -1,6 +1,7 @@
 import type { NextPageWithLayout } from "@/pages/_app";
+import { formatCurrency, formatEnum } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
-import type { Order, User } from "@prisma/client";
+import type { Order, Product, PRODUCT_CATEGORY, User } from "@prisma/client";
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -15,9 +16,9 @@ import Router from "next/router";
 import { useMemo, useState } from "react";
 
 // imports: components
-import Button from "@/components/Button";
-import CustomTable from "@/components/CustomTable";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
+import CustomTable from "@/components/CustomTable";
+import Button from "@/components/Button";
 
 type OrderWithUser = Order & { user: User };
 
@@ -100,7 +101,7 @@ const Orders: NextPageWithLayout = () => {
             tableTitle={
               <>
                 {`Orders (${data?.count ?? 0} entries)`}
-                <Link href={"/dashboard/orders/add"} className="ml-4">
+                <Link href={"/"} className="ml-4">
                   <Button className="bg-primary-700">Add order</Button>
                 </Link>
               </>
@@ -129,7 +130,7 @@ const Orders: NextPageWithLayout = () => {
             bodyRowProps={(row) => ({
               onClick: () => {
                 const orderId = Number(row.getValue("id"));
-                Router.push(`/dashboard/orders/${orderId}`);
+                Router.push(`/app/orders/${orderId}`);
               },
             })}
           />

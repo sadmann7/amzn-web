@@ -59,6 +59,15 @@ export const productsAdminRouter = router({
       return { count, products };
     }),
 
+  getProduct: adminProcedure.input(z.number()).query(async ({ ctx, input }) => {
+    const product = await ctx.prisma.product.findUnique({
+      where: {
+        id: input,
+      },
+    });
+    return product;
+  }),
+
   create: adminProcedure
     .input(
       z.object({
@@ -90,13 +99,13 @@ export const productsAdminRouter = router({
     .input(
       z.object({
         id: z.number(),
-        title: z.string(),
-        price: z.number(),
+        title: z.string().min(3),
+        price: z.number().min(0),
         category: z.nativeEnum(PRODUCT_CATEGORY),
-        description: z.string(),
-        image: z.string(),
-        rating: z.number(),
-        quantity: z.number(),
+        description: z.string().min(3),
+        image: z.string().url(),
+        rating: z.number().min(0).max(5),
+        quantity: z.number().default(1),
       })
     )
     .mutation(async ({ ctx, input }) => {

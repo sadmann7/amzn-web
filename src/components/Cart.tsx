@@ -30,6 +30,19 @@ const Cart = ({ products }: { products: Product[] }) => {
     onError: async (err) => toast.error(err.message),
   });
 
+  const handleCheckout = async () => {
+    if (status === "unauthenticated") {
+      signIn();
+    }
+    await addOrderMutation.mutateAsync(
+      products.map((product) => ({
+        productId: product.id,
+        productQuantity: product.quantity,
+      }))
+    );
+    cartStore.removeProducts(products.map((product) => product.id));
+  };
+
   return (
     <div className="mx-auto w-full px-2 sm:w-[95vw]">
       {products.length <= 0 ? (
@@ -95,16 +108,7 @@ const Cart = ({ products }: { products: Product[] }) => {
             </div>
             <button
               className="w-full rounded-md bg-yellow-300 py-2.5 text-xs font-medium text-title transition-colors hover:bg-yellow-400 active:bg-yellow-300 disabled:cursor-not-allowed md:whitespace-nowrap md:px-5 md:py-2 md:text-sm"
-              onClick={() =>
-                status === "unauthenticated"
-                  ? signIn()
-                  : addOrderMutation.mutateAsync(
-                      products.map((product) => ({
-                        productId: product.id,
-                        productQuantity: product.quantity,
-                      }))
-                    )
-              }
+              onClick={handleCheckout}
               disabled={addOrderMutation.isLoading}
             >
               {addOrderMutation.isLoading ? (

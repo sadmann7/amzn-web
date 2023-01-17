@@ -42,7 +42,7 @@ const bottomLinks = [
   },
   {
     name: "Returns & Orders",
-    href: "##",
+    href: "/app/orders",
   },
   {
     name: "Registry",
@@ -94,10 +94,12 @@ const Navbar = ({ data: products }: { data: Product[] }) => {
           />
           <div className="flex items-center gap-1 md:gap-2">
             <Dropdown />
-            <button className="hidden flex-col gap-0.5 whitespace-nowrap rounded-sm p-2 transition hover:ring-1 hover:ring-white md:flex">
-              <span className="text-xs">Retruns</span>
-              <span className="text-xs font-medium md:text-sm">& Orders</span>
-            </button>
+            <Link href={"/app/orders"}>
+              <button className="hidden flex-col gap-0.5 whitespace-nowrap rounded-sm p-2 transition hover:ring-1 hover:ring-white md:flex">
+                <span className="text-xs">Retruns</span>
+                <span className="text-xs font-medium md:text-sm">& Orders</span>
+              </button>
+            </Link>
             <Link href={"/app/checkout"}>
               <button className="relative flex items-center gap-1 rounded-sm px-2 py-3 transition hover:ring-1 hover:ring-white">
                 <ShoppingCartIcon

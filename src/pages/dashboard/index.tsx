@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import type { NextPageWithLayout } from "../_app";
 
-// components imports
+// imports: components
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const dashboardRoutes = [
@@ -33,7 +33,7 @@ const Dashboard: NextPageWithLayout = () => {
               <Link
                 aria-label={`navigate to ${route.name} page`}
                 href={route.path}
-                className="block bg-primary px-4 py-2 text-center font-medium text-white hover:bg-opacity-80 active:bg-opacity-90"
+                className="block bg-primary px-4 py-2 text-center text-sm font-medium text-white hover:bg-opacity-80 active:bg-opacity-90 md:text-base"
               >
                 {route.name}
               </Link>

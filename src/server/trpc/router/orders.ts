@@ -2,6 +2,58 @@ import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 
 export const ordersRouter = router({
+  getOrders: protectedProcedure.query(async ({ ctx }) => {
+    const orders = await ctx.prisma.order.findMany();
+    return orders;
+  }),
+
+  getCurrentUserOrders: protectedProcedure.query(async ({ ctx }) => {
+    const orders = await ctx.prisma.order.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+    return orders;
+  }),
+
+  getOrder: protectedProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      const order = await ctx.prisma.order.findUnique({
+        where: {
+          id: input,
+        },
+      });
+      if (!order) {
+        throw new Error("Order not found!");
+      }
+      return order;
+    }),
+
+  getOrderItems: protectedProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      const orderItems = await ctx.prisma.orderItem.findMany({
+        where: {
+          orderId: input,
+        },
+        include: {
+          product: true,
+        },
+      });
+      if (!orderItems) {
+        throw new Error("Order not found!");
+      }
+      return orderItems;
+    }),
+
   addOrder: protectedProcedure
     .input(
       z.array(

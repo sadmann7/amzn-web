@@ -138,7 +138,7 @@ const Update: NextPageWithLayout = () => {
             >
               {updateUserMutation.isLoading ? "Loading..." : "Update user"}
             </Button>
-          </form>{" "}
+          </form>
           <Button
             className="w-full bg-danger"
             onClick={() =>

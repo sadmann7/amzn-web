@@ -68,7 +68,7 @@ model Product {
   quantity    Int              @default(1)
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
-  OrderItem   OrderItem[]
+  items       OrderItem[]
 }
 
 model Order {
