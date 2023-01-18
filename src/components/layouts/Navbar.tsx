@@ -8,12 +8,10 @@ import Link from "next/link";
 import Router from "next/router";
 import { Fragment } from "react";
 
-// components imports
-import Searchbar from "../Searchbar";
-
-// icons imports
+// imports: components, icons
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import Searchbar from "../Searchbar";
 
 const bottomLinks = [
   {
@@ -39,10 +37,6 @@ const bottomLinks = [
   {
     name: "Gift Cards",
     href: "##",
-  },
-  {
-    name: "Returns & Orders",
-    href: "/app/orders",
   },
   {
     name: "Registry",

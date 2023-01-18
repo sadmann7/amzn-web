@@ -54,6 +54,23 @@ export const ordersRouter = router({
       return orderItems;
     }),
 
+  getCurrentUserOrderItems: protectedProcedure.query(async ({ ctx }) => {
+    const orderItems = await ctx.prisma.orderItem.findMany({
+      where: {
+        order: {
+          userId: ctx.session.user.id,
+        },
+      },
+      include: {
+        product: true,
+      },
+    });
+    if (!orderItems) {
+      throw new Error("Order not found!");
+    }
+    return orderItems;
+  }),
+
   addOrder: protectedProcedure
     .input(
       z.array(
