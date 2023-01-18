@@ -1,16 +1,18 @@
 import type { NextPageWithLayout } from "@/pages/_app";
+import { formatCurrency } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
+import dayjs from "dayjs";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
+import Router from "next/router";
 import { useEffect } from "react";
+
 // imports: components
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ErrorScreen from "@/components/screens/ErrorScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
-import { useSession } from "next-auth/react";
-import Router from "next/router";
-import dayjs from "dayjs";
-import { formatCurrency } from "@/utils/format";
+import Searchbar from "@/components/Searchbar";
 
 const Orders: NextPageWithLayout = () => {
   const { status } = useSession();
@@ -22,6 +24,7 @@ const Orders: NextPageWithLayout = () => {
 
   // trpc
   const ordersQuery = trpc.orders.getCurrentUserOrders.useQuery();
+  const orderItemsQuery = trpc.orders.getCurrentUserOrderItems.useQuery();
 
   if (ordersQuery.isLoading) {
     return <LoadingScreen />;
@@ -47,10 +50,16 @@ const Orders: NextPageWithLayout = () => {
         <title>Orders | Amzn Store</title>
       </Head>
       <main className="min-h-screen pt-48 pb-14 md:pt-36">
-        <div className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]">
-          <div className="grid gap-5">
+        <div className="mx-auto w-full max-w-screen-lg px-2 sm:w-[95vw]">
+          <div className="flex flex-wrap items-center justify-between">
+            <h1 className="text-xl font-semibold text-title md:text-2xl">
+              Your Orders
+            </h1>
+            <div>Search all orders</div>
+          </div>
+          <div className="mt-5 grid gap-8">
             {ordersQuery.data?.map((order) => (
-              <div key={order.id} className="flex flex-col gap-2">
+              <div key={order.id} className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="text-xs font-medium text-title md:text-sm">
@@ -67,11 +76,11 @@ const Orders: NextPageWithLayout = () => {
                     </div>
                   </div>
                 </div>
-                <div className="grid gap-0.5">
+                <div className="grid gap-4">
                   {order.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-2 rounded-md p-2"
+                      className="flex items-center gap-5 md:gap-8"
                     >
                       <Image
                         src={item.product.image}
@@ -79,17 +88,26 @@ const Orders: NextPageWithLayout = () => {
                         width={80}
                         height={80}
                         loading="lazy"
-                        className="h-auto min-w-[65px] object-contain"
+                        className="h-20 w-20 object-contain"
                       />
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-1 flex-col gap-2">
                         <div className="text-xs font-medium text-title line-clamp-1 md:text-sm">
                           {item.product.title}
                         </div>
                         <div className="text-xs font-medium text-title md:text-sm">
-                          {formatCurrency(item.product.price, "BDT")}
+                          Quantity: {item.quantity}
                         </div>
                         <div className="text-xs font-medium text-title md:text-sm">
-                          Qty: {item.product.quantity}
+                          Price:{" "}
+                          {`${item.quantity} x ${formatCurrency(
+                            item.product.price,
+                            "BDT"
+                          )} x `}{" "}
+                          ={" "}
+                          {formatCurrency(
+                            item.product.price * item.quantity,
+                            "BDT"
+                          )}
                         </div>
                       </div>
                     </div>
