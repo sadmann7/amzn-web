@@ -69,27 +69,29 @@ const Account: NextPageWithLayout = () => {
       <Head>
         <title>Account | Amzn Store</title>
       </Head>
-      <main className="mx-auto mb-10 min-h-screen w-[89vw] max-w-screen-lg px-2 pt-48 pb-14 md:pt-36">
-        <h1 className="text-xl font-medium text-title md:text-2xl">
-          Your Account
-        </h1>
-        <div className="mt-4 grid gap-5 xs:grid-cols-2 md:grid-cols-3">
-          {accountLinks.map((link) => (
-            <Link
-              href={link.href}
-              key={link.name}
-              className="flex flex-col gap-1 rounded-md p-4 ring-1 ring-neutral-300 transition hover:bg-neutral-100"
-            >
-              <span className="text-base font-medium text-title md:text-lg">
-                {link.name}
-              </span>
-              {link.description ? (
-                <span className="text-xs text-text md:text-sm">
-                  {link.description}
+      <main className="min-h-screen pt-48 pb-14 md:pt-36">
+        <div className="mx-auto w-full max-w-screen-lg px-2 sm:w-[95vw]">
+          <h1 className="text-xl font-medium text-title md:text-2xl">
+            Your Account
+          </h1>
+          <div className="mt-4 grid gap-5 xs:grid-cols-2 md:grid-cols-3">
+            {accountLinks.map((link) => (
+              <Link
+                href={link.href}
+                key={link.name}
+                className="flex flex-col gap-1 rounded-md p-4 ring-1 ring-neutral-300 transition hover:bg-neutral-100"
+              >
+                <span className="text-base font-medium text-title md:text-lg">
+                  {link.name}
                 </span>
-              ) : null}
-            </Link>
-          ))}
+                {link.description ? (
+                  <span className="text-xs text-text md:text-sm">
+                    {link.description}
+                  </span>
+                ) : null}
+              </Link>
+            ))}
+          </div>
         </div>
       </main>
     </>

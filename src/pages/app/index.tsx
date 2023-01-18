@@ -11,7 +11,7 @@ import ErrorScreen from "@/components/screens/ErrorScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const App: NextPageWithLayout = () => {
-  // trpc
+  // queries
   const productsQuery = trpc.products.getProducts.useQuery(undefined, {
     staleTime: 1000 * 60 * 60 * 24,
   });

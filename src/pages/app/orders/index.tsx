@@ -12,7 +12,6 @@ import { useEffect } from "react";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ErrorScreen from "@/components/screens/ErrorScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
-import Searchbar from "@/components/Searchbar";
 
 const Orders: NextPageWithLayout = () => {
   const { status } = useSession();
@@ -98,15 +97,14 @@ const Orders: NextPageWithLayout = () => {
                           Quantity: {item.quantity}
                         </div>
                         <div className="text-xs font-medium text-title md:text-sm">
-                          Price:{" "}
-                          {`${item.quantity} x ${formatCurrency(
+                          Price:
+                          {` ${item.quantity} x ${formatCurrency(
                             item.product.price,
-                            "BDT"
-                          )} x `}{" "}
-                          ={" "}
+                            "USD"
+                          )} = `}
                           {formatCurrency(
                             item.product.price * item.quantity,
-                            "BDT"
+                            "USD"
                           )}
                         </div>
                       </div>

@@ -4,9 +4,9 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 type CartState = {
   products: Product[];
-  setProducts: (products: Product[]) => void;
-  removeById: (id: number) => void;
-  removeManyById: (ids: number[]) => void;
+  addProduct: (product: Product) => void;
+  removeProduct: (id: number) => void;
+  removeProducts: (ids: number[]) => void;
   setQuantity: (id: number, quantity: number) => void;
 };
 
@@ -15,13 +15,26 @@ export const useCartStore = create<CartState>()(
     persist(
       (set) => ({
         products: [],
-        setProducts: (products: Product[]) => set({ products }),
-        removeById: (id: number) => {
+        addProduct: (product) => {
+          set((state) => ({
+            products: state.products.some((p) => p.id === product.id)
+              ? state.products.map((p) =>
+                  p.id === product.id
+                    ? {
+                        ...p,
+                        quantity: p.quantity + 1,
+                      }
+                    : p
+                )
+              : [...state.products, { ...product, quantity: 1 }],
+          }));
+        },
+        removeProduct: (id: number) => {
           set((state) => ({
             products: state.products.filter((product) => product.id !== id),
           }));
         },
-        removeManyById: (ids: number[]) => {
+        removeProducts: (ids: number[]) => {
           set((state) => ({
             products: state.products.filter(
               (product) => !ids.includes(product.id)

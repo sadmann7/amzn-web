@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Fragment } from "react";
 import { toast } from "react-toastify";
 
-// components imports
+// imports: components
 import Button from "./Button";
 
 const ProductList = ({ products }: { products: Product[] }) => {
@@ -17,7 +17,6 @@ const ProductList = ({ products }: { products: Product[] }) => {
       className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]"
     >
       <h2 className="sr-only">Product list</h2>
-
       <div className="grid grid-flow-row-dense gap-5 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <SlicedProducts products={products} range={{ from: 0, to: 4 }} />
         <Image
@@ -55,7 +54,7 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
   // zustand
   const cartStore = useCartStore((state) => ({
     products: state.products,
-    setProducts: state.setProducts,
+    addProduct: state.addProduct,
   }));
 
   return (
@@ -97,10 +96,10 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
             "-"
           )}
           <Button
-            aria-label="add item to cart"
+            aria-label="add product to cart"
             className="w-full bg-orange-300 text-title transition-colors hover:bg-primary active:bg-orange-300"
             onClick={() => {
-              cartStore.setProducts([...cartStore.products, product]);
+              cartStore.addProduct(product);
               toast.success(`${truncateText(product.title, 16)} added to cart`);
             }}
           >

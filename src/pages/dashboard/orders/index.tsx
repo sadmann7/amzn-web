@@ -49,11 +49,11 @@ const Orders: NextPageWithLayout = () => {
       },
       {
         accessorKey: "user.name",
-        header: "Creater name",
+        header: "Creator name",
       },
       {
         accessorKey: "user.email",
-        header: "Creater Email",
+        header: "Creator email",
       },
       {
         accessorKey: "createdAt",

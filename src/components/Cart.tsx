@@ -9,6 +9,8 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 const Cart = ({ products }: { products: Product[] }) => {
+  const { status } = useSession();
+
   const totalPrice = products.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
@@ -20,28 +22,17 @@ const Cart = ({ products }: { products: Product[] }) => {
 
   // zustand
   const cartStore = useCartStore((state) => ({
-    removeProducts: state.removeManyById,
+    removeProducts: state.removeProducts,
   }));
 
   // trpc
-  const { status } = useSession();
   const addOrderMutation = trpc.orders.addOrder.useMutation({
-    onSuccess: async () => toast.success("Products added to order!"),
+    onSuccess: async () => {
+      cartStore.removeProducts(products.map((product) => product.id));
+      toast.success("Products added to order!");
+    },
     onError: async (err) => toast.error(err.message),
   });
-
-  const handleCheckout = async () => {
-    if (status === "unauthenticated") {
-      signIn();
-    }
-    await addOrderMutation.mutateAsync(
-      products.map((product) => ({
-        productId: product.id,
-        productQuantity: product.quantity,
-      }))
-    );
-    cartStore.removeProducts(products.map((product) => product.id));
-  };
 
   return (
     <div className="mx-auto w-full px-2 sm:w-[95vw]">
@@ -108,7 +99,16 @@ const Cart = ({ products }: { products: Product[] }) => {
             </div>
             <button
               className="w-full rounded-md bg-yellow-300 py-2.5 text-xs font-medium text-title transition-colors hover:bg-yellow-400 active:bg-yellow-300 disabled:cursor-not-allowed md:whitespace-nowrap md:px-5 md:py-2 md:text-sm"
-              onClick={handleCheckout}
+              onClick={() => {
+                status === "unauthenticated"
+                  ? signIn()
+                  : addOrderMutation.mutateAsync(
+                      products.map((product) => ({
+                        productId: product.id,
+                        productQuantity: product.quantity,
+                      }))
+                    );
+              }}
               disabled={addOrderMutation.isLoading}
             >
               {addOrderMutation.isLoading ? (
@@ -150,7 +150,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   // zustand
   const cartStore = useCartStore((state) => ({
-    removeProduct: state.removeById,
+    removeProduct: state.removeProduct,
     setQuantity: state.setQuantity,
   }));
 
