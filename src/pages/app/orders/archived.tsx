@@ -18,7 +18,7 @@ import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ErrorScreen from "@/components/screens/ErrorScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
 
-const Orders: NextPageWithLayout = () => {
+const ArchivedOrders: NextPageWithLayout = () => {
   const { status } = useSession();
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -28,34 +28,34 @@ const Orders: NextPageWithLayout = () => {
 
   // trpc
   const utils = trpc.useContext();
-  const ordersQuery = trpc.orders.getUserOrders.useQuery();
   const archivedOrdersQuery = trpc.orders.getUserArchivedOrders.useQuery();
   // refetch
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
-      utils.orders.getUserOrders.invalidate();
       utils.orders.getUserArchivedOrders.invalidate();
     }
   }, [number, utils]);
 
-  if (ordersQuery.isLoading) {
+  if (archivedOrdersQuery.isLoading) {
     return <LoadingScreen />;
   }
 
-  if (ordersQuery.isError) {
+  if (archivedOrdersQuery.isError) {
     return <ErrorScreen />;
   }
 
-  if (
-    ordersQuery.data?.length === 0 &&
-    archivedOrdersQuery.data?.length === 0
-  ) {
+  if (archivedOrdersQuery.data?.length === 0) {
     return (
-      <div className="grid min-h-screen place-items-center">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-5">
         <div className="text-xl font-semibold text-title md:text-3xl">
-          You have no orders
+          You have no archived orders
         </div>
+        <Link href="/app/orders">
+          <div className="text-base font-medium text-title hover:text-primary hover:underline md:text-lg">
+            Go back to unarchived orders
+          </div>
+        </Link>
       </div>
     );
   }
@@ -63,22 +63,20 @@ const Orders: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Orders | Amzn Store</title>
+        <title>Archived Orders | Amzn Store</title>
       </Head>
       <main className="min-h-screen pt-48 pb-14 md:pt-36">
         <div className="mx-auto w-full max-w-screen-lg px-4 sm:w-[95vw]">
           <div className="flex flex-wrap items-center justify-between">
             <h1 className="text-xl font-semibold text-title md:text-2xl">
-              Your Orders
+              Archived Orders
             </h1>
-            <Link href="/app/orders/archived">
-              <Button disabled={Number(archivedOrdersQuery.data?.length) === 0}>
-                Archived Orders
-              </Button>
+            <Link href="/app/orders">
+              <Button>Unarchived Orders</Button>
             </Link>
           </div>
           <div className="mt-5 grid gap-8">
-            {ordersQuery.data.map((order) => (
+            {archivedOrdersQuery.data.map((order) => (
               <div key={order.id} className="grid gap-4">
                 <div className="flex items-center gap-2">
                   <div className="text-xs font-medium text-title md:text-sm">
@@ -111,9 +109,9 @@ const Orders: NextPageWithLayout = () => {
   );
 };
 
-export default Orders;
+export default ArchivedOrders;
 
-Orders.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
+ArchivedOrders.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
 
 type ItemProps = {
   item: OrderItem & {
@@ -125,7 +123,7 @@ const Item = ({ item }: ItemProps) => {
   // trpc
   const updateItemMutation = trpc.orders.updateItem.useMutation({
     onSuccess: async () => {
-      toast.success("Product archived!");
+      toast.success("Product unarchived!");
     },
     onError: async (err) => {
       toast.error(err.message);
@@ -170,7 +168,7 @@ const Item = ({ item }: ItemProps) => {
           </Button>
         </Link>
         <Button
-          className="w-full min-w-[128px]  whitespace-nowrap bg-gray-200 text-title"
+          className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 text-title"
           onClick={() => {
             updateItemMutation.mutateAsync({
               id: item.id,
@@ -179,7 +177,9 @@ const Item = ({ item }: ItemProps) => {
           }}
           disabled={updateItemMutation.isLoading}
         >
-          {updateItemMutation.isLoading ? "Archiving..." : "Archive product"}
+          {updateItemMutation.isLoading
+            ? "Unarchiving..."
+            : "Unarchive product"}
         </Button>
       </div>
     </div>

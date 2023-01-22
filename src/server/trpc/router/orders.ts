@@ -2,20 +2,39 @@ import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 
 export const ordersRouter = router({
-  getOrders: protectedProcedure.query(async ({ ctx }) => {
-    const orders = await ctx.prisma.order.findMany();
-    return orders;
-  }),
-
-  getCurrentUserOrders: protectedProcedure.query(async ({ ctx }) => {
+  getUserOrders: protectedProcedure.query(async ({ ctx }) => {
     const orders = await ctx.prisma.order.findMany({
       where: {
         userId: ctx.session.user.id,
+        archived: false,
       },
       include: {
         items: {
           include: {
             product: true,
+          },
+          where: {
+            archived: false,
+          },
+        },
+      },
+    });
+    return orders;
+  }),
+
+  getUserArchivedOrders: protectedProcedure.query(async ({ ctx }) => {
+    const orders = await ctx.prisma.order.findMany({
+      where: {
+        userId: ctx.session.user.id,
+        archived: true,
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
+          where: {
+            archived: true,
           },
         },
       },
@@ -112,15 +131,20 @@ export const ordersRouter = router({
       return orderItems;
     }),
 
-  archiveOrder: protectedProcedure
-    .input(z.number())
+  updateItem: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        archived: z.boolean(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const orderItem = await ctx.prisma.orderItem.update({
         where: {
-          id: input,
+          id: input.id,
         },
         data: {
-          archived: true,
+          archived: input.archived,
         },
       });
       if (!orderItem) {
@@ -131,22 +155,17 @@ export const ordersRouter = router({
           orderId: orderItem.orderId,
         },
       });
-      if (!orderItems) {
-        throw new Error("Order items not found!");
-      }
-      const archivedItems = orderItems.filter((item) => item.archived);
-      if (archivedItems.length === orderItems.length) {
-        const order = await ctx.prisma.order.update({
-          where: {
-            id: orderItem.orderId,
-          },
-          data: {
-            archived: true,
-          },
-        });
-        if (!order) {
-          throw new Error("Order not found!");
-        }
+      const orderItemsArchived = orderItems.every((item) => item.archived);
+      const order = await ctx.prisma.order.update({
+        where: {
+          id: orderItem.orderId,
+        },
+        data: {
+          archived: orderItemsArchived,
+        },
+      });
+      if (!order) {
+        throw new Error("Order not found!");
       }
       return orderItem;
     }),

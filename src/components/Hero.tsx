@@ -36,7 +36,7 @@ const Hero = () => {
       <div className="absolute bottom-0 z-20 hidden h-32 w-full bg-gradient-to-t from-bg-gray to-transparent md:block" />
       <button
         aria-label="navigate to right"
-        className="absolute left-0 z-20 mx-2 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
+        className="absolute left-0 z-20 mx-4 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
         ref={leftArrowRef}
       >
         <ChevronLeftIcon
@@ -46,7 +46,7 @@ const Hero = () => {
       </button>
       <button
         aria-label="navigate to left"
-        className="absolute right-0 z-20 mx-2 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
+        className="absolute right-0 z-20 mx-4 hidden h-full px-2 hover:ring-2 hover:ring-lowkey focus:ring-2 focus:ring-lowkey md:block"
         ref={rightArrowRef}
       >
         <ChevronRightIcon
