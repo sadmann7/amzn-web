@@ -2,7 +2,7 @@ import Head from "next/head";
 import Router from "next/router";
 import type { NextPageWithLayout } from "../../_app";
 
-// components imports
+// imports: components
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const ShowOrder: NextPageWithLayout = () => {

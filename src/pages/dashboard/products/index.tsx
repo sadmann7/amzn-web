@@ -58,7 +58,7 @@ const Products: NextPageWithLayout = () => {
         accessorKey: "price",
         header: "Price",
         cell: ({ cell }) =>
-          cell.getValue() ? formatCurrency(cell.getValue(), "BDT") : "-",
+          cell.getValue() ? formatCurrency(cell.getValue(), "USD") : "-",
       },
       {
         accessorKey: "category",

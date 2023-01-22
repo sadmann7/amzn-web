@@ -78,6 +78,7 @@ model Order {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   items     OrderItem[]
+  archived  Boolean     @default(false)
 }
 
 model OrderItem {
@@ -89,6 +90,7 @@ model OrderItem {
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  archived  Boolean  @default(false)
 }
 
 enum USER_ROLE {

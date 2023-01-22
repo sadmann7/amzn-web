@@ -4,7 +4,7 @@ import type { Product } from "@prisma/client";
 import Router from "next/router";
 import { Fragment, useState } from "react";
 
-// icons imports
+// imports: icons
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 type SearchbarProps<TData> = {

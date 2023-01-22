@@ -5,10 +5,13 @@ import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import Router from "next/router";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 // imports: components
+import Button from "@/components/Button";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ErrorScreen from "@/components/screens/ErrorScreen";
 import LoadingScreen from "@/components/screens/LoadingScreen";
@@ -23,7 +26,15 @@ const Orders: NextPageWithLayout = () => {
 
   // trpc
   const ordersQuery = trpc.orders.getCurrentUserOrders.useQuery();
-  const orderItemsQuery = trpc.orders.getCurrentUserOrderItems.useQuery();
+  const archiveItemMutation = trpc.orders.archiveItem.useMutation({
+    onSuccess: () => {
+      ordersQuery.refetch();
+      toast.success("Product archived");
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
   if (ordersQuery.isLoading) {
     return <LoadingScreen />;
@@ -54,65 +65,82 @@ const Orders: NextPageWithLayout = () => {
             <h1 className="text-xl font-semibold text-title md:text-2xl">
               Your Orders
             </h1>
-            <div>Search all orders</div>
+            <div>Search orders</div>
           </div>
           <div className="mt-5 grid gap-8">
-            {ordersQuery.data?.map((order) => (
-              <div key={order.id} className="flex flex-col gap-4">
-                <div className="flex items-center justify-between">
+            {ordersQuery.data
+              ?.filter((order) => !order.archived)
+              .map((order) => (
+                <div key={order.id} className="grid gap-4">
                   <div className="flex items-center gap-2">
                     <div className="text-xs font-medium text-title md:text-sm">
                       Order Placed:{" "}
                       <span className="text-xs font-normal md:text-sm">
-                        {dayjs(order.createdAt).format("DD MMM YYYY")}
+                        {dayjs(order.createdAt).format("DD MMM YYYY")},
                       </span>
                     </div>
                     <div className="text-xs font-medium text-title md:text-sm">
                       Total:{" "}
                       <span className="text-sm font-normal md:text-sm">
-                        {order.items.length}
+                        {order.items.reduce(
+                          (acc, item) => acc + item.quantity,
+                          0
+                        )}
                       </span>
                     </div>
                   </div>
+                  <div className="grid gap-4">
+                    {order.items
+                      .filter((item) => !item.archived)
+                      .map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center justify-between gap-5 md:gap-8"
+                        >
+                          <div className="flex items-center gap-5">
+                            <Image
+                              src={item.product.image}
+                              alt={item.product.title}
+                              width={80}
+                              height={80}
+                              loading="lazy"
+                              className="h-20 w-20 object-contain"
+                            />
+                            <div className="flex flex-1 flex-col gap-2">
+                              <div className="text-xs font-medium text-title line-clamp-1 md:text-sm">
+                                {item.product.title}
+                              </div>
+                              <div className="text-xs font-medium text-title md:text-sm">
+                                Quantity: {item.quantity}
+                              </div>
+                              <div className="text-xs font-medium text-title md:text-sm">
+                                Price:
+                                {` ${item.quantity} x ${formatCurrency(
+                                  item.product.price,
+                                  "USD"
+                                )} = `}
+                                {formatCurrency(
+                                  item.product.price * item.quantity,
+                                  "USD"
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="grid gap-2">
+                            <Link href={`/app/products/${item.productId}`}>
+                              <Button className="w-full bg-gray-200 text-title">
+                                Go to prduct
+                              </Button>
+                            </Link>
+                            <Button className="w-full bg-gray-200 text-title">
+                              Archive product
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
                 </div>
-                <div className="grid gap-4">
-                  {order.items.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center gap-5 md:gap-8"
-                    >
-                      <Image
-                        src={item.product.image}
-                        alt={item.product.title}
-                        width={80}
-                        height={80}
-                        loading="lazy"
-                        className="h-20 w-20 object-contain"
-                      />
-                      <div className="flex flex-1 flex-col gap-2">
-                        <div className="text-xs font-medium text-title line-clamp-1 md:text-sm">
-                          {item.product.title}
-                        </div>
-                        <div className="text-xs font-medium text-title md:text-sm">
-                          Quantity: {item.quantity}
-                        </div>
-                        <div className="text-xs font-medium text-title md:text-sm">
-                          Price:
-                          {` ${item.quantity} x ${formatCurrency(
-                            item.product.price,
-                            "USD"
-                          )} = `}
-                          {formatCurrency(
-                            item.product.price * item.quantity,
-                            "USD"
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </main>

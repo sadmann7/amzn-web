@@ -37,7 +37,7 @@ export const ordersRouter = router({
       return order;
     }),
 
-  getOrderItems: protectedProcedure
+  getItems: protectedProcedure
     .input(z.number())
     .query(async ({ ctx, input }) => {
       const orderItems = await ctx.prisma.orderItem.findMany({
@@ -54,7 +54,7 @@ export const ordersRouter = router({
       return orderItems;
     }),
 
-  getCurrentUserOrderItems: protectedProcedure.query(async ({ ctx }) => {
+  getCurrentUserItems: protectedProcedure.query(async ({ ctx }) => {
     const orderItems = await ctx.prisma.orderItem.findMany({
       where: {
         order: {
@@ -110,5 +110,43 @@ export const ordersRouter = router({
         })
       );
       return orderItems;
+    }),
+
+  archiveItem: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        archived: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const orderItem = await ctx.prisma.orderItem.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          archived: !input.archived,
+        },
+      });
+      return orderItem;
+    }),
+
+  archiveOrder: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        archived: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const order = await ctx.prisma.order.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          archived: !input.archived,
+        },
+      });
+      return order;
     }),
 });
