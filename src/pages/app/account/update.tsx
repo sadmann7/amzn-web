@@ -74,7 +74,7 @@ const Update: NextPageWithLayout = () => {
       <Head>
         <title>Change Name, E-mail, and Delete Account | Amzn Store</title>
       </Head>
-      <main className="mx-auto min-h-screen w-[95vw] max-w-screen-sm px-2 pt-52 pb-14 md:pt-40">
+      <main className="mx-auto min-h-screen w-full max-w-screen-sm px-4 pt-52 pb-14 sm:w-[95vw] md:pt-40">
         <div className="grid gap-4">
           <form
             aria-label="update user form"

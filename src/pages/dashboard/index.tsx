@@ -26,7 +26,7 @@ const Dashboard: NextPageWithLayout = () => {
       <Head>
         <title>Dashboard | Amzn Store</title>
       </Head>
-      <main className="mx-auto min-h-screen w-[95vw] max-w-[200px] pt-52 pb-14 md:pt-40">
+      <main className="mx-auto min-h-screen w-full max-w-[200px] pt-52 pb-14 sm:w-[95vw] md:pt-40">
         <ul className="flex flex-col gap-2">
           {dashboardRoutes.map((route) => (
             <li key={route.name}>

@@ -69,7 +69,7 @@ const Navbar = ({ data: products }: { data: Product[] }) => {
 
   return (
     <nav className="fixed top-0 left-0 z-50 w-full bg-layout text-white">
-      <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-1 px-2 py-1.5 sm:w-[95vw] md:flex-row md:gap-5">
+      <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-1 px-4 py-1.5 sm:w-[95vw] md:flex-row md:gap-5">
         <div className="flex w-full items-center justify-between gap-0 md:gap-5">
           <Link href={`/app`}>
             <Image
@@ -111,7 +111,7 @@ const Navbar = ({ data: products }: { data: Product[] }) => {
         <Searchbar className="md:hidden" data={products} route="products" />
       </div>
       <div className="w-full bg-layout-light">
-        <div className="mx-auto flex w-[95vw] max-w-screen-2xl items-center justify-between gap-4 overflow-x-auto whitespace-nowrap py-2 px-1 md:justify-start ">
+        <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between gap-4 overflow-x-auto whitespace-nowrap py-2 px-4 sm:w-[95vw] md:justify-start ">
           {bottomLinks.map((link) => (
             <Link
               href={link.href}

@@ -7,7 +7,7 @@ import { type ReactElement, type ReactNode } from "react";
 import "../styles/globals.css";
 import { trpc } from "../utils/trpc";
 
-// components imports
+// import: components
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import ToastWrapper from "@/components/ToastWrapper";
 

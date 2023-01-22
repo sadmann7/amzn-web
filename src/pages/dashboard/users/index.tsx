@@ -105,7 +105,7 @@ const Users: NextPageWithLayout = () => {
         <title>Users | Amzn Store</title>
       </Head>
       <main className="min-h-screen bg-bg-gray pt-48 pb-14 md:pt-36">
-        <div className="mx-auto w-full max-w-screen-2xl px-2 sm:w-[95vw]">
+        <div className="mx-auto w-full max-w-screen-2xl px-4 sm:w-[95vw]">
           <CustomTable<User>
             tableTitle={`Users (${data?.count ?? 0} entries)`}
             columns={columns}

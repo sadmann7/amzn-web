@@ -35,7 +35,7 @@ const Cart = ({ products }: { products: Product[] }) => {
   });
 
   return (
-    <div className="mx-auto w-full px-2 sm:w-[95vw]">
+    <div className="mx-auto w-full px-4 sm:w-[95vw]">
       {products.length <= 0 ? (
         <div className="grid gap-1.5 bg-white px-5 pt-8 pb-10">
           <h1 className="text-2xl text-title md:text-3xl">

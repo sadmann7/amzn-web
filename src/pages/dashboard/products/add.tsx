@@ -58,7 +58,7 @@ const AddProduct: NextPageWithLayout = () => {
       <Head>
         <title>Add Product | Amzn Store</title>
       </Head>
-      <main className="mx-auto min-h-screen w-[95vw] max-w-screen-sm px-2 pt-52 pb-14 md:pt-40">
+      <main className="mx-auto min-h-screen w-full max-w-screen-sm px-4 pt-52 pb-14 sm:w-[95vw] md:pt-40">
         <form
           aria-label="add product form"
           className="grid gap-2.5 whitespace-nowrap"

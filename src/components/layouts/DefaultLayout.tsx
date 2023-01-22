@@ -1,7 +1,7 @@
 import { trpc } from "@/utils/trpc";
 import { type ReactNode } from "react";
 
-// coomponents imports
+// imports: components
 import Loader from "../screens/LoadingScreen";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
