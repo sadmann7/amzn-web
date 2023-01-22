@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 const ToastWrapper = () => {
   return (
     <ToastContainer
-      position="top-right"
+      position="bottom-left"
       autoClose={2000}
       hideProgressBar
       closeOnClick

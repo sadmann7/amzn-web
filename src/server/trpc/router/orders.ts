@@ -112,41 +112,42 @@ export const ordersRouter = router({
       return orderItems;
     }),
 
-  archiveItem: protectedProcedure
-    .input(
-      z.object({
-        id: z.number(),
-        archived: z.boolean(),
-      })
-    )
+  archiveOrder: protectedProcedure
+    .input(z.number())
     .mutation(async ({ ctx, input }) => {
       const orderItem = await ctx.prisma.orderItem.update({
         where: {
-          id: input.id,
+          id: input,
         },
         data: {
-          archived: !input.archived,
+          archived: true,
         },
       });
-      return orderItem;
-    }),
-
-  archiveOrder: protectedProcedure
-    .input(
-      z.object({
-        id: z.number(),
-        archived: z.boolean(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const order = await ctx.prisma.order.update({
+      if (!orderItem) {
+        throw new Error("Order item not found!");
+      }
+      const orderItems = await ctx.prisma.orderItem.findMany({
         where: {
-          id: input.id,
-        },
-        data: {
-          archived: !input.archived,
+          orderId: orderItem.orderId,
         },
       });
-      return order;
+      if (!orderItems) {
+        throw new Error("Order items not found!");
+      }
+      const archivedItems = orderItems.filter((item) => item.archived);
+      if (archivedItems.length === orderItems.length) {
+        const order = await ctx.prisma.order.update({
+          where: {
+            id: orderItem.orderId,
+          },
+          data: {
+            archived: true,
+          },
+        });
+        if (!order) {
+          throw new Error("Order not found!");
+        }
+      }
+      return orderItem;
     }),
 });

@@ -26,12 +26,12 @@ const Orders: NextPageWithLayout = () => {
 
   // trpc
   const ordersQuery = trpc.orders.getCurrentUserOrders.useQuery();
-  const archiveItemMutation = trpc.orders.archiveItem.useMutation({
-    onSuccess: () => {
+  const archiveOrderMutation = trpc.orders.archiveOrder.useMutation({
+    onSuccess: async () => {
       ordersQuery.refetch();
-      toast.success("Product archived");
+      toast.success("Product archived!");
     },
-    onError: (err) => {
+    onError: async (err) => {
       toast.error(err.message);
     },
   });
@@ -69,7 +69,7 @@ const Orders: NextPageWithLayout = () => {
           </div>
           <div className="mt-5 grid gap-8">
             {ordersQuery.data
-              ?.filter((order) => !order.archived)
+              .filter((order) => !order.archived)
               .map((order) => (
                 <div key={order.id} className="grid gap-4">
                   <div className="flex items-center gap-2">
@@ -95,7 +95,7 @@ const Orders: NextPageWithLayout = () => {
                       .map((item) => (
                         <div
                           key={item.id}
-                          className="flex items-center justify-between gap-5 md:gap-8"
+                          className="flex flex-wrap items-center justify-between gap-5 md:gap-8"
                         >
                           <div className="flex items-center gap-5">
                             <Image
@@ -128,12 +128,23 @@ const Orders: NextPageWithLayout = () => {
                           </div>
                           <div className="grid gap-2">
                             <Link href={`/app/products/${item.productId}`}>
-                              <Button className="w-full bg-gray-200 text-title">
+                              <Button
+                                aria-label="go to product"
+                                className="w-full bg-gray-200 text-title"
+                              >
                                 Go to prduct
                               </Button>
                             </Link>
-                            <Button className="w-full bg-gray-200 text-title">
-                              Archive product
+                            <Button
+                              className="w-full bg-gray-200 text-title"
+                              onClick={() => {
+                                archiveOrderMutation.mutateAsync(item.id);
+                              }}
+                              disabled={archiveOrderMutation.isLoading}
+                            >
+                              {archiveOrderMutation.isLoading
+                                ? "Archiving..."
+                                : "Archive product"}
                             </Button>
                           </div>
                         </div>
