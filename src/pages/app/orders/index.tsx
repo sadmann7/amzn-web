@@ -44,7 +44,7 @@ const Orders: NextPageWithLayout = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const tabs = [{ name: "Orders" }, { name: "Archived orders" }];
 
-  // conditional rendering
+  // renders
   if (ordersQuery.isLoading || archivedOrdersQuery.isLoading) {
     return <LoadingScreen />;
   }
@@ -93,10 +93,30 @@ const Orders: NextPageWithLayout = () => {
               </Tab.List>
               <Tab.Panels className="mt-2">
                 <Tab.Panel>
-                  <GroupedOrders data={ordersQuery.data} />
+                  {ordersQuery.data?.every(
+                    (order) => order.items.length === 0
+                  ) ? (
+                    <div className="mt-40 grid place-items-center">
+                      <div className="text-xl font-semibold text-title md:text-3xl">
+                        You have no unarchived orders
+                      </div>
+                    </div>
+                  ) : (
+                    <GroupedOrders data={ordersQuery.data} />
+                  )}
                 </Tab.Panel>
                 <Tab.Panel>
-                  <GroupedOrders data={archivedOrdersQuery.data} />
+                  {archivedOrdersQuery.data?.every(
+                    (order) => order.items.length === 0
+                  ) ? (
+                    <div className="mt-40 grid place-items-center">
+                      <div className="text-xl font-semibold text-title md:text-3xl">
+                        You have no archived orders
+                      </div>
+                    </div>
+                  ) : (
+                    <GroupedOrders data={archivedOrdersQuery.data} />
+                  )}
                 </Tab.Panel>
               </Tab.Panels>
             </Tab.Group>
@@ -115,29 +135,32 @@ Orders.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
 const GroupedOrders = ({ data }: { data: OrderWithItems[] }) => {
   return (
     <div className="mt-5 grid gap-8">
-      {data.map((order) => (
-        <div key={order.id} className="grid gap-4">
-          <div className="flex items-center gap-2">
-            <div className="text-xs font-medium text-title md:text-sm">
-              Order Placed:{" "}
-              <span className="text-xs font-normal md:text-sm">
-                {dayjs(order.createdAt).format("DD MMM YYYY")},
-              </span>
+      {data
+        .filter((order) => order.items.length > 0)
+        .map((order) => (
+          <div key={order.id} className="grid gap-4">
+            <div className="flex items-center gap-2">
+              <div className="text-xs font-medium text-title md:text-sm">
+                Order Placed:{" "}
+                <span className="text-xs font-normal md:text-sm">
+                  {dayjs(order.createdAt).format("DD MMM YYYY")},
+                </span>
+              </div>
+              <div className="text-xs font-medium text-title md:text-sm">
+                Total:{" "}
+                <span className="text-sm font-normal md:text-sm">
+                  {order.items.reduce((acc, item) => acc + item.quantity, 0)}
+                </span>
+              </div>
             </div>
-            <div className="text-xs font-medium text-title md:text-sm">
-              Total:{" "}
-              <span className="text-sm font-normal md:text-sm">
-                {order.items.reduce((acc, item) => acc + item.quantity, 0)}
-              </span>
+
+            <div className="grid gap-4">
+              {order.items.map((item) => (
+                <Item key={item.id} item={item} />
+              ))}
             </div>
           </div>
-          <div className="grid gap-4">
-            {order.items.map((item) => (
-              <Item item={item} key={item.id} />
-            ))}
-          </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 };
@@ -145,7 +168,7 @@ const GroupedOrders = ({ data }: { data: OrderWithItems[] }) => {
 // Item
 const Item = ({ item }: { item: OrderItemWithProduct }) => {
   // trpc
-  const updateItemMutation = trpc.orders.updateOrder.useMutation({
+  const updateItemMutation = trpc.orders.updateItem.useMutation({
     onSuccess: async () => {
       toast.success("Product archived!");
     },
@@ -196,12 +219,18 @@ const Item = ({ item }: { item: OrderItemWithProduct }) => {
           onClick={() => {
             updateItemMutation.mutateAsync({
               id: item.id,
-              archived: item.archived ? false : true,
+              archived: item.archived,
             });
           }}
           disabled={updateItemMutation.isLoading}
         >
-          {updateItemMutation.isLoading ? "Archiving..." : "Archive product"}
+          {updateItemMutation.isLoading
+            ? item.archived
+              ? "Unarchiving..."
+              : "Archiving..."
+            : item.archived
+            ? "Unarchive"
+            : "Archive"}
         </Button>
       </div>
     </div>

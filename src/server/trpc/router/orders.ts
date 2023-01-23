@@ -26,7 +26,6 @@ export const ordersRouter = router({
     const orders = await ctx.prisma.order.findMany({
       where: {
         userId: ctx.session.user.id,
-        archived: true,
       },
       include: {
         items: {
@@ -131,7 +130,7 @@ export const ordersRouter = router({
       return orderItems;
     }),
 
-  updateOrder: protectedProcedure
+  updateItem: protectedProcedure
     .input(
       z.object({
         id: z.number(),
@@ -144,7 +143,7 @@ export const ordersRouter = router({
           id: input.id,
         },
         data: {
-          archived: input.archived,
+          archived: !input.archived,
         },
       });
       if (!orderItem) {
