@@ -88,7 +88,7 @@ const UpdateUser: NextPageWithLayout = () => {
             className="grid gap-2.5 whitespace-nowrap"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="grid gap-2">
+            <fieldset className="grid gap-2">
               <label
                 htmlFor="update-user-role"
                 className="text-xs font-medium text-title md:text-sm"
@@ -117,7 +117,7 @@ const UpdateUser: NextPageWithLayout = () => {
                   {errors.role.message}
                 </p>
               ) : null}
-            </div>
+            </fieldset>
             <Button
               aria-label="Update role"
               className="w-full"

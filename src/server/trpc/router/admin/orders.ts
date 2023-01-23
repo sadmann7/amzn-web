@@ -47,10 +47,43 @@ export const ordersAdminRouter = router({
     return order;
   }),
 
-  delete: adminProcedure.input(z.number()).mutation(async ({ ctx, input }) => {
-    const order = await ctx.prisma.order.delete({
-      where: { id: input },
-    });
-    return order;
-  }),
+  deleteOrder: adminProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      const order = await ctx.prisma.order.delete({
+        where: {
+          id: input,
+        },
+      });
+      if (!order) {
+        throw new Error("Order not found!");
+      }
+      return order;
+    }),
+
+  deleteItem: adminProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      const orderItem = await ctx.prisma.orderItem.delete({
+        where: {
+          id: input,
+        },
+      });
+      if (!orderItem) {
+        throw new Error("Order item not found!");
+      }
+      const orderItems = await ctx.prisma.orderItem.findMany({
+        where: {
+          orderId: orderItem.orderId,
+        },
+      });
+      if (orderItems.length === 0) {
+        await ctx.prisma.order.delete({
+          where: {
+            id: orderItem.orderId,
+          },
+        });
+      }
+      return orderItem;
+    }),
 });

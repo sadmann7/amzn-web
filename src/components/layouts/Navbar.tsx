@@ -160,7 +160,11 @@ const Dropdown = () => {
         <Menu.Button className="inline-flex w-full items-center gap-0.5 whitespace-nowrap rounded-sm px-2 py-4 text-white transition hover:ring-1 hover:ring-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-opacity-75 ui-open:ring-1 ui-open:ring-white md:flex-col md:items-start md:justify-center md:gap-0 md:p-2">
           <span className="text-sm md:inline-flex md:gap-0.5 md:text-xs">
             <span className="hidden md:inline-block">Hello,</span>
-            {sessionMutation.data ? sessionMutation.data.user?.name : "sign in"}
+            {sessionMutation.isLoading
+              ? "Loading..."
+              : sessionMutation.data
+              ? sessionMutation.data.user?.name
+              : "sign in"}
           </span>
           <span className="md:inline-flex md:items-center md:gap-0.5">
             <span className="hidden text-sm font-medium md:inline-block">

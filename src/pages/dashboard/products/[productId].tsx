@@ -94,7 +94,7 @@ const UpdateProduct: NextPageWithLayout = () => {
             className="grid gap-2.5 whitespace-nowrap"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="grid gap-2">
+            <fieldset className="grid gap-2">
               <label
                 htmlFor="update-product-title"
                 className="text-xs font-medium text-title md:text-sm"
@@ -114,8 +114,8 @@ const UpdateProduct: NextPageWithLayout = () => {
                   {errors.title.message}
                 </p>
               ) : null}
-            </div>
-            <div className="grid gap-2">
+            </fieldset>
+            <fieldset className="grid gap-2">
               <label
                 htmlFor="update-product-price"
                 className="text-xs font-medium text-title md:text-sm"
@@ -139,8 +139,8 @@ const UpdateProduct: NextPageWithLayout = () => {
                   {errors.price.message}
                 </p>
               ) : null}
-            </div>
-            <div className="grid gap-2">
+            </fieldset>
+            <fieldset className="grid gap-2">
               <label
                 htmlFor="update-product-category"
                 className="text-xs font-medium text-title md:text-sm"
@@ -167,8 +167,8 @@ const UpdateProduct: NextPageWithLayout = () => {
                   {errors.category.message}
                 </p>
               ) : null}
-            </div>
-            <div className="grid gap-2">
+            </fieldset>
+            <fieldset className="grid gap-2">
               <label
                 htmlFor="update-user-name"
                 className="text-xs font-medium text-title md:text-sm"
@@ -188,8 +188,8 @@ const UpdateProduct: NextPageWithLayout = () => {
                   {errors.description.message}
                 </p>
               ) : null}
-            </div>
-            <div className="grid gap-2">
+            </fieldset>
+            <fieldset className="grid gap-2">
               <label
                 htmlFor="update-product-image"
                 className="text-xs font-medium text-title md:text-sm"
@@ -209,8 +209,8 @@ const UpdateProduct: NextPageWithLayout = () => {
                   {errors.image.message}
                 </p>
               ) : null}
-            </div>
-            <div className="grid gap-2">
+            </fieldset>
+            <fieldset className="grid gap-2">
               <label
                 htmlFor="update-product-rating"
                 className="text-xs font-medium text-title md:text-sm"
@@ -231,7 +231,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                   {errors.rating.message}
                 </p>
               ) : null}
-            </div>
+            </fieldset>
             <Button
               aria-label="update product"
               className="w-full"

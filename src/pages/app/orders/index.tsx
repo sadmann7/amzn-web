@@ -27,11 +27,11 @@ const Orders: NextPageWithLayout = () => {
     }
   }, [status]);
 
-  // trpc
+  // queries
   const utils = trpc.useContext();
   const ordersQuery = trpc.orders.getUserOrders.useQuery();
   const archivedOrdersQuery = trpc.orders.getUserArchivedOrders.useQuery();
-  // refetch
+  // refetch queries
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
@@ -139,21 +139,27 @@ const GroupedOrders = ({ data }: { data: OrderWithItems[] }) => {
         .filter((order) => order.items.length > 0)
         .map((order) => (
           <div key={order.id} className="grid gap-4">
-            <div className="flex items-center gap-2">
-              <div className="text-xs font-medium text-title md:text-sm">
-                Order Placed:{" "}
-                <span className="text-xs font-normal md:text-sm">
-                  {dayjs(order.createdAt).format("DD MMM YYYY")},
-                </span>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 text-xs font-medium md:text-sm">
+                  <span className="text-title">Order Placed:</span>
+                  <span className="text-gray-500">
+                    {dayjs(order.createdAt).format("DD MMM YYYY")},
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs font-medium md:text-sm">
+                  <span className="text-title">Total:</span>
+                  <span className="text-gray-500">
+                    {order.items.reduce((acc, item) => acc + item.quantity, 0)}
+                  </span>
+                </div>
               </div>
-              <div className="text-xs font-medium text-title md:text-sm">
-                Total:{" "}
-                <span className="text-sm font-normal md:text-sm">
-                  {order.items.reduce((acc, item) => acc + item.quantity, 0)}
-                </span>
-              </div>
+              <Link href={`/app/orders/${order.id}`}>
+                <Button className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 text-title">
+                  Go to order
+                </Button>
+              </Link>
             </div>
-
             <div className="grid gap-4">
               {order.items.map((item) => (
                 <Item key={item.id} item={item} />
@@ -193,19 +199,23 @@ const Item = ({ item }: { item: OrderItemWithProduct }) => {
             {item.product.title}
           </div>
           <div className="text-xs font-medium text-title md:text-sm">
-            Quantity: {item.quantity}
+            Quantity: <span className="text-gray-500">{item.quantity}</span>
           </div>
-          <div className="text-xs font-medium text-title md:text-sm">
-            Price:
-            {` ${item.quantity} x ${formatCurrency(
-              item.product.price,
-              "USD"
-            )} = `}
-            {formatCurrency(item.product.price * item.quantity, "USD")}
+          <div className="flex items-center gap-1.5 text-xs font-medium md:text-sm">
+            <span className="text-title">Price:</span>
+            <span className="text-gray-500">
+              {`${item.quantity} x ${formatCurrency(
+                item.product.price,
+                "USD"
+              )} =`}
+            </span>
+            <span className="text-gray-500">
+              {formatCurrency(item.product.price * item.quantity, "USD")}
+            </span>
           </div>
         </div>
       </div>
-      <div className="grid gap-2">
+      <div className="grid gap-2.5">
         <Link href={`/app/products/${item.productId}`}>
           <Button
             aria-label="go to product"
@@ -215,7 +225,8 @@ const Item = ({ item }: { item: OrderItemWithProduct }) => {
           </Button>
         </Link>
         <Button
-          className="w-full min-w-[128px]  whitespace-nowrap bg-gray-200 text-title"
+          aria-label={item.archived ? "unarchive" : "archive"}
+          className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 text-title"
           onClick={() => {
             updateItemMutation.mutateAsync({
               id: item.id,
