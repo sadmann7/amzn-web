@@ -34,9 +34,18 @@ const UpdateOrder: NextPageWithLayout = () => {
   useEffect(() => {
     if (number === 0) {
       utils.admin.orders.getOrder.invalidate(orderId);
+      utils.orders.getUserOrders.invalidate();
+      utils.orders.getUserArchivedOrders.invalidate();
     }
   }, [number, orderId, utils]);
+  // redirect if no order
+  useEffect(() => {
+    if (orderQuery.data === null) {
+      Router.push("/dashboard/orders");
+    }
+  }, [orderQuery.data]);
 
+  // renders
   if (orderQuery.isLoading) {
     return <LoadingScreen />;
   }

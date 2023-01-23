@@ -71,6 +71,7 @@ const UpdateProduct: NextPageWithLayout = () => {
   useEffect(() => {
     if (number === 0) {
       utils.admin.products.getProduct.invalidate(productId);
+      utils.products.getProducts.invalidate();
     }
   }, [number, productId, utils]);
 

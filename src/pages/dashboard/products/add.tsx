@@ -2,7 +2,9 @@ import { formatEnum } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PRODUCT_CATEGORY } from "@prisma/client";
+import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
+import { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -11,8 +13,6 @@ import type { NextPageWithLayout } from "../../_app";
 // imports: components
 import Button from "@/components/Button";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import ErrorScreen from "@/components/screens/ErrorScreen";
-import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const schema = z.object({
   title: z.string().min(3),
@@ -26,7 +26,7 @@ type Inputs = z.infer<typeof schema>;
 
 const AddProduct: NextPageWithLayout = () => {
   // add product mutation
-  const addProductMutation = trpc.admin.products.create.useMutation({
+  const addProductMutation = trpc.admin.products.createProduct.useMutation({
     onSuccess: async () => {
       toast.success("Product added!");
     },
@@ -34,24 +34,25 @@ const AddProduct: NextPageWithLayout = () => {
       toast.error(err.message);
     },
   });
-
   // react-hook-form
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await addProductMutation.mutateAsync({ ...data });
+    reset();
   };
-
-  if (addProductMutation.isLoading) {
-    return <LoadingScreen />;
-  }
-
-  if (addProductMutation.isError) {
-    return <ErrorScreen />;
-  }
+  // refetch products query
+  const uitls = trpc.useContext();
+  const number = useIsMutating();
+  useEffect(() => {
+    if (number === 0) {
+      uitls.products.getProducts.invalidate();
+    }
+  }, [number, uitls]);
 
   return (
     <>

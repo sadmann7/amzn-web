@@ -25,8 +25,8 @@ const Cart = ({ products }: { products: Product[] }) => {
     removeProducts: state.removeProducts,
   }));
 
-  // trpc
-  const addOrderMutation = trpc.orders.addOrder.useMutation({
+  // add order mutation
+  const addOrderMutation = trpc.orders.createOrder.useMutation({
     onSuccess: async () => {
       cartStore.removeProducts(products.map((product) => product.id));
       toast.success("Products added to order!");

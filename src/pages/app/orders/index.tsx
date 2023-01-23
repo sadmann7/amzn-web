@@ -155,7 +155,7 @@ const GroupedOrders = ({ data }: { data: OrderWithItems[] }) => {
                 </div>
               </div>
               <Link href={`/app/orders/${order.id}`}>
-                <Button className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 text-title">
+                <Button className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 py-1.5 text-title">
                   Go to order
                 </Button>
               </Link>
@@ -173,10 +173,10 @@ const GroupedOrders = ({ data }: { data: OrderWithItems[] }) => {
 
 // Item
 const Item = ({ item }: { item: OrderItemWithProduct }) => {
-  // trpc
+  // update item mutation
   const updateItemMutation = trpc.orders.updateItem.useMutation({
     onSuccess: async () => {
-      toast.success("Product archived!");
+      toast.success(item.archived ? "Item unarchived!" : "Item archived!");
     },
     onError: async (err) => {
       toast.error(err.message);
@@ -201,16 +201,16 @@ const Item = ({ item }: { item: OrderItemWithProduct }) => {
           <div className="text-xs font-medium text-title md:text-sm">
             Quantity: <span className="text-gray-500">{item.quantity}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-xs font-medium md:text-sm">
-            <span className="text-title">Price:</span>
+          <div className="text-xs font-medium text-title line-clamp-1 md:text-sm">
+            Price:{" "}
             <span className="text-gray-500">
               {`${item.quantity} x ${formatCurrency(
                 item.product.price,
                 "USD"
-              )} =`}
-            </span>
-            <span className="text-gray-500">
-              {formatCurrency(item.product.price * item.quantity, "USD")}
+              )} = ${formatCurrency(
+                item.product.price * item.quantity,
+                "USD"
+              )}`}
             </span>
           </div>
         </div>
@@ -219,14 +219,14 @@ const Item = ({ item }: { item: OrderItemWithProduct }) => {
         <Link href={`/app/products/${item.productId}`}>
           <Button
             aria-label="go to product"
-            className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 text-title"
+            className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 py-1.5 text-title"
           >
             Go to prduct
           </Button>
         </Link>
         <Button
           aria-label={item.archived ? "unarchive" : "archive"}
-          className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 text-title"
+          className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 py-1.5 text-title"
           onClick={() => {
             updateItemMutation.mutateAsync({
               id: item.id,

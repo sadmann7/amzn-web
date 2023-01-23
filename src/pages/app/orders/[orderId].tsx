@@ -17,6 +17,7 @@ const ShowOrder: NextPageWithLayout = () => {
   // get order query
   const orderQuery = trpc.orders.getOrder.useQuery(orderId);
 
+  // renders
   if (orderQuery.isLoading) {
     return <LoadingScreen />;
   }
@@ -43,7 +44,7 @@ const ShowOrder: NextPageWithLayout = () => {
                     height={80}
                     className="h-20 w-20 object-contain"
                   />
-                  <div className="grid gap-0.5">
+                  <div className="grid flex-1 gap-0.5">
                     <Link
                       aria-label={`go to ${item.product.title}`}
                       href={`/app/products/${item.product.id}`}

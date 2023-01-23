@@ -68,7 +68,7 @@ export const productsAdminRouter = router({
     return product;
   }),
 
-  create: adminProcedure
+  createProduct: adminProcedure
     .input(
       z.object({
         title: z.string().min(3),
