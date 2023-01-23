@@ -131,7 +131,7 @@ export const ordersRouter = router({
       return orderItems;
     }),
 
-  updateItem: protectedProcedure
+  updateOrder: protectedProcedure
     .input(
       z.object({
         id: z.number(),

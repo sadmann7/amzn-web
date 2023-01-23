@@ -1,7 +1,8 @@
 import type { NextPageWithLayout } from "@/pages/_app";
+import type { OrderItemWithProduct, OrderWithItems } from "@/types/globals";
 import { formatCurrency } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
-import type { OrderItem, Product } from "@prisma/client";
+import { Tab } from "@headlessui/react";
 import { useIsMutating } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
@@ -9,7 +10,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import Router from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 // imports: components
@@ -39,11 +40,16 @@ const Orders: NextPageWithLayout = () => {
     }
   }, [number, utils]);
 
-  if (ordersQuery.isLoading) {
+  // headlessui
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const tabs = [{ name: "Orders" }, { name: "Archived orders" }];
+
+  // conditional rendering
+  if (ordersQuery.isLoading || archivedOrdersQuery.isLoading) {
     return <LoadingScreen />;
   }
 
-  if (ordersQuery.isError) {
+  if (ordersQuery.isError || archivedOrdersQuery.isError) {
     return <ErrorScreen />;
   }
 
@@ -67,43 +73,33 @@ const Orders: NextPageWithLayout = () => {
       </Head>
       <main className="min-h-screen pt-48 pb-14 md:pt-36">
         <div className="mx-auto w-full max-w-screen-lg px-4 sm:w-[95vw]">
-          <div className="flex flex-wrap items-center justify-between">
-            <h1 className="text-xl font-semibold text-title md:text-2xl">
-              Your Orders
-            </h1>
-            <Link href="/app/orders/archived">
-              <Button disabled={Number(archivedOrdersQuery.data?.length) === 0}>
-                Archived Orders
-              </Button>
-            </Link>
-          </div>
-          <div className="mt-5 grid gap-8">
-            {ordersQuery.data.map((order) => (
-              <div key={order.id} className="grid gap-4">
-                <div className="flex items-center gap-2">
-                  <div className="text-xs font-medium text-title md:text-sm">
-                    Order Placed:{" "}
-                    <span className="text-xs font-normal md:text-sm">
-                      {dayjs(order.createdAt).format("DD MMM YYYY")},
-                    </span>
-                  </div>
-                  <div className="text-xs font-medium text-title md:text-sm">
-                    Total:{" "}
-                    <span className="text-sm font-normal md:text-sm">
-                      {order.items.reduce(
-                        (acc, item) => acc + item.quantity,
-                        0
-                      )}
-                    </span>
-                  </div>
-                </div>
-                <div className="grid gap-4">
-                  {order.items.map((item) => (
-                    <Item item={item} key={item.id} />
-                  ))}
-                </div>
-              </div>
-            ))}
+          <h1 className="text-xl font-semibold text-title md:text-2xl">
+            Your Orders
+          </h1>
+          <div className="mt-5">
+            <Tab.Group
+              selectedIndex={selectedIndex}
+              onChange={setSelectedIndex}
+            >
+              <Tab.List className="flex gap-5">
+                {tabs.map((tab) => (
+                  <Tab
+                    key={tab.name}
+                    className="text-sm font-medium text-link ring-2 ring-white hover:text-opacity-80 focus:outline-none ui-selected:border-b-2 ui-selected:border-primary ui-selected:font-bold ui-selected:text-title md:text-base"
+                  >
+                    {tab.name}
+                  </Tab>
+                ))}
+              </Tab.List>
+              <Tab.Panels className="mt-2">
+                <Tab.Panel>
+                  <GroupedOrders data={ordersQuery.data} />
+                </Tab.Panel>
+                <Tab.Panel>
+                  <GroupedOrders data={archivedOrdersQuery.data} />
+                </Tab.Panel>
+              </Tab.Panels>
+            </Tab.Group>
           </div>
         </div>
       </main>
@@ -115,15 +111,41 @@ export default Orders;
 
 Orders.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
 
-type ItemProps = {
-  item: OrderItem & {
-    product: Product;
-  };
+// GroupedOrders
+const GroupedOrders = ({ data }: { data: OrderWithItems[] }) => {
+  return (
+    <div className="mt-5 grid gap-8">
+      {data.map((order) => (
+        <div key={order.id} className="grid gap-4">
+          <div className="flex items-center gap-2">
+            <div className="text-xs font-medium text-title md:text-sm">
+              Order Placed:{" "}
+              <span className="text-xs font-normal md:text-sm">
+                {dayjs(order.createdAt).format("DD MMM YYYY")},
+              </span>
+            </div>
+            <div className="text-xs font-medium text-title md:text-sm">
+              Total:{" "}
+              <span className="text-sm font-normal md:text-sm">
+                {order.items.reduce((acc, item) => acc + item.quantity, 0)}
+              </span>
+            </div>
+          </div>
+          <div className="grid gap-4">
+            {order.items.map((item) => (
+              <Item item={item} key={item.id} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 };
 
-const Item = ({ item }: ItemProps) => {
+// Item
+const Item = ({ item }: { item: OrderItemWithProduct }) => {
   // trpc
-  const updateItemMutation = trpc.orders.updateItem.useMutation({
+  const updateItemMutation = trpc.orders.updateOrder.useMutation({
     onSuccess: async () => {
       toast.success("Product archived!");
     },
