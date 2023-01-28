@@ -4,14 +4,14 @@ import "react-toastify/dist/ReactToastify.css";
 const ToastWrapper = () => {
   return (
     <ToastContainer
-      position="top-right"
+      position="bottom-center"
       autoClose={2000}
       hideProgressBar
       closeOnClick
       pauseOnFocusLoss
       draggable
       pauseOnHover
-      theme="light"
+      theme="dark"
     />
   );
 };

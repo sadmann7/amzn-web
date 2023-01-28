@@ -50,7 +50,7 @@ const ShowProduct: NextPageWithLayout = () => {
               className="h-56 w-56 object-contain"
             />
             <div className="flex flex-col items-center gap-2.5">
-              <h1 className="text-center text-xl font-semibold md:text-2xl">
+              <h1 className="text-center text-xl font-semibold md:text-3xl">
                 {productQuery.data.name}
               </h1>
               <p className="text-center text-sm text-lowkey md:text-base">

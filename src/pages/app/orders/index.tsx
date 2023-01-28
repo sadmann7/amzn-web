@@ -1,6 +1,6 @@
 import type { NextPageWithLayout } from "@/pages/_app";
 import type { OrderItemWithProduct, OrderWithItems } from "@/types/globals";
-import { formatCurrency } from "@/utils/format";
+import { formatCurrency, formatEnum } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 import { Tab } from "@headlessui/react";
 import { useIsMutating } from "@tanstack/react-query";
@@ -142,20 +142,20 @@ const GroupedOrders = ({ data }: { data: OrderWithItems[] }) => {
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5 text-xs font-medium md:text-sm">
-                  <span className="text-title">Order Placed:</span>
-                  <span className="text-gray-500">
+                  <span className="text-title line-clamp-1">Order Placed:</span>
+                  <span className="text-lowkey line-clamp-1">
                     {dayjs(order.createdAt).format("DD MMM YYYY")},
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs font-medium md:text-sm">
                   <span className="text-title">Total:</span>
-                  <span className="text-gray-500">
+                  <span className="text-lowkey">
                     {order.items.reduce((acc, item) => acc + item.quantity, 0)}
                   </span>
                 </div>
               </div>
               <Link href={`/app/orders/${order.id}`}>
-                <Button className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 py-1.5 text-title">
+                <Button className="w-24 whitespace-nowrap bg-gray-200 py-2 text-title md:w-28">
                   Go to order
                 </Button>
               </Link>
@@ -198,12 +198,11 @@ const Item = ({ item }: { item: OrderItemWithProduct }) => {
           <div className="text-xs font-medium text-title line-clamp-1 md:text-sm">
             {item.product.name}
           </div>
-          <div className="text-xs font-medium text-title md:text-sm">
-            Quantity: <span className="text-gray-500">{item.quantity}</span>
-          </div>
+          <span className="text-xs font-medium text-lowkey line-clamp-1 md:text-sm">
+            {formatEnum(item.product.category)}
+          </span>
           <div className="text-xs font-medium text-title line-clamp-1 md:text-sm">
-            Price:{" "}
-            <span className="text-gray-500">
+            <span className="text-lowkey">
               {`${item.quantity} x ${formatCurrency(
                 item.product.price,
                 "USD"
@@ -215,18 +214,18 @@ const Item = ({ item }: { item: OrderItemWithProduct }) => {
           </div>
         </div>
       </div>
-      <div className="grid gap-2.5">
+      <div className="flex flex-col gap-2.5">
         <Link href={`/app/products/${item.productId}`}>
           <Button
             aria-label="go to product"
-            className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 py-1.5 text-title"
+            className="w-24 whitespace-nowrap bg-gray-200 py-1.5 text-title md:w-28"
           >
             Go to prduct
           </Button>
         </Link>
         <Button
           aria-label={item.archived ? "unarchive" : "archive"}
-          className="w-full min-w-[128px] whitespace-nowrap bg-gray-200 py-1.5 text-title"
+          className="w-24 whitespace-nowrap bg-gray-200 py-1.5 text-title md:w-28"
           onClick={() => {
             updateItemMutation.mutateAsync({
               id: item.id,
