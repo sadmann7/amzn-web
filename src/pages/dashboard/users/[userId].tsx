@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 import type { NextPageWithLayout } from "../../_app";
 
-// components imports
+// external imports
 import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";

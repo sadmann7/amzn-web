@@ -3,14 +3,14 @@ import Head from "next/head";
 import Router from "next/router";
 import type { NextPageWithLayout } from "../../_app";
 
-// imports: components
+// external imports
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
 
 const ShowProduct: NextPageWithLayout = () => {
   // trpc
-  const productId = Number(Router.query.productId);
+  const productId = Router.query.productId as string;
   const productQuery = trpc.products.getProduct.useQuery(productId);
 
   if (productQuery.isLoading) {
@@ -24,7 +24,7 @@ const ShowProduct: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>{productQuery.data.title ?? "Product"} | Amzn Store</title>
+        <title>{productQuery.data.name ?? "Product"} | Amzn Store</title>
       </Head>
       <main className="min-h-screen pt-48 md:pt-40 lg:pt-36">
         <div className="mx-auto w-full max-w-screen-2xl px-4 sm:w-[95vw]">
@@ -34,7 +34,7 @@ const ShowProduct: NextPageWithLayout = () => {
             </div>
           ) : (
             <div className="text-center text-base text-title md:text-lg">
-              {productQuery.data.title}
+              {productQuery.data.name}
             </div>
           )}
         </div>

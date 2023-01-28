@@ -1,10 +1,10 @@
 import { trpc } from "@/utils/trpc";
 import { type ReactNode } from "react";
 
-// imports: components
-import Loader from "../screens/LoadingScreen";
+// external imports
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import Loader from "../screens/LoadingScreen";
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
   // trpc

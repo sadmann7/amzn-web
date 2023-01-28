@@ -24,8 +24,8 @@ const Searchbar = <TData extends Product>({
     query === ""
       ? data
       : data.filter((item) =>
-          item.title
-            ? item.title
+          item.name
+            ? item.name
                 .toLowerCase()
                 .replace(/\s+/g, "")
                 .includes(query.toLowerCase().replace(/\s+/g, ""))
@@ -75,7 +75,7 @@ const Searchbar = <TData extends Product>({
                 value={item}
               >
                 <>
-                  <span>{item.title}</span>
+                  <span>{item.name}</span>
                 </>
               </Combobox.Option>
             ))

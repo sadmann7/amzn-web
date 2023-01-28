@@ -1,8 +1,10 @@
-import Button from "@/components/Button";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import type { NextPageWithLayout } from "./_app";
+
+// external imports
+import Button from "@/components/Button";
 
 const Four0Four: NextPageWithLayout = ({ statusCode }) => {
   const [statusMesasge, setStatusMesasge] = useState("");

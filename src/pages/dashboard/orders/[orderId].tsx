@@ -7,14 +7,14 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import type { NextPageWithLayout } from "../../_app";
 
-// components imports
+// external imports
 import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
 
 const UpdateOrder: NextPageWithLayout = () => {
-  const orderId = Number(Router.query.orderId);
+  const orderId = Router.query.orderId as string;
   const utils = trpc.useContext();
 
   // get order query
@@ -98,7 +98,7 @@ const Item = ({ item }: { item: OrderItemWithProduct }) => {
   return (
     <div key={item.id} className="flex items-center justify-between">
       <div className="flex items-center justify-between gap-5">
-        {item.product.title}
+        {item.product.name}
       </div>
       <Button
         className="whitespace-nowrap bg-danger"

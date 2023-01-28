@@ -33,7 +33,7 @@ export const ordersAdminRouter = router({
       return { count, orders };
     }),
 
-  getOrder: adminProcedure.input(z.number()).query(async ({ ctx, input }) => {
+  getOrder: adminProcedure.input(z.string()).query(async ({ ctx, input }) => {
     const order = await ctx.prisma.order.findUnique({
       where: { id: input },
       include: {
@@ -48,7 +48,7 @@ export const ordersAdminRouter = router({
   }),
 
   deleteOrder: adminProcedure
-    .input(z.number())
+    .input(z.string())
     .mutation(async ({ ctx, input }) => {
       const order = await ctx.prisma.order.delete({
         where: {
@@ -62,7 +62,7 @@ export const ordersAdminRouter = router({
     }),
 
   deleteItem: adminProcedure
-    .input(z.number())
+    .input(z.string())
     .mutation(async ({ ctx, input }) => {
       const orderItem = await ctx.prisma.orderItem.delete({
         where: {

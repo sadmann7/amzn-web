@@ -12,7 +12,7 @@ import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
 
 const ShowOrder: NextPageWithLayout = () => {
-  const orderId = Number(Router.query.orderId);
+  const orderId = Router.query.orderId as string;
 
   // get order query
   const orderQuery = trpc.orders.getOrder.useQuery(orderId);
@@ -39,18 +39,18 @@ const ShowOrder: NextPageWithLayout = () => {
                 <div className="flex items-center gap-4">
                   <Image
                     src={item.product.image}
-                    alt={item.product.title}
+                    alt={item.product.name}
                     width={80}
                     height={80}
                     className="h-20 w-20 object-contain"
                   />
                   <div className="grid flex-1 gap-0.5">
                     <Link
-                      aria-label={`go to ${item.product.title}`}
+                      aria-label={`go to ${item.product.name}`}
                       href={`/app/products/${item.product.id}`}
                     >
                       <div className="text-sm font-semibold text-title line-clamp-2 hover:text-primary md:text-base">
-                        {item.product.title}
+                        {item.product.name}
                       </div>
                     </Link>
                     <div className="text-sm text-gray-500 md:text-base">

@@ -14,7 +14,7 @@ import Link from "next/link";
 import Router from "next/router";
 import { useMemo, useState } from "react";
 
-// imports: components
+// external imports
 import Button from "@/components/Button";
 import CustomTable from "@/components/CustomTable";
 import DefaultLayout from "@/layouts/DefaultLayout";
@@ -128,7 +128,7 @@ const Orders: NextPageWithLayout = () => {
             disableGlobalFilter
             bodyRowProps={(row) => ({
               onClick: () => {
-                const orderId = Number(row.getValue("id"));
+                const orderId = row.getValue("id") as string;
                 Router.push(`/dashboard/orders/${orderId}`);
               },
             })}

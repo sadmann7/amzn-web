@@ -2,7 +2,7 @@ import Head from "next/head";
 import type { NextPageWithLayout } from "../../_app";
 import Link from "next/link";
 
-// components imports
+// external imports
 import DefaultLayout from "@/layouts/DefaultLayout";
 
 const accountLinks = [

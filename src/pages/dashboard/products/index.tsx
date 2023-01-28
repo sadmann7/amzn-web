@@ -15,7 +15,7 @@ import Link from "next/link";
 import Router from "next/router";
 import { useMemo, useState } from "react";
 
-// components imports
+// external imports
 import Button from "@/components/Button";
 import CustomTable from "@/components/CustomTable";
 import DefaultLayout from "@/layouts/DefaultLayout";
@@ -90,7 +90,7 @@ const Products: NextPageWithLayout = () => {
       {
         page: pagination.pageIndex,
         perPage: pagination.pageSize,
-        title: columnFilters.find((f) => f.id === "title")?.value as TextField,
+        name: columnFilters.find((f) => f.id === "name")?.value as TextField,
         price: columnFilters.find((f) => f.id === "price")
           ?.value as NumberField,
         category: columnFilters.find((f) => f.id === "category")
@@ -98,7 +98,7 @@ const Products: NextPageWithLayout = () => {
         rating: columnFilters.find((f) => f.id === "rating")
           ?.value as NumberField,
         sortBy: sorting[0]?.id as
-          | "title"
+          | "name"
           | "category"
           | "quantity"
           | "price"
@@ -149,7 +149,7 @@ const Products: NextPageWithLayout = () => {
             disableGlobalFilter
             bodyRowProps={(row) => ({
               onClick: () => {
-                const productId = Number(row.getValue("id"));
+                const productId = row.getValue("id") as string;
                 Router.push(`/dashboard/products/${productId}`);
               },
             })}

@@ -13,7 +13,7 @@ export const productsRouter = router({
   }),
 
   getProduct: publicProcedure
-    .input(z.number())
+    .input(z.string())
     .query(async ({ ctx, input }) => {
       const product = await ctx.prisma.product.findUnique({
         where: {

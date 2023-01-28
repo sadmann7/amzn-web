@@ -7,9 +7,9 @@ import { type ReactElement, type ReactNode } from "react";
 import "../styles/globals.css";
 import { trpc } from "../utils/trpc";
 
-// import: components
-import DefaultLayout from "@/layouts/DefaultLayout";
+// external imports
 import ToastWrapper from "@/components/ToastWrapper";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,

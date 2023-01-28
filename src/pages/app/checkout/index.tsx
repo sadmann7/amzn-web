@@ -2,7 +2,7 @@ import type { NextPageWithLayout } from "@/pages/_app";
 import { useCartStore } from "@/stores/cart";
 import Head from "next/head";
 
-// components imports
+// external imports
 import Cart from "@/components/Cart";
 import DefaultLayout from "@/layouts/DefaultLayout";
 

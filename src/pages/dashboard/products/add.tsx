@@ -10,12 +10,12 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 import type { NextPageWithLayout } from "../../_app";
 
-// imports: components
+// external imports
 import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
 
 const schema = z.object({
-  title: z.string().min(3),
+  name: z.string().min(3),
   price: z.number().min(0),
   category: z.nativeEnum(PRODUCT_CATEGORY),
   description: z.string().min(3),
@@ -77,11 +77,11 @@ const AddProduct: NextPageWithLayout = () => {
               id="add-product-title"
               className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
               placeholder="Product title"
-              {...register("title", { required: true })}
+              {...register("name", { required: true })}
             />
-            {errors.title ? (
+            {errors.name ? (
               <p className="text-sm font-medium text-danger">
-                {errors.title.message}
+                {errors.name.message}
               </p>
             ) : null}
           </div>

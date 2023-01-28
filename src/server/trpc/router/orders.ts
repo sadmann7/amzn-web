@@ -42,7 +42,7 @@ export const ordersRouter = router({
   }),
 
   getOrder: protectedProcedure
-    .input(z.number())
+    .input(z.string())
     .query(async ({ ctx, input }) => {
       const order = await ctx.prisma.order.findUnique({
         where: {
@@ -63,7 +63,7 @@ export const ordersRouter = router({
     }),
 
   getItems: protectedProcedure
-    .input(z.number())
+    .input(z.string())
     .query(async ({ ctx, input }) => {
       const orderItems = await ctx.prisma.orderItem.findMany({
         where: {
@@ -99,7 +99,7 @@ export const ordersRouter = router({
   updateItem: protectedProcedure
     .input(
       z.object({
-        id: z.number(),
+        id: z.string(),
         archived: z.boolean(),
       })
     )
@@ -139,7 +139,7 @@ export const ordersRouter = router({
     .input(
       z.array(
         z.object({
-          productId: z.number(),
+          productId: z.string(),
           productQuantity: z.number(),
         })
       )

@@ -4,7 +4,7 @@ import Head from "next/head";
 import Router from "next/router";
 import type { NextPageWithLayout } from "../../_app";
 
-// components imports
+// external imports
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
 import ErrorScreen from "@/screens/ErrorScreen";

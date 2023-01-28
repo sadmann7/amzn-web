@@ -188,7 +188,7 @@ const Item = ({ item }: { item: OrderItemWithProduct }) => {
       <div className="flex items-center gap-5">
         <Image
           src={item.product.image}
-          alt={item.product.title}
+          alt={item.product.name}
           width={80}
           height={80}
           loading="lazy"
@@ -196,7 +196,7 @@ const Item = ({ item }: { item: OrderItemWithProduct }) => {
         />
         <div className="flex flex-1 flex-col gap-2">
           <div className="text-xs font-medium text-title line-clamp-1 md:text-sm">
-            {item.product.title}
+            {item.product.name}
           </div>
           <div className="text-xs font-medium text-title md:text-sm">
             Quantity: <span className="text-gray-500">{item.quantity}</span>

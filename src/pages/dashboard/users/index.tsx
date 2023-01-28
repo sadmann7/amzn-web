@@ -14,7 +14,7 @@ import Head from "next/head";
 import Router from "next/router";
 import { useMemo, useState } from "react";
 
-// components imports
+// external imports
 import CustomTable from "@/components/CustomTable";
 import DefaultLayout from "@/layouts/DefaultLayout";
 

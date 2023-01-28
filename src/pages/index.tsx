@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import type { NextPageWithLayout } from "./_app";
 
-// imports: components
+// external imports
 import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
 
