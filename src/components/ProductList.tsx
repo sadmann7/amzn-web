@@ -59,7 +59,6 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
 
   return (
     <Fragment>
-      Link{" "}
       {products.slice(range.from, range.to).map((product) => (
         <div
           key={product.id}
