@@ -16,7 +16,7 @@ import { useMemo, useState } from "react";
 
 // components imports
 import CustomTable from "@/components/CustomTable";
-import DefaultLayout from "@/components/layouts/DefaultLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 type TextField = string | undefined;
 type CategoryField = USER_ROLE | undefined;

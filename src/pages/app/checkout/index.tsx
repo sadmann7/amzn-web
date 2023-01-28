@@ -4,7 +4,7 @@ import Head from "next/head";
 
 // components imports
 import Cart from "@/components/Cart";
-import DefaultLayout from "@/components/layouts/DefaultLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 const Checkout: NextPageWithLayout = () => {
   //  zustand

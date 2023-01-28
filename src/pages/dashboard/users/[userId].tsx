@@ -13,9 +13,9 @@ import type { NextPageWithLayout } from "../../_app";
 
 // components imports
 import Button from "@/components/Button";
-import DefaultLayout from "@/components/layouts/DefaultLayout";
-import ErrorScreen from "@/components/screens/ErrorScreen";
-import LoadingScreen from "@/components/screens/LoadingScreen";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import ErrorScreen from "@/screens/ErrorScreen";
+import LoadingScreen from "@/screens/LoadingScreen";
 
 const schema = z.object({
   role: z.nativeEnum(USER_ROLE),

@@ -17,7 +17,7 @@ import { useMemo, useState } from "react";
 // imports: components
 import Button from "@/components/Button";
 import CustomTable from "@/components/CustomTable";
-import DefaultLayout from "@/components/layouts/DefaultLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 type OrderWithUser = Order & { user: User };
 

@@ -12,7 +12,7 @@ import type { NextPageWithLayout } from "../../_app";
 
 // imports: components
 import Button from "@/components/Button";
-import DefaultLayout from "@/components/layouts/DefaultLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 const schema = z.object({
   title: z.string().min(3),

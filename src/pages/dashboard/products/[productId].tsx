@@ -1,4 +1,4 @@
-import DefaultLayout from "@/components/layouts/DefaultLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import { formatEnum } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,8 +14,8 @@ import type { NextPageWithLayout } from "../../_app";
 
 // imports: components
 import Button from "@/components/Button";
-import ErrorScreen from "@/components/screens/ErrorScreen";
-import LoadingScreen from "@/components/screens/LoadingScreen";
+import ErrorScreen from "@/screens/ErrorScreen";
+import LoadingScreen from "@/screens/LoadingScreen";
 
 const schema = z.object({
   title: z.string().min(3),

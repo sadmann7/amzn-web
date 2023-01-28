@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Fragment } from "react";
 import { toast } from "react-toastify";
 
-// imports: components
+// external imports
 import Button from "./Button";
 
 const ProductList = ({ products }: { products: Product[] }) => {

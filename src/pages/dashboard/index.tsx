@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { NextPageWithLayout } from "../_app";
 
 // imports: components
-import DefaultLayout from "@/components/layouts/DefaultLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 const dashboardRoutes = [
   {

@@ -5,10 +5,10 @@ import Router from "next/router";
 import type { NextPageWithLayout } from "../../_app";
 
 // components imports
-import DefaultLayout from "@/components/layouts/DefaultLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
-import ErrorScreen from "@/components/screens/ErrorScreen";
-import LoadingScreen from "@/components/screens/LoadingScreen";
+import ErrorScreen from "@/screens/ErrorScreen";
+import LoadingScreen from "@/screens/LoadingScreen";
 
 const ShowCategory: NextPageWithLayout = () => {
   //  trpc

@@ -13,11 +13,11 @@ import Router from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-// imports: components
+// external imports
 import Button from "@/components/Button";
-import DefaultLayout from "@/components/layouts/DefaultLayout";
-import ErrorScreen from "@/components/screens/ErrorScreen";
-import LoadingScreen from "@/components/screens/LoadingScreen";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import ErrorScreen from "@/screens/ErrorScreen";
+import LoadingScreen from "@/screens/LoadingScreen";
 
 const Orders: NextPageWithLayout = () => {
   const { status } = useSession();

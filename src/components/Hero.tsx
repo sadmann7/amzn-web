@@ -6,7 +6,7 @@ import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { NavigationOptions } from "swiper/types/modules/navigation";
 
-// imports: icons
+// external imports
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 const heroImages = [

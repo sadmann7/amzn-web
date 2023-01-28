@@ -3,8 +3,8 @@ import { type ReactNode } from "react";
 
 // imports: components
 import Loader from "../screens/LoadingScreen";
-import Footer from "./Footer";
-import Navbar from "./Navbar";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
   // trpc

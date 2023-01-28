@@ -3,7 +3,7 @@ import type { NextPageWithLayout } from "../../_app";
 import Link from "next/link";
 
 // components imports
-import DefaultLayout from "@/components/layouts/DefaultLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 
 const accountLinks = [
   {

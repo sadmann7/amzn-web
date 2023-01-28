@@ -6,10 +6,10 @@ import Link from "next/link";
 import Router from "next/router";
 import type { NextPageWithLayout } from "../../_app";
 
-// imports: components
-import DefaultLayout from "@/components/layouts/DefaultLayout";
-import ErrorScreen from "@/components/screens/ErrorScreen";
-import LoadingScreen from "@/components/screens/LoadingScreen";
+// external imports
+import DefaultLayout from "@/layouts/DefaultLayout";
+import ErrorScreen from "@/screens/ErrorScreen";
+import LoadingScreen from "@/screens/LoadingScreen";
 
 const ShowOrder: NextPageWithLayout = () => {
   const orderId = Number(Router.query.orderId);

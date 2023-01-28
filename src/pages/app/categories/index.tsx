@@ -4,9 +4,9 @@ import Head from "next/head";
 
 // components imports
 import CategoryList from "@/components/CategoryList";
-import DefaultLayout from "@/components/layouts/DefaultLayout";
-import ErrorScreen from "@/components/screens/ErrorScreen";
-import LoadingScreen from "@/components/screens/LoadingScreen";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import ErrorScreen from "@/screens/ErrorScreen";
+import LoadingScreen from "@/screens/LoadingScreen";
 
 const Categories: NextPageWithLayout = () => {
   // trpc
