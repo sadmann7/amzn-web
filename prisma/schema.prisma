@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "cockroachdb"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 // Necessary for Next auth
@@ -24,6 +25,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -32,21 +34,32 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  role          USER_ROLE @default(USER)
-  active        Boolean   @default(true)
-  accounts      Account[]
-  sessions      Session[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  orders        Order[]
+  id                       String                      @id @default(cuid())
+  name                     String?
+  email                    String?                     @unique
+  emailVerified            DateTime?
+  image                    String?
+  role                     USER_ROLE                   @default(USER)
+  active                   Boolean                     @default(true)
+  accounts                 Account[]
+  sessions                 Session[]
+  createdAt                DateTime                    @default(now())
+  updatedAt                DateTime                    @updatedAt
+  orders                   Order[]
+  stripeCustomerId         String?
+  stripeSubscriptionId     String?
+  stripeCustomer           StripeCustomer?             @relation(fields: [stripeCustomerId], references: [id])
+  stripeSubscription       StripeSubscription?         @relation(fields: [stripeSubscriptionId], references: [id])
+  stripeSubscriptionStatus STRIPE_SUBSCRIPTION_STATUS? @default(incomplete)
+
+  @@index([id])
+  @@index([stripeCustomerId])
+  @@index([stripeSubscriptionId])
 }
 
 model VerificationToken {
@@ -58,8 +71,8 @@ model VerificationToken {
 }
 
 model Product {
-  id          Int              @id @default(sequence())
-  title       String
+  id          String           @id @default(cuid())
+  name        String
   price       Float
   category    PRODUCT_CATEGORY
   description String
@@ -72,25 +85,65 @@ model Product {
 }
 
 model Order {
-  id        Int         @id @default(sequence())
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String       @id @default(cuid())
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
   items     OrderItem[]
-  archived  Boolean     @default(false)
+  archived  Boolean      @default(false)
+  status    ORDER_STATUS @default(PENDING)
+
+  @@index([userId])
 }
 
 model OrderItem {
-  id        Int      @id @default(sequence())
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId   Int
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int
+  id        String       @id @default(cuid())
+  order     Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
   quantity  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  archived  Boolean  @default(false)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  archived  Boolean      @default(false)
+  status    ORDER_STATUS @default(PENDING)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model StripeEvent {
+  id              String   @id @default(cuid())
+  apiVersion      String?
+  data            String
+  request         Json
+  type            String
+  object          String
+  acount          String?
+  livemode        Boolean
+  pendingWebhooks Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model StripeCustomer {
+  id                       String                     @id @default(cuid())
+  stripeCustomerId         String
+  stripeSubscriptionId     String
+  stripeSubscriptionStatus STRIPE_SUBSCRIPTION_STATUS
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  User                     User[]
+}
+
+model StripeSubscription {
+  id                       String                     @id @default(cuid())
+  stripeSubscriptionId     String
+  stripeSubscriptionStatus STRIPE_SUBSCRIPTION_STATUS
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  User                     User[]
 }
 
 enum USER_ROLE {
@@ -103,4 +156,22 @@ enum PRODUCT_CATEGORY {
   JWELLERY
   MENS_CLOTHING
   WOMENS_CLOTHING
+}
+
+enum ORDER_STATUS {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+}
+
+enum STRIPE_SUBSCRIPTION_STATUS {
+  incomplete
+  incomplete_expired
+  trialing
+  active
+  past_due
+  canceled
+  unpaid
 }

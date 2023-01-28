@@ -7,7 +7,8 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe-webhook --latest"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.7",
@@ -24,12 +25,14 @@
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
     "dayjs": "^1.11.7",
+    "micro": "^10.0.1",
     "next": "13.1.4",
     "next-auth": "^4.18.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.42.1",
     "react-toastify": "^9.1.1",
+    "stripe": "^11.8.0",
     "superjson": "1.12.2",
     "swiper": "^8.4.6",
     "zod": "^3.18.0",
