@@ -59,6 +59,7 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
 
   return (
     <Fragment>
+      Link{" "}
       {products.slice(range.from, range.to).map((product) => (
         <div
           key={product.id}
@@ -70,7 +71,7 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
           >
             <Image
               src={product.image}
-              alt={product.title}
+              alt={product.name}
               width={192}
               height={192}
               className="absolute h-full w-full object-contain"
@@ -82,7 +83,7 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
           </div>
           <Link href={`/app/products/${product.id}`}>
             <h2 className="text-sm font-medium text-title transition-colors line-clamp-1 hover:text-primary md:text-base">
-              {product.title ?? "-"}
+              {product.name ?? "-"}
             </h2>
           </Link>
           <p className="text-xs font-medium text-text line-clamp-2 md:text-sm">
@@ -100,7 +101,7 @@ const SlicedProducts = ({ products, range }: SlicedProductsProps) => {
             className="w-full bg-orange-300 text-title transition-colors hover:bg-primary active:bg-orange-300"
             onClick={() => {
               cartStore.addProduct(product);
-              toast.success(`${truncateText(product.title, 16)} added to cart`);
+              toast.success(`${truncateText(product.name, 16)} added to cart`);
             }}
           >
             Add to Cart
