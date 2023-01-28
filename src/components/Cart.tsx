@@ -159,7 +159,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       <div className="flex gap-2">
         <Image
           src={product.image}
-          alt={product.title}
+          alt={product.name}
           className="h-28 min-w-[112px] object-contain"
           width={112}
           height={112}
@@ -167,7 +167,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         />
         <div className="flex flex-col gap-1.5">
           <span className="text-base font-medium text-title line-clamp-2 md:text-lg">
-            {product.title}
+            {product.name}
           </span>
           <span className="block text-base font-bold text-text md:hidden">
             {product.price ? formatCurrency(product.price, "USD") : "-"}

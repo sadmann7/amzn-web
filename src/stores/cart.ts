@@ -5,9 +5,9 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware";
 type CartState = {
   products: Product[];
   addProduct: (product: Product) => void;
-  removeProduct: (id: number) => void;
-  removeProducts: (ids: number[]) => void;
-  setQuantity: (id: number, quantity: number) => void;
+  removeProduct: (id: string) => void;
+  removeProducts: (ids: string[]) => void;
+  setQuantity: (id: string, quantity: number) => void;
 };
 
 export const useCartStore = create<CartState>()(
@@ -29,19 +29,19 @@ export const useCartStore = create<CartState>()(
               : [...state.products, { ...product, quantity: 1 }],
           }));
         },
-        removeProduct: (id: number) => {
+        removeProduct: (id: string) => {
           set((state) => ({
             products: state.products.filter((product) => product.id !== id),
           }));
         },
-        removeProducts: (ids: number[]) => {
+        removeProducts: (ids: string[]) => {
           set((state) => ({
             products: state.products.filter(
               (product) => !ids.includes(product.id)
             ),
           }));
         },
-        setQuantity: (id: number, quantity: number) => {
+        setQuantity: (id: string, quantity: number) => {
           set((state) => ({
             products: state.products.map((product) => {
               if (product.id === id) {
