@@ -54,6 +54,7 @@ export const useCartStore = create<CartState>()(
             }),
           }));
         },
+        isLoading: false,
       }),
       {
         name: "cart",

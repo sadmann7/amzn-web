@@ -51,8 +51,8 @@ const Products: NextPageWithLayout = () => {
         accessorKey: "id",
       },
       {
-        accessorKey: "title",
-        header: "Title",
+        accessorKey: "name",
+        header: "Name",
       },
       {
         accessorKey: "price",

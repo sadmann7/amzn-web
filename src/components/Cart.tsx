@@ -20,7 +20,7 @@ const Cart = ({ products }: { products: Product[] }) => {
     0
   );
 
-  // zustand
+  // cart store
   const cartStore = useCartStore((state) => ({
     removeProducts: state.removeProducts,
   }));
