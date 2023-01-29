@@ -1,3 +1,4 @@
+import { useCartStore } from "@/stores/cart";
 import { formatCurrency, truncateText } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 import type { Product } from "@prisma/client";
@@ -12,7 +13,6 @@ import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
-import { useCartStore } from "@/stores/cart";
 
 const ShowProduct: NextPageWithLayout = () => {
   const productId = Router.query.productId as string;

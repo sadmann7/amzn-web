@@ -29,10 +29,10 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema> & { image: File };
 
 const AddProduct: NextPageWithLayout = () => {
-  const [imageBuffer, setImageBuffer] = useState<string>();
+  const [preview, setPreview] = useState<string | null>();
 
   // add product mutation
-  const addProductMutation = trpc.admin.products.createProduct.useMutation({
+  const addProductMutation = trpc.admin.products.create.useMutation({
     onSuccess: async () => {
       toast.success("Product added!");
     },
@@ -46,27 +46,29 @@ const AddProduct: NextPageWithLayout = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     setValue,
+    reset,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const reader = new FileReader();
     reader.readAsDataURL(data.image);
-    reader.onload = () => {
+    reader.onload = async () => {
       const base64 = reader.result;
-      setImageBuffer(base64 as string);
+      await addProductMutation.mutateAsync({
+        ...data,
+        image: base64 as string,
+      });
     };
-    if (!imageBuffer) return toast.error("Image not uploaded!");
-    await addProductMutation.mutateAsync({ ...data, image: imageBuffer });
     reset();
+    setPreview(null);
   };
 
   // react-dropzone
-  const [preview, setPreview] = useState<string>();
   const onDrop = useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) =>
       acceptedFiles.forEach(
         (file) => {
+          if (!file) return;
           setPreview(URL.createObjectURL(file));
           setValue("image", file, {
             shouldValidate: true,
@@ -196,7 +198,7 @@ const AddProduct: NextPageWithLayout = () => {
               cols={25}
               rows={5}
               id="add-product-description"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+              className="h-32 w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
               placeholder="Product description"
               {...register("description", { required: true })}
             />
@@ -215,18 +217,18 @@ const AddProduct: NextPageWithLayout = () => {
             </label>
             <div
               {...getRootProps()}
-              className="w-full px-4 py-2.5 text-xs font-medium text-title ring-1 ring-lowkey/80 transition-colors placeholder:text-lowkey/80 md:text-sm"
+              className="grid h-32 w-full place-items-center p-2 text-xs font-medium text-title ring-1 ring-lowkey/80 transition-colors placeholder:text-lowkey/80 md:text-sm"
             >
-              <input {...getInputProps()} />
+              <input {...getInputProps()} id="add-product-image" />
               {isDragActive ? (
                 <p>Drop the files here ...</p>
               ) : preview ? (
                 <Image
                   src={preview}
                   alt="product preview"
-                  width={320}
-                  height={320}
-                  className="h-40 w-full object-cover"
+                  width={224}
+                  height={224}
+                  className="h-28 w-full object-cover"
                 />
               ) : (
                 <p>Drag {`'n'`} drop image here, or click to select image</p>
@@ -234,7 +236,7 @@ const AddProduct: NextPageWithLayout = () => {
             </div>
             {errors.image ? (
               <p className="text-sm font-medium text-danger">
-                {errors.image.message as string}
+                {errors.image.message}
               </p>
             ) : null}
           </fieldset>

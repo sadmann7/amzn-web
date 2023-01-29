@@ -68,7 +68,7 @@ export const productsAdminRouter = router({
     return product;
   }),
 
-  createProduct: adminProcedure
+  create: adminProcedure
     .input(
       z.object({
         name: z.string().min(3),
@@ -81,15 +81,15 @@ export const productsAdminRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const cldPhoto = await ctx.cloudinary.uploader.upload(input.image, {
+      const uploadedPhoto = await ctx.cloudinary.uploader.upload(input.image, {
         resource_type: "image",
         format: "webp",
         folder: "amzn-store",
         transformation: [
           {
-            width: 500,
-            height: 500,
-            quality: 75,
+            width: 224,
+            height: 224,
+            quality: 80,
           },
         ],
       });
@@ -99,13 +99,35 @@ export const productsAdminRouter = router({
           price: input.price,
           category: input.category,
           description: input.description,
-          image: cldPhoto.secure_url,
+          image: uploadedPhoto.secure_url,
           rating: input.rating,
           quantity: input.quantity,
         },
       });
       return product;
     }),
+
+  next: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const product = await ctx.prisma.product.findUnique({
+      where: {
+        id: input,
+      },
+    });
+    if (!product) {
+      throw new Error("Product not found");
+    }
+    const nextProduct = await ctx.prisma.product.findFirst({
+      where: {
+        id: {
+          gt: product.id,
+        },
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+    return nextProduct;
+  }),
 
   update: adminProcedure
     .input(
@@ -115,12 +137,24 @@ export const productsAdminRouter = router({
         price: z.number().min(0),
         category: z.nativeEnum(PRODUCT_CATEGORY),
         description: z.string().min(3),
-        image: z.string().url(),
+        image: z.string(),
         rating: z.number().min(0).max(5),
         quantity: z.number().default(1),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const uploadedPhoto = await ctx.cloudinary.uploader.upload(input.image, {
+        resource_type: "image",
+        format: "webp",
+        folder: "amzn-store",
+        transformation: [
+          {
+            width: 224,
+            height: 224,
+            quality: 80,
+          },
+        ],
+      });
       const product = await ctx.prisma.product.update({
         where: {
           id: input.id,
@@ -130,7 +164,7 @@ export const productsAdminRouter = router({
           price: input.price,
           category: input.category,
           description: input.description,
-          image: input.image,
+          image: uploadedPhoto.secure_url,
           rating: input.rating,
           quantity: input.quantity,
         },

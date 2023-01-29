@@ -6,7 +6,8 @@ import { PRODUCT_CATEGORY } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
 import Router from "next/router";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useDropzone, type FileRejection } from "react-dropzone";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -16,25 +17,30 @@ import type { NextPageWithLayout } from "../../_app";
 import Button from "@/components/Button";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
+import Image from "next/image";
 
 const schema = z.object({
   name: z.string().min(3),
   price: z.number().min(0),
   category: z.nativeEnum(PRODUCT_CATEGORY),
   description: z.string().min(3),
-  image: z.string().url(),
+  image: z.unknown().refine((v) => v instanceof File, {
+    message: "Expected File, received unknown",
+  }),
   rating: z.number().min(0).max(5),
 });
-type Inputs = z.infer<typeof schema>;
+type Inputs = z.infer<typeof schema> & { image: File };
 
 const UpdateProduct: NextPageWithLayout = () => {
   const productId = Router.query.productId as string;
   const utils = trpc.useContext();
+  const [preview, setPreview] = useState<string | null>();
 
   // get product query
   const getProductQuery = trpc.admin.products.getProduct.useQuery(productId, {
     enabled: Boolean(productId),
   });
+
   // update product mutation
   const updateProductMutation = trpc.admin.products.update.useMutation({
     onSuccess: async () => {
@@ -44,6 +50,7 @@ const UpdateProduct: NextPageWithLayout = () => {
       toast.error(err.message);
     },
   });
+
   // delete product mutation
   const deleteProductMutation = trpc.admin.products.delete.useMutation({
     onSuccess: async () => {
@@ -54,18 +61,60 @@ const UpdateProduct: NextPageWithLayout = () => {
       toast.error(err.message);
     },
   });
+
   // react-hook-form
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await updateProductMutation.mutateAsync({
-      id: productId,
-      ...data,
-    });
+    const reader = new FileReader();
+    reader.readAsDataURL(data.image);
+    reader.onload = async () => {
+      const base64 = reader.result;
+      await updateProductMutation.mutateAsync({
+        id: productId,
+        ...data,
+        image: base64 as string,
+      });
+    };
   };
+
+  // react-dropzone
+  const onDrop = useCallback(
+    (acceptedFiles: File[], rejectedFiles: FileRejection[]) =>
+      acceptedFiles.forEach(
+        (file) => {
+          if (!file) return;
+          setPreview(URL.createObjectURL(file));
+          setValue("image", file, {
+            shouldValidate: true,
+          });
+        },
+        rejectedFiles.forEach((file) => {
+          if (file.errors[0]?.code === "file-too-large") {
+            const size = Math.round(file.file.size / 1000000);
+            toast.error(
+              `Please upload a image smaller than 1MB. Current size: ${size}MB`
+            );
+          } else {
+            toast.error(toast.error(file.errors[0]?.message));
+          }
+        })
+      ),
+
+    [setValue]
+  );
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      "image/*": [],
+    },
+    maxSize: 1000000,
+    onDrop: onDrop,
+  });
+
   // refetch product query
   const number = useIsMutating();
   useEffect(() => {
@@ -176,10 +225,11 @@ const UpdateProduct: NextPageWithLayout = () => {
               >
                 Product description
               </label>
-              <input
-                type="text"
+              <textarea
+                cols={25}
+                rows={5}
                 id="update-product-description"
-                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+                className="h-32 w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                 placeholder="Product description"
                 {...register("description", { required: true })}
                 defaultValue={getProductQuery.data?.description}
@@ -197,14 +247,25 @@ const UpdateProduct: NextPageWithLayout = () => {
               >
                 Product image
               </label>
-              <input
-                type="text"
-                id="update-product-image"
-                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-                placeholder="Product image"
-                {...register("image", { required: true })}
-                defaultValue={getProductQuery.data?.image}
-              />
+              <div
+                {...getRootProps()}
+                className="grid h-32 w-full place-items-center p-2 text-xs font-medium text-title ring-1 ring-lowkey/80 transition-colors placeholder:text-lowkey/80 md:text-sm"
+              >
+                <input {...getInputProps()} id="update-product-image" />
+                {isDragActive ? (
+                  <p>Drop the files here ...</p>
+                ) : preview ?? getProductQuery.data?.image ? (
+                  <Image
+                    src={preview ?? (getProductQuery.data?.image as string)}
+                    alt="product preview"
+                    width={224}
+                    height={224}
+                    className="h-28 w-full object-cover"
+                  />
+                ) : (
+                  <p>Drag {`'n'`} drop image here, or click to select image</p>
+                )}
+              </div>
               {errors.image ? (
                 <p className="text-sm font-medium text-danger">
                   {errors.image.message}
