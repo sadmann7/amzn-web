@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PRODUCT_CATEGORY } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -19,12 +19,14 @@ const schema = z.object({
   price: z.number().min(0),
   category: z.nativeEnum(PRODUCT_CATEGORY),
   description: z.string().min(3),
-  image: z.string().url(),
+  image: z.any(),
   rating: z.number().min(0).max(5),
 });
 type Inputs = z.infer<typeof schema>;
 
 const AddProduct: NextPageWithLayout = () => {
+  const [imageBuffer, setImageBuffer] = useState<string>();
+
   // add product mutation
   const addProductMutation = trpc.admin.products.createProduct.useMutation({
     onSuccess: async () => {
@@ -42,7 +44,14 @@ const AddProduct: NextPageWithLayout = () => {
     reset,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await addProductMutation.mutateAsync({ ...data });
+    const reader = new FileReader();
+    reader.readAsDataURL(data.image[0]);
+    reader.onload = () => {
+      const base64 = reader.result;
+      setImageBuffer(base64 as string);
+    };
+    if (!imageBuffer) return toast.error("Image not uploaded");
+    await addProductMutation.mutateAsync({ ...data, image: imageBuffer });
     reset();
   };
   // refetch products query
@@ -65,7 +74,7 @@ const AddProduct: NextPageWithLayout = () => {
           className="grid gap-2.5 whitespace-nowrap"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="grid gap-2">
+          <fieldset className="grid gap-2">
             <label
               htmlFor="add-product-title"
               className="text-xs font-medium text-title md:text-sm"
@@ -84,8 +93,8 @@ const AddProduct: NextPageWithLayout = () => {
                 {errors.name.message}
               </p>
             ) : null}
-          </div>
-          <div className="grid gap-2">
+          </fieldset>
+          <fieldset className="grid gap-2">
             <label
               htmlFor="add-product-price"
               className="text-xs font-medium text-title md:text-sm"
@@ -108,8 +117,8 @@ const AddProduct: NextPageWithLayout = () => {
                 {errors.price.message}
               </p>
             ) : null}
-          </div>
-          <div className="grid gap-2">
+          </fieldset>
+          <fieldset className="grid gap-2">
             <label
               htmlFor="add-product-category"
               className="text-xs font-medium text-title md:text-sm"
@@ -135,8 +144,8 @@ const AddProduct: NextPageWithLayout = () => {
                 {errors.category.message}
               </p>
             ) : null}
-          </div>
-          <div className="grid gap-2">
+          </fieldset>
+          <fieldset className="grid gap-2">
             <label
               htmlFor="update-user-name"
               className="text-xs font-medium text-title md:text-sm"
@@ -155,8 +164,8 @@ const AddProduct: NextPageWithLayout = () => {
                 {errors.description.message}
               </p>
             ) : null}
-          </div>
-          <div className="grid gap-2">
+          </fieldset>
+          <fieldset className="grid gap-2">
             <label
               htmlFor="add-product-image"
               className="text-xs font-medium text-title md:text-sm"
@@ -164,7 +173,7 @@ const AddProduct: NextPageWithLayout = () => {
               Product image
             </label>
             <input
-              type="text"
+              type="file"
               id="add-product-image"
               className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
               placeholder="Product image"
@@ -172,11 +181,11 @@ const AddProduct: NextPageWithLayout = () => {
             />
             {errors.image ? (
               <p className="text-sm font-medium text-danger">
-                {errors.image.message}
+                {errors.image.message as string}
               </p>
             ) : null}
-          </div>
-          <div className="grid gap-2">
+          </fieldset>
+          <fieldset className="grid gap-2">
             <label
               htmlFor="add-product-rating"
               className="text-xs font-medium text-title md:text-sm"
@@ -196,7 +205,7 @@ const AddProduct: NextPageWithLayout = () => {
                 {errors.rating.message}
               </p>
             ) : null}
-          </div>
+          </fieldset>
           <Button
             aria-label="add product"
             className="w-full"

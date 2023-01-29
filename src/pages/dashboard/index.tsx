@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import type { NextPageWithLayout } from "../_app";
 
-// imports: components
+// external imports
 import DefaultLayout from "@/layouts/DefaultLayout";
 
 const dashboardRoutes = [

@@ -84,8 +84,6 @@ model Product {
   items       OrderItem[]
 }
 
-// what does @db.Text do?
-
 model Order {
   id        String       @id @default(cuid())
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)

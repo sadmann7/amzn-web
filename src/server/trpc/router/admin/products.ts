@@ -75,24 +75,42 @@ export const productsAdminRouter = router({
         price: z.number().min(0),
         category: z.nativeEnum(PRODUCT_CATEGORY),
         description: z.string().min(3),
-        image: z.string().url(),
+        image: z.string(),
         rating: z.number().min(0).max(5),
         quantity: z.number().default(1),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const photo = await ctx.cloudinary.uploader.upload(input.image, {
+        resource_type: "image",
+        folder: "amzn-store",
+        width: 500,
+        height: 500,
+      });
       const product = await ctx.prisma.product.create({
         data: {
           name: input.name,
           price: input.price,
           category: input.category,
           description: input.description,
-          image: input.image,
+          image: photo.secure_url,
           rating: input.rating,
           quantity: input.quantity,
         },
       });
       return product;
+    }),
+
+  uploadImage: adminProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const photo = await ctx.cloudinary.uploader.upload(input, {
+        resource_type: "image",
+        folder: "amzn-store",
+        width: 500,
+        height: 500,
+      });
+      return photo;
     }),
 
   update: adminProcedure

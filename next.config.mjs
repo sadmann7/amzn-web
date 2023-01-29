@@ -19,6 +19,10 @@ const config = {
         protocol: "https",
         hostname: "fakestoreapi.com",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
     ],
   },
 };
