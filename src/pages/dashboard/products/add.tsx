@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PRODUCT_CATEGORY } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -13,6 +14,7 @@ import type { NextPageWithLayout } from "../../_app";
 // external imports
 import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
+import Image from "next/image";
 
 const schema = z.object({
   name: z.string().min(3),
@@ -27,6 +29,24 @@ type Inputs = z.infer<typeof schema>;
 const AddProduct: NextPageWithLayout = () => {
   const [imageBuffer, setImageBuffer] = useState<string>();
 
+  // react-dropzone
+  const [preview, setPreview] = useState<string>();
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) =>
+      acceptedFiles.forEach((file) => {
+        setPreview(URL.createObjectURL(file));
+      }),
+    []
+  );
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      "image/*": [],
+    },
+    onDrop: onDrop,
+  });
+
+  console.log(preview);
+
   // add product mutation
   const addProductMutation = trpc.admin.products.createProduct.useMutation({
     onSuccess: async () => {
@@ -36,6 +56,7 @@ const AddProduct: NextPageWithLayout = () => {
       toast.error(err.message);
     },
   });
+
   // react-hook-form
   const {
     register,
@@ -50,10 +71,11 @@ const AddProduct: NextPageWithLayout = () => {
       const base64 = reader.result;
       setImageBuffer(base64 as string);
     };
-    if (!imageBuffer) return toast.error("Image not uploaded");
+    if (!imageBuffer) return toast.error("Image not uploaded!");
     await addProductMutation.mutateAsync({ ...data, image: imageBuffer });
     reset();
   };
+
   // refetch products query
   const uitls = trpc.useContext();
   const number = useIsMutating();
@@ -184,6 +206,35 @@ const AddProduct: NextPageWithLayout = () => {
                 {errors.image.message as string}
               </p>
             ) : null}
+          </fieldset>
+          <fieldset className="grid gap-2">
+            <label
+              htmlFor="add-product-image"
+              className="text-xs font-medium text-title md:text-sm"
+            >
+              Product image
+            </label>
+            <div
+              {...getRootProps()}
+              className="w-full px-4 py-2.5 text-xs font-medium text-title ring-1 ring-lowkey/80 transition-colors placeholder:text-lowkey/80 md:text-sm"
+            >
+              <input {...getInputProps()} />
+              {isDragActive ? (
+                <p>Drop the files here ...</p>
+              ) : preview ? (
+                <Image
+                  src={preview}
+                  alt="product preview"
+                  width={320}
+                  height={320}
+                  className="h-40 w-full object-cover"
+                />
+              ) : (
+                <p>
+                  Drag {`'n'`} drop some files here, or click to select files
+                </p>
+              )}
+            </div>
           </fieldset>
           <fieldset className="grid gap-2">
             <label

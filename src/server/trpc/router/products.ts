@@ -6,7 +6,7 @@ export const productsRouter = router({
   getProducts: publicProcedure.query(async ({ ctx }) => {
     const products = await ctx.prisma.product.findMany({
       orderBy: {
-        createdAt: "asc",
+        createdAt: "desc",
       },
     });
     return products;

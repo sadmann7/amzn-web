@@ -81,11 +81,17 @@ export const productsAdminRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const photo = await ctx.cloudinary.uploader.upload(input.image, {
+      const cldPhoto = await ctx.cloudinary.uploader.upload(input.image, {
         resource_type: "image",
+        format: "webp",
         folder: "amzn-store",
-        width: 500,
-        height: 500,
+        transformation: [
+          {
+            width: 500,
+            height: 500,
+            quality: 75,
+          },
+        ],
       });
       const product = await ctx.prisma.product.create({
         data: {
@@ -93,24 +99,12 @@ export const productsAdminRouter = router({
           price: input.price,
           category: input.category,
           description: input.description,
-          image: photo.secure_url,
+          image: cldPhoto.secure_url,
           rating: input.rating,
           quantity: input.quantity,
         },
       });
       return product;
-    }),
-
-  uploadImage: adminProcedure
-    .input(z.string())
-    .mutation(async ({ ctx, input }) => {
-      const photo = await ctx.cloudinary.uploader.upload(input, {
-        resource_type: "image",
-        folder: "amzn-store",
-        width: 500,
-        height: 500,
-      });
-      return photo;
     }),
 
   update: adminProcedure
