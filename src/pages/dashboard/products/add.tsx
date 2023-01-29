@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PRODUCT_CATEGORY } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import { useDropzone, type FileRejection } from "react-dropzone";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -14,38 +15,21 @@ import type { NextPageWithLayout } from "../../_app";
 // external imports
 import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import Image from "next/image";
 
 const schema = z.object({
   name: z.string().min(3),
   price: z.number().min(0),
   category: z.nativeEnum(PRODUCT_CATEGORY),
   description: z.string().min(3),
-  image: z.any(),
+  image: z.unknown().refine((v) => v instanceof File, {
+    message: "Expected File, received unknown",
+  }),
   rating: z.number().min(0).max(5),
 });
-type Inputs = z.infer<typeof schema>;
+type Inputs = z.infer<typeof schema> & { image: File };
 
 const AddProduct: NextPageWithLayout = () => {
   const [imageBuffer, setImageBuffer] = useState<string>();
-
-  // react-dropzone
-  const [preview, setPreview] = useState<string>();
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) =>
-      acceptedFiles.forEach((file) => {
-        setPreview(URL.createObjectURL(file));
-      }),
-    []
-  );
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      "image/*": [],
-    },
-    onDrop: onDrop,
-  });
-
-  console.log(preview);
 
   // add product mutation
   const addProductMutation = trpc.admin.products.createProduct.useMutation({
@@ -63,10 +47,11 @@ const AddProduct: NextPageWithLayout = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const reader = new FileReader();
-    reader.readAsDataURL(data.image[0]);
+    reader.readAsDataURL(data.image);
     reader.onload = () => {
       const base64 = reader.result;
       setImageBuffer(base64 as string);
@@ -75,6 +60,39 @@ const AddProduct: NextPageWithLayout = () => {
     await addProductMutation.mutateAsync({ ...data, image: imageBuffer });
     reset();
   };
+
+  // react-dropzone
+  const [preview, setPreview] = useState<string>();
+  const onDrop = useCallback(
+    (acceptedFiles: File[], rejectedFiles: FileRejection[]) =>
+      acceptedFiles.forEach(
+        (file) => {
+          setPreview(URL.createObjectURL(file));
+          setValue("image", file, {
+            shouldValidate: true,
+          });
+        },
+        rejectedFiles.forEach((file) => {
+          if (file.errors[0]?.code === "file-too-large") {
+            const size = Math.round(file.file.size / 1000000);
+            toast.error(
+              `Please upload a image smaller than 1MB. Current size: ${size}MB`
+            );
+          } else {
+            toast.error(toast.error(file.errors[0]?.message));
+          }
+        })
+      ),
+
+    [setValue]
+  );
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      "image/*": [],
+    },
+    maxSize: 1000000,
+    onDrop: onDrop,
+  });
 
   // refetch products query
   const uitls = trpc.useContext();
@@ -174,8 +192,9 @@ const AddProduct: NextPageWithLayout = () => {
             >
               Product description
             </label>
-            <input
-              type="text"
+            <textarea
+              cols={25}
+              rows={5}
               id="add-product-description"
               className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
               placeholder="Product description"
@@ -184,26 +203,6 @@ const AddProduct: NextPageWithLayout = () => {
             {errors.description ? (
               <p className="text-sm font-medium text-danger">
                 {errors.description.message}
-              </p>
-            ) : null}
-          </fieldset>
-          <fieldset className="grid gap-2">
-            <label
-              htmlFor="add-product-image"
-              className="text-xs font-medium text-title md:text-sm"
-            >
-              Product image
-            </label>
-            <input
-              type="file"
-              id="add-product-image"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-              placeholder="Product image"
-              {...register("image", { required: true })}
-            />
-            {errors.image ? (
-              <p className="text-sm font-medium text-danger">
-                {errors.image.message as string}
               </p>
             ) : null}
           </fieldset>
@@ -230,11 +229,14 @@ const AddProduct: NextPageWithLayout = () => {
                   className="h-40 w-full object-cover"
                 />
               ) : (
-                <p>
-                  Drag {`'n'`} drop some files here, or click to select files
-                </p>
+                <p>Drag {`'n'`} drop image here, or click to select image</p>
               )}
             </div>
+            {errors.image ? (
+              <p className="text-sm font-medium text-danger">
+                {errors.image.message as string}
+              </p>
+            ) : null}
           </fieldset>
           <fieldset className="grid gap-2">
             <label

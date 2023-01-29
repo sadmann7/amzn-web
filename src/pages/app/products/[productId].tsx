@@ -40,7 +40,7 @@ const ShowProduct: NextPageWithLayout = () => {
       </Head>
       <main className="min-h-screen pt-48 pb-14 md:pt-40 lg:pt-36">
         <div className="mx-auto w-full max-w-screen-2xl px-4 sm:w-[95vw]">
-          <div className="mx-auto flex w-full flex-col items-center gap-8 md:w-1/2">
+          <div className="mx-auto flex w-full flex-col items-center gap-5 md:w-1/2">
             <Image
               src={productQuery.data.image}
               alt={productQuery.data.name}
@@ -49,7 +49,7 @@ const ShowProduct: NextPageWithLayout = () => {
               loading="lazy"
               className="h-56 w-56 object-contain"
             />
-            <div className="flex flex-col items-center gap-2.5">
+            <div className="flex flex-col items-center gap-2">
               <h1 className="text-center text-xl font-semibold md:text-3xl">
                 {productQuery.data.name}
               </h1>
@@ -61,7 +61,7 @@ const ShowProduct: NextPageWithLayout = () => {
               </p>
               <Button
                 aria-label="add product to cart"
-                className="mt-2.5 bg-orange-300 px-5 text-title transition-colors hover:bg-primary active:bg-orange-300"
+                className="mt-1.5 bg-orange-300 px-5 text-title transition-colors hover:bg-primary active:bg-orange-300"
                 onClick={() => {
                   cartStore.addProduct(productQuery.data as Product);
                   toast.success(
