@@ -18,7 +18,7 @@ const ShowProduct: NextPageWithLayout = () => {
   const productId = Router.query.productId as string;
 
   // get product query
-  const productQuery = trpc.products.getProduct.useQuery(productId);
+  const productQuery = trpc.products.getOne.useQuery(productId);
 
   // cart store
   const cartStore = useCartStore((state) => ({

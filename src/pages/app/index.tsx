@@ -11,16 +11,13 @@ import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
 
 const App: NextPageWithLayout = () => {
-  // queries
-  const productsQuery = trpc.products.getProducts.useQuery(undefined, {
+  // get queries
+  const productsQuery = trpc.products.get.useQuery(undefined, {
     staleTime: 1000 * 60 * 60 * 24,
   });
-  const categoriesQuery = trpc.products.getUniqueCategories.useQuery(
-    undefined,
-    {
-      staleTime: 1000 * 60 * 60 * 24,
-    }
-  );
+  const categoriesQuery = trpc.products.getCategories.useQuery(undefined, {
+    staleTime: 1000 * 60 * 60 * 24,
+  });
 
   if (categoriesQuery.isLoading || productsQuery.isLoading) {
     return <LoadingScreen />;

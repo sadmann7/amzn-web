@@ -2,7 +2,7 @@ import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
 
 export const ordersRouter = router({
-  getUserOrders: protectedProcedure.query(async ({ ctx }) => {
+  get: protectedProcedure.query(async ({ ctx }) => {
     const orders = await ctx.prisma.order.findMany({
       where: {
         userId: ctx.session.user.id,
@@ -22,7 +22,7 @@ export const ordersRouter = router({
     return orders;
   }),
 
-  getUserArchivedOrders: protectedProcedure.query(async ({ ctx }) => {
+  getArchived: protectedProcedure.query(async ({ ctx }) => {
     const orders = await ctx.prisma.order.findMany({
       where: {
         userId: ctx.session.user.id,
@@ -41,26 +41,24 @@ export const ordersRouter = router({
     return orders;
   }),
 
-  getOrder: protectedProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      const order = await ctx.prisma.order.findUnique({
-        where: {
-          id: input,
-        },
-        include: {
-          items: {
-            include: {
-              product: true,
-            },
+  getOne: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    const order = await ctx.prisma.order.findUnique({
+      where: {
+        id: input,
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
           },
         },
-      });
-      if (!order) {
-        throw new Error("Order not found!");
-      }
-      return order;
-    }),
+      },
+    });
+    if (!order) {
+      throw new Error("Order not found!");
+    }
+    return order;
+  }),
 
   getItems: protectedProcedure
     .input(z.string())
@@ -79,7 +77,7 @@ export const ordersRouter = router({
       return orderItems;
     }),
 
-  getCurrentUserItems: protectedProcedure.query(async ({ ctx }) => {
+  getUserItems: protectedProcedure.query(async ({ ctx }) => {
     const orderItems = await ctx.prisma.orderItem.findMany({
       where: {
         order: {
@@ -135,7 +133,7 @@ export const ordersRouter = router({
       return orderItem;
     }),
 
-  createOrder: protectedProcedure
+  create: protectedProcedure
     .input(
       z.array(
         z.object({

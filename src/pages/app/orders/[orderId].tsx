@@ -15,9 +15,8 @@ const ShowOrder: NextPageWithLayout = () => {
   const orderId = Router.query.orderId as string;
 
   // get order query
-  const orderQuery = trpc.orders.getOrder.useQuery(orderId);
+  const orderQuery = trpc.orders.getOne.useQuery(orderId);
 
-  // renders
   if (orderQuery.isLoading) {
     return <LoadingScreen />;
   }

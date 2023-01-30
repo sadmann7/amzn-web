@@ -3,14 +3,14 @@ import { trpc } from "@/utils/trpc";
 import Head from "next/head";
 
 // external components
-import DefaultLayout from "@/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
 
 const Products: NextPageWithLayout = () => {
-  // trpc
-  const productsQuery = trpc.products.getProducts.useQuery(undefined, {
+  // get products query
+  const productsQuery = trpc.products.get.useQuery(undefined, {
     staleTime: 1000 * 60 * 60 * 24,
   });
 

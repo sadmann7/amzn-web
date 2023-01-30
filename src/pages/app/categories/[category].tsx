@@ -5,16 +5,17 @@ import Router from "next/router";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports
-import DefaultLayout from "@/layouts/DefaultLayout";
 import ProductList from "@/components/ProductList";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
 
 const ShowCategory: NextPageWithLayout = () => {
-  //  trpc
   const category = Router.query.category as PRODUCT_CATEGORY;
-  const productsQuery = trpc.products.getProductsByCategory.useQuery(category, {
-    staleTime: Infinity,
+
+  // get products by category query
+  const productsQuery = trpc.products.getByCategory.useQuery(category, {
+    staleTime: 1000 * 60 * 60 * 24,
   });
 
   if (productsQuery.isLoading) {

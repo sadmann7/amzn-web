@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
@@ -6,23 +7,27 @@ export const usersRouter = router({
     return ctx.session;
   }),
 
-  getUsers: protectedProcedure.query(async ({ ctx }) => {
+  get: protectedProcedure.query(async ({ ctx }) => {
     const users = await ctx.prisma.user.findMany();
     return users;
   }),
 
-  getUser: protectedProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.findUnique({
-        where: {
-          id: input,
-        },
+  getOne: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: {
+        id: input,
+      },
+    });
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found!",
       });
-      return user;
-    }),
+    }
+    return user;
+  }),
 
-  updateUser: protectedProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -43,7 +48,7 @@ export const usersRouter = router({
       return user;
     }),
 
-  deleteUser: protectedProcedure
+  delete: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.delete({

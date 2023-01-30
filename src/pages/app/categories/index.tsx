@@ -9,13 +9,10 @@ import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
 
 const Categories: NextPageWithLayout = () => {
-  // trpc
-  const categoriesQuery = trpc.products.getUniqueCategories.useQuery(
-    undefined,
-    {
-      staleTime: 1000 * 60 * 60 * 24,
-    }
-  );
+  // get categories query
+  const categoriesQuery = trpc.products.getCategories.useQuery(undefined, {
+    staleTime: 1000 * 60 * 60 * 24,
+  });
 
   if (categoriesQuery.isLoading) {
     return <LoadingScreen />;

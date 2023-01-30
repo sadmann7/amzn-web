@@ -79,7 +79,7 @@ const Orders: NextPageWithLayout = () => {
     []
   );
 
-  // trpc
+  // get orders query
   const { data, isLoading, isError, isRefetching } =
     trpc.admin.orders.get.useQuery(
       {

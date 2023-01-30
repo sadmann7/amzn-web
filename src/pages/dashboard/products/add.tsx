@@ -62,12 +62,12 @@ const AddProduct: NextPageWithLayout = () => {
     setPreview(undefined);
   };
 
-  // refetch products query on mutation
+  // refetch products query
   const uitls = trpc.useContext();
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
-      uitls.products.getProducts.invalidate();
+      uitls.products.get.invalidate();
     }
   }, [number, uitls]);
 

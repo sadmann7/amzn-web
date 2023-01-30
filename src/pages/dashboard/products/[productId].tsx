@@ -108,13 +108,13 @@ const UpdateProduct: NextPageWithLayout = () => {
     },
   });
 
-  // refetch queries on mutation
+  // refetch queries
   const utils = trpc.useContext();
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
       utils.admin.products.getOne.invalidate(productId);
-      utils.products.getProducts.invalidate();
+      utils.products.get.invalidate();
     }
   }, [number, productId, utils]);
 

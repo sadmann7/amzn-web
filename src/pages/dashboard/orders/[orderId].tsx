@@ -31,13 +31,13 @@ const UpdateOrder: NextPageWithLayout = () => {
     },
   });
 
-  // refetch order query
+  // refetch queries
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
       utils.admin.orders.getOne.invalidate(orderId);
-      utils.orders.getUserOrders.invalidate();
-      utils.orders.getUserArchivedOrders.invalidate();
+      utils.orders.get.invalidate();
+      utils.orders.getArchived.invalidate();
     }
   }, [number, orderId, utils]);
 
