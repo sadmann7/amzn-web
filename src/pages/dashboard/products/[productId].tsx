@@ -1,7 +1,7 @@
-import DefaultLayout from "@/layouts/DefaultLayout";
 import { formatEnum } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Product } from "@prisma/client";
 import { PRODUCT_CATEGORY } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
@@ -15,6 +15,7 @@ import type { NextPageWithLayout } from "../../_app";
 // external imports
 import Button from "@/components/Button";
 import CustomDropzone from "@/components/CustomDropzone";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
 import {
@@ -37,11 +38,9 @@ type Inputs = z.infer<typeof schema> & { image: File };
 const UpdateProduct: NextPageWithLayout = () => {
   const productId = Router.query.productId as string;
   const [preview, setPreview] = useState<string | undefined>();
-  const [isFirst, setIsFirst] = useState<boolean>(false);
-  const [isLast, setIsLast] = useState<boolean>(false);
 
   // get product query
-  const getProductQuery = trpc.admin.products.getProduct.useQuery(productId, {
+  const getProductQuery = trpc.admin.products.getOne.useQuery(productId, {
     enabled: Boolean(productId),
   });
 
@@ -87,30 +86,22 @@ const UpdateProduct: NextPageWithLayout = () => {
     },
   });
 
-  // next product mutation
-  const nextProductMutation = trpc.admin.products.next.useMutation({
-    onSuccess: async (product) => {
-      if (!product) {
-        toast.error("No more products!");
-        setIsLast(true);
-        setIsFirst(false);
-      }
-      Router.push(`/dashboard/products/${product?.id ?? productId}`);
+  // prev product mutation
+  const prevProductMutation = trpc.admin.products.prev.useMutation({
+    onSuccess: async (data) => {
+      if (!data) toast.error("No previous product!");
+      Router.push(`/dashboard/products/${data?.id}`);
     },
     onError: async (err) => {
       toast.error(err.message);
     },
   });
 
-  // prev product mutation
-  const prevProductMutation = trpc.admin.products.prev.useMutation({
-    onSuccess: async (product) => {
-      if (!product) {
-        toast.error("No more products!");
-        setIsFirst(true);
-        setIsLast(false);
-      }
-      Router.push(`/dashboard/products/${product?.id ?? productId}`);
+  // next product mutation
+  const nextProductMutation = trpc.admin.products.next.useMutation({
+    onSuccess: async (data) => {
+      if (!data) toast.error("No next product!");
+      Router.push(`/dashboard/products/${data?.id}`);
     },
     onError: async (err) => {
       toast.error(err.message);
@@ -122,7 +113,7 @@ const UpdateProduct: NextPageWithLayout = () => {
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
-      utils.admin.products.getProduct.invalidate(productId);
+      utils.admin.products.getOne.invalidate(productId);
       utils.products.getProducts.invalidate();
     }
   }, [number, productId, utils]);
@@ -135,9 +126,14 @@ const UpdateProduct: NextPageWithLayout = () => {
 
   // reset form (without image) on product change
   useEffect(() => {
-    if (!getProductQuery.data) return;
+    if (!getProductQuery.data ?? getProductQuery.data === null) return;
     reset((formValues) => ({
       ...formValues,
+      name: (getProductQuery.data as Product).name,
+      price: (getProductQuery.data as Product).price,
+      category: (getProductQuery.data as Product).category,
+      description: (getProductQuery.data as Product).description,
+      rating: (getProductQuery.data as Product).rating,
     }));
   }, [getProductQuery.data, reset]);
 
@@ -170,9 +166,7 @@ const UpdateProduct: NextPageWithLayout = () => {
             <div className="flex items-center">
               <button
                 aria-label="navigate to previous product page"
-                className="disabled:hidden"
                 onClick={() => prevProductMutation.mutateAsync(productId)}
-                disabled={isFirst}
               >
                 <ArrowLeftCircleIcon
                   className="aspect-square w-10 text-primary transition-colors hover:text-orange-300 active:text-orange-500"
@@ -181,9 +175,7 @@ const UpdateProduct: NextPageWithLayout = () => {
               </button>
               <button
                 aria-label="navigate to next product page"
-                className="disabled:hidden"
                 onClick={() => nextProductMutation.mutateAsync(productId)}
-                disabled={isLast}
               >
                 <ArrowRightCircleIcon
                   className="aspect-square w-10 text-primary transition-colors hover:text-orange-300 active:text-orange-500"
@@ -345,7 +337,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                 disabled={updateProductMutation.isLoading}
               >
                 {updateProductMutation.isLoading
-                  ? "Updating..."
+                  ? "Loading..."
                   : "Update product"}
               </Button>
             </form>
@@ -356,7 +348,7 @@ const UpdateProduct: NextPageWithLayout = () => {
               disabled={deleteProductMutation.isLoading}
             >
               {deleteProductMutation.isLoading
-                ? "Deleting..."
+                ? "Loading..."
                 : "Delete product"}
             </Button>
           </div>

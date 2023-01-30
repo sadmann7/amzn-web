@@ -1,10 +1,11 @@
 import type { Prisma } from "@prisma/client";
 import { PRODUCT_CATEGORY } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { adminProcedure, router } from "../../trpc";
 
 export const productsAdminRouter = router({
-  getProducts: adminProcedure
+  get: adminProcedure
     .input(
       z.object({
         page: z.number().int().default(0),
@@ -59,12 +60,17 @@ export const productsAdminRouter = router({
       return { count, products };
     }),
 
-  getProduct: adminProcedure.input(z.string()).query(async ({ ctx, input }) => {
+  getOne: adminProcedure.input(z.string()).query(async ({ ctx, input }) => {
     const product = await ctx.prisma.product.findUnique({
       where: {
         id: input,
       },
     });
+    if (!product)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Product not found!",
+      });
     return product;
   }),
 
@@ -157,37 +163,17 @@ export const productsAdminRouter = router({
     return product;
   }),
 
-  next: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
-    const product = await ctx.prisma.product.findUnique({
-      where: {
-        id: input,
-      },
-    });
-    if (!product) {
-      throw new Error("Product not found");
-    }
-    const nextProduct = await ctx.prisma.product.findFirst({
-      where: {
-        id: {
-          gt: product.id,
-        },
-      },
-      orderBy: {
-        id: "asc",
-      },
-    });
-    return nextProduct;
-  }),
-
   prev: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
     const product = await ctx.prisma.product.findUnique({
       where: {
         id: input,
       },
     });
-    if (!product) {
-      throw new Error("Product not found");
-    }
+    if (!product)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Product not found!",
+      });
     const prevProduct = await ctx.prisma.product.findFirst({
       where: {
         id: {
@@ -198,6 +184,46 @@ export const productsAdminRouter = router({
         id: "desc",
       },
     });
+    if (!prevProduct) {
+      const lastProduct = await ctx.prisma.product.findFirst({
+        orderBy: {
+          id: "desc",
+        },
+      });
+      return lastProduct;
+    }
     return prevProduct;
+  }),
+
+  next: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const product = await ctx.prisma.product.findUnique({
+      where: {
+        id: input,
+      },
+    });
+    if (!product)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Product not found!",
+      });
+    const nextProduct = await ctx.prisma.product.findFirst({
+      where: {
+        id: {
+          gt: product.id,
+        },
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+    if (!nextProduct) {
+      const firstProduct = await ctx.prisma.product.findFirst({
+        orderBy: {
+          id: "asc",
+        },
+      });
+      return firstProduct;
+    }
+    return nextProduct;
   }),
 });

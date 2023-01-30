@@ -1,9 +1,10 @@
 import type { Prisma } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { adminProcedure, router } from "../../trpc";
 
 export const ordersAdminRouter = router({
-  getOrders: adminProcedure
+  get: adminProcedure
     .input(
       z.object({
         page: z.number().int().default(0),
@@ -33,7 +34,7 @@ export const ordersAdminRouter = router({
       return { count, orders };
     }),
 
-  getOrder: adminProcedure.input(z.string()).query(async ({ ctx, input }) => {
+  getOne: adminProcedure.input(z.string()).query(async ({ ctx, input }) => {
     const order = await ctx.prisma.order.findUnique({
       where: { id: input },
       include: {
@@ -44,22 +45,29 @@ export const ordersAdminRouter = router({
         },
       },
     });
+    if (!order) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Order not found!",
+      });
+    }
     return order;
   }),
 
-  deleteOrder: adminProcedure
-    .input(z.string())
-    .mutation(async ({ ctx, input }) => {
-      const order = await ctx.prisma.order.delete({
-        where: {
-          id: input,
-        },
+  delete: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const order = await ctx.prisma.order.delete({
+      where: {
+        id: input,
+      },
+    });
+    if (!order) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Order not found!",
       });
-      if (!order) {
-        throw new Error("Order not found!");
-      }
-      return order;
-    }),
+    }
+    return order;
+  }),
 
   deleteItem: adminProcedure
     .input(z.string())
@@ -70,7 +78,10 @@ export const ordersAdminRouter = router({
         },
       });
       if (!orderItem) {
-        throw new Error("Order item not found!");
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Order item not found!",
+        });
       }
       const orderItems = await ctx.prisma.orderItem.findMany({
         where: {
@@ -86,4 +97,50 @@ export const ordersAdminRouter = router({
       }
       return orderItem;
     }),
+
+  prev: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const order = await ctx.prisma.order.findUnique({
+      where: { id: input },
+    });
+    if (!order) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Order not found!",
+      });
+    }
+    const prevOrder = await ctx.prisma.order.findFirst({
+      where: {
+        createdAt: {
+          lt: order.createdAt,
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return prevOrder;
+  }),
+
+  next: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const order = await ctx.prisma.order.findUnique({
+      where: { id: input },
+    });
+    if (!order) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Order not found!",
+      });
+    }
+    const nextOrder = await ctx.prisma.order.findFirst({
+      where: {
+        createdAt: {
+          gt: order.createdAt,
+        },
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+    return nextOrder;
+  }),
 });

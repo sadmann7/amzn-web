@@ -81,7 +81,7 @@ const Orders: NextPageWithLayout = () => {
 
   // trpc
   const { data, isLoading, isError, isRefetching } =
-    trpc.admin.orders.getOrders.useQuery(
+    trpc.admin.orders.get.useQuery(
       {
         page: pagination.pageIndex,
         perPage: pagination.pageSize,

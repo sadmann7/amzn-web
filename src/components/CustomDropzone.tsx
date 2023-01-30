@@ -14,7 +14,7 @@ import type {
 } from "react-hook-form";
 import { toast } from "react-toastify";
 
-type Props<TInputs extends FieldValues> = {
+type DropProps<TInputs extends FieldValues> = {
   name: Path<TInputs>;
   setValue: UseFormSetValue<TInputs>;
   preview: string | undefined;
@@ -28,7 +28,7 @@ const CustomDropzone = <TInputs extends FieldValues>({
   setPreview,
   className,
   id,
-}: Props<TInputs>) => {
+}: DropProps<TInputs>) => {
   // react-dropzone
   const onDrop = useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) =>

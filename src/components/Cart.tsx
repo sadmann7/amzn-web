@@ -39,7 +39,7 @@ const Cart = ({ products }: { products: Product[] }) => {
       {products.length <= 0 ? (
         <div className="grid gap-1.5 bg-white px-5 pt-8 pb-10">
           <h1 className="text-2xl text-title md:text-3xl">
-            Your Amazon Cart is empty.
+            Your Amzn Cart is empty.
           </h1>
           <p className="text-xs font-medium text-text md:text-sm">
             Your Shopping Cart lives to serve. Give it purpose — fill it with

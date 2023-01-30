@@ -7,7 +7,7 @@ import type {
   ColumnFiltersState,
   PaginationState,
   SortingState,
-  VisibilityState
+  VisibilityState,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import Head from "next/head";
@@ -84,9 +84,9 @@ const Products: NextPageWithLayout = () => {
     []
   );
 
-  // trpc
+  // get products query
   const { data, isLoading, isError, isRefetching } =
-    trpc.admin.products.getProducts.useQuery(
+    trpc.admin.products.get.useQuery(
       {
         page: pagination.pageIndex,
         perPage: pagination.pageSize,

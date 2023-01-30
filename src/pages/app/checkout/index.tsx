@@ -7,7 +7,7 @@ import Cart from "@/components/Cart";
 import DefaultLayout from "@/layouts/DefaultLayout";
 
 const Checkout: NextPageWithLayout = () => {
-  //  zustand
+  //  cart store
   const cartStore = useCartStore((state) => ({
     products: state.products,
   }));

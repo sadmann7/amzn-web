@@ -136,7 +136,7 @@ const Update: NextPageWithLayout = () => {
               className="w-full"
               disabled={updateUserMutation.isLoading}
             >
-              {updateUserMutation.isLoading ? "Loading..." : "Update user"}
+              {updateUserMutation.isLoading ? "Loading..." : "Update account"}
             </Button>
           </form>
           <Button
@@ -148,7 +148,7 @@ const Update: NextPageWithLayout = () => {
             }
             disabled={deleteUserMutation.isLoading}
           >
-            {deleteUserMutation.isLoading ? "Deleting..." : "Delete account"}
+            {deleteUserMutation.isLoading ? "Loading..." : "Delete account"}
           </Button>
         </div>
       </main>

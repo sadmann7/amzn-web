@@ -1,10 +1,11 @@
 import type { Prisma } from "@prisma/client";
 import { USER_ROLE } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { adminProcedure, router } from "../../trpc";
 
 export const usersAdminRouter = router({
-  getUsers: adminProcedure
+  get: adminProcedure
     .input(
       z.object({
         page: z.number().int().default(0),
@@ -48,6 +49,20 @@ export const usersAdminRouter = router({
       return { count, users };
     }),
 
+  getOne: adminProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: {
+        id: input,
+      },
+    });
+    if (!user)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found!",
+      });
+    return user;
+  }),
+
   updateRole: adminProcedure
     .input(
       z.object({
@@ -56,9 +71,25 @@ export const usersAdminRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.update({
+      const uniqueUser = await ctx.prisma.user.findUnique({
         where: {
           id: input.id,
+        },
+      });
+      if (!uniqueUser)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found!",
+        });
+      if (uniqueUser.role !== USER_ROLE.ADMIN) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only admins can change roles!",
+        });
+      }
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: uniqueUser.id,
         },
         data: {
           role: input.role,
@@ -75,9 +106,25 @@ export const usersAdminRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.update({
+      const uniqueUser = await ctx.prisma.user.findUnique({
         where: {
           id: input.id,
+        },
+      });
+      if (!uniqueUser)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found!",
+        });
+      if (uniqueUser.role !== USER_ROLE.ADMIN) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only admins can change status!",
+        });
+      }
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: uniqueUser.id,
         },
         data: {
           active: input.status,
@@ -85,4 +132,77 @@ export const usersAdminRouter = router({
       });
       return user;
     }),
+
+  delete: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const user = await ctx.prisma.user.delete({
+      where: {
+        id: input,
+      },
+    });
+    return user;
+  }),
+
+  prev: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: {
+        id: input,
+      },
+    });
+    if (!user)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found!",
+      });
+    const prevUser = await ctx.prisma.user.findFirst({
+      where: {
+        id: {
+          lt: user.id,
+        },
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+    if (!prevUser) {
+      const lastUser = await ctx.prisma.user.findFirst({
+        orderBy: {
+          id: "desc",
+        },
+      });
+      return lastUser;
+    }
+    return prevUser;
+  }),
+
+  next: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: {
+        id: input,
+      },
+    });
+    if (!user)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found!",
+      });
+    const nextUser = await ctx.prisma.user.findFirst({
+      where: {
+        id: {
+          gt: user.id,
+        },
+      },
+      orderBy: {
+        id: "asc",
+      },
+    });
+    if (!nextUser) {
+      const firstUser = await ctx.prisma.user.findFirst({
+        orderBy: {
+          id: "asc",
+        },
+      });
+      return firstUser;
+    }
+    return nextUser;
+  }),
 });

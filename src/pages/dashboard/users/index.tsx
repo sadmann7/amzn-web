@@ -77,9 +77,9 @@ const Users: NextPageWithLayout = () => {
     []
   );
 
-  // trpc
+  // get users query
   const { data, isLoading, isError, isRefetching } =
-    trpc.admin.users.getUsers.useQuery(
+    trpc.admin.users.get.useQuery(
       {
         page: pagination.pageIndex,
         perPage: pagination.pageSize,

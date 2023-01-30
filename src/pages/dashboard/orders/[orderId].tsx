@@ -18,9 +18,10 @@ const UpdateOrder: NextPageWithLayout = () => {
   const utils = trpc.useContext();
 
   // get order query
-  const orderQuery = trpc.admin.orders.getOrder.useQuery(orderId);
+  const orderQuery = trpc.admin.orders.getOne.useQuery(orderId);
+
   // delete order mutation
-  const deleteOrderMutation = trpc.admin.orders.deleteOrder.useMutation({
+  const deleteOrderMutation = trpc.admin.orders.delete.useMutation({
     onSuccess: async () => {
       toast.success("Order deleted");
       Router.push("/dashboard/orders");
@@ -29,15 +30,17 @@ const UpdateOrder: NextPageWithLayout = () => {
       toast.error(err.message);
     },
   });
+
   // refetch order query
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
-      utils.admin.orders.getOrder.invalidate(orderId);
+      utils.admin.orders.getOne.invalidate(orderId);
       utils.orders.getUserOrders.invalidate();
       utils.orders.getUserArchivedOrders.invalidate();
     }
   }, [number, orderId, utils]);
+
   // redirect if no order
   useEffect(() => {
     if (orderQuery.data === null) {
@@ -45,7 +48,6 @@ const UpdateOrder: NextPageWithLayout = () => {
     }
   }, [orderQuery.data]);
 
-  // renders
   if (orderQuery.isLoading) {
     return <LoadingScreen />;
   }
