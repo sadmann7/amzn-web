@@ -7,7 +7,7 @@ import type {
   ColumnFiltersState,
   PaginationState,
   SortingState,
-  VisibilityState,
+  VisibilityState
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import Head from "next/head";

@@ -5,10 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PRODUCT_CATEGORY } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
-import Image from "next/image";
 import Router from "next/router";
-import { useCallback, useEffect, useState } from "react";
-import { useDropzone, type FileRejection } from "react-dropzone";
+import { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -16,6 +14,7 @@ import type { NextPageWithLayout } from "../../_app";
 
 // external imports
 import Button from "@/components/Button";
+import CustomDropzone from "@/components/CustomDropzone";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
 import {
@@ -37,8 +36,7 @@ type Inputs = z.infer<typeof schema> & { image: File };
 
 const UpdateProduct: NextPageWithLayout = () => {
   const productId = Router.query.productId as string;
-  const utils = trpc.useContext();
-  const [preview, setPreview] = useState<string | null>();
+  const [preview, setPreview] = useState<string | undefined>();
   const [isFirst, setIsFirst] = useState<boolean>(false);
   const [isLast, setIsLast] = useState<boolean>(false);
 
@@ -56,6 +54,27 @@ const UpdateProduct: NextPageWithLayout = () => {
       toast.error(err.message);
     },
   });
+  // react-hook-form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    reset,
+  } = useForm<Inputs>({ resolver: zodResolver(schema) });
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(data.image);
+    reader.onload = async () => {
+      const base64 = reader.result;
+      await updateProductMutation.mutateAsync({
+        id: productId,
+        ...data,
+        image: base64 as string,
+      });
+    };
+  };
 
   // delete product mutation
   const deleteProductMutation = trpc.admin.products.delete.useMutation({
@@ -98,61 +117,8 @@ const UpdateProduct: NextPageWithLayout = () => {
     },
   });
 
-  // react-hook-form
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    reset,
-  } = useForm<Inputs>({ resolver: zodResolver(schema) });
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(data.image);
-    reader.onload = async () => {
-      const base64 = reader.result;
-      await updateProductMutation.mutateAsync({
-        id: productId,
-        ...data,
-        image: base64 as string,
-      });
-    };
-  };
-
-  // react-dropzone
-  const onDrop = useCallback(
-    (acceptedFiles: File[], rejectedFiles: FileRejection[]) =>
-      acceptedFiles.forEach(
-        (file) => {
-          if (!file) return;
-          setPreview(URL.createObjectURL(file));
-          setValue("image", file, {
-            shouldValidate: true,
-          });
-        },
-        rejectedFiles.forEach((file) => {
-          if (file.errors[0]?.code === "file-too-large") {
-            const size = Math.round(file.file.size / 1000000);
-            toast.error(
-              `Please upload a image smaller than 1MB. Current size: ${size}MB`
-            );
-          } else {
-            toast.error(toast.error(file.errors[0]?.message));
-          }
-        })
-      ),
-
-    [setValue]
-  );
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      "image/*": [],
-    },
-    maxSize: 1000000,
-    onDrop: onDrop,
-  });
-
-  // refetch product query
+  // refetch queries on mutation
+  const utils = trpc.useContext();
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {
@@ -161,17 +127,18 @@ const UpdateProduct: NextPageWithLayout = () => {
     }
   }, [number, productId, utils]);
 
-  // reset form on product change
+  // setPreview
+  useEffect(() => {
+    if (!getProductQuery.data?.image) return;
+    setPreview(getProductQuery.data.image);
+  }, [getProductQuery.data?.image]);
+
+  // reset form (without image) on product change
   useEffect(() => {
     if (!getProductQuery.data) return;
-    reset({
-      name: getProductQuery.data.name,
-      price: getProductQuery.data.price,
-      category: getProductQuery.data.category,
-      description: getProductQuery.data.description,
-      rating: getProductQuery.data.rating,
-    });
-    setPreview(getProductQuery.data.image);
+    reset((formValues) => ({
+      ...formValues,
+    }));
   }, [getProductQuery.data, reset]);
 
   if (getProductQuery.isLoading) {
@@ -334,28 +301,13 @@ const UpdateProduct: NextPageWithLayout = () => {
                 >
                   Product image
                 </label>
-                <div
-                  {...getRootProps()}
-                  className="grid h-32 w-full place-items-center p-2 text-xs font-medium text-title ring-1 ring-lowkey/80 transition-colors placeholder:text-lowkey/80 md:text-sm"
-                >
-                  <input {...getInputProps()} id="update-product-image" />
-                  {isDragActive ? (
-                    <p>Drop the files here ...</p>
-                  ) : preview ?? getProductQuery.data?.image ? (
-                    <Image
-                      src={preview ?? (getProductQuery.data?.image as string)}
-                      alt="product preview"
-                      width={224}
-                      height={224}
-                      className="h-28 w-full object-cover"
-                      priority
-                    />
-                  ) : (
-                    <p>
-                      Drag {`'n'`} drop image here, or click to select image
-                    </p>
-                  )}
-                </div>
+                <CustomDropzone<Inputs>
+                  id="update-product-image"
+                  name="image"
+                  setValue={setValue}
+                  preview={preview}
+                  setPreview={setPreview}
+                />
                 {errors.image ? (
                   <p className="text-sm font-medium text-danger">
                     {errors.image.message}
@@ -393,7 +345,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                 disabled={updateProductMutation.isLoading}
               >
                 {updateProductMutation.isLoading
-                  ? "Loading..."
+                  ? "Updating..."
                   : "Update product"}
               </Button>
             </form>
@@ -404,7 +356,7 @@ const UpdateProduct: NextPageWithLayout = () => {
               disabled={deleteProductMutation.isLoading}
             >
               {deleteProductMutation.isLoading
-                ? "Loading..."
+                ? "Deleting..."
                 : "Delete product"}
             </Button>
           </div>

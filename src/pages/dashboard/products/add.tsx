@@ -4,9 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PRODUCT_CATEGORY } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
-import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { useDropzone, type FileRejection } from "react-dropzone";
+import { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -14,6 +12,7 @@ import type { NextPageWithLayout } from "../../_app";
 
 // external imports
 import Button from "@/components/Button";
+import CustomDropzone from "@/components/CustomDropzone";
 import DefaultLayout from "@/layouts/DefaultLayout";
 
 const schema = z.object({
@@ -29,7 +28,7 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema> & { image: File };
 
 const AddProduct: NextPageWithLayout = () => {
-  const [preview, setPreview] = useState<string | null>();
+  const [preview, setPreview] = useState<string | undefined>();
 
   // add product mutation
   const addProductMutation = trpc.admin.products.create.useMutation({
@@ -60,43 +59,10 @@ const AddProduct: NextPageWithLayout = () => {
       });
     };
     reset();
-    setPreview(null);
+    setPreview(undefined);
   };
 
-  // react-dropzone
-  const onDrop = useCallback(
-    (acceptedFiles: File[], rejectedFiles: FileRejection[]) =>
-      acceptedFiles.forEach(
-        (file) => {
-          if (!file) return;
-          setPreview(URL.createObjectURL(file));
-          setValue("image", file, {
-            shouldValidate: true,
-          });
-        },
-        rejectedFiles.forEach((file) => {
-          if (file.errors[0]?.code === "file-too-large") {
-            const size = Math.round(file.file.size / 1000000);
-            toast.error(
-              `Please upload a image smaller than 1MB. Current size: ${size}MB`
-            );
-          } else {
-            toast.error(toast.error(file.errors[0]?.message));
-          }
-        })
-      ),
-
-    [setValue]
-  );
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      "image/*": [],
-    },
-    maxSize: 1000000,
-    onDrop: onDrop,
-  });
-
-  // refetch products query
+  // refetch products query on mutation
   const uitls = trpc.useContext();
   const number = useIsMutating();
   useEffect(() => {
@@ -216,26 +182,13 @@ const AddProduct: NextPageWithLayout = () => {
               >
                 Product image
               </label>
-              <div
-                {...getRootProps()}
-                className="grid h-32 w-full place-items-center p-2 text-xs font-medium text-title ring-1 ring-lowkey/80 transition-colors placeholder:text-lowkey/80 md:text-sm"
-              >
-                <input {...getInputProps()} id="add-product-image" />
-                {isDragActive ? (
-                  <p>Drop the files here ...</p>
-                ) : preview ? (
-                  <Image
-                    src={preview}
-                    alt="product preview"
-                    width={224}
-                    height={224}
-                    className="h-28 w-full object-cover"
-                    loading="lazy"
-                  />
-                ) : (
-                  <p>Drag {`'n'`} drop image here, or click to select image</p>
-                )}
-              </div>
+              <CustomDropzone<Inputs>
+                id="add-product-image"
+                name="image"
+                setValue={setValue}
+                preview={preview}
+                setPreview={setPreview}
+              />
               {errors.image ? (
                 <p className="text-sm font-medium text-danger">
                   {errors.image.message}
