@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PRODUCT_CATEGORY } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
+import Image from "next/image";
 import Router from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
@@ -17,7 +18,10 @@ import type { NextPageWithLayout } from "../../_app";
 import Button from "@/components/Button";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
-import Image from "next/image";
+import {
+  ArrowLeftCircleIcon,
+  ArrowRightCircleIcon,
+} from "@heroicons/react/20/solid";
 
 const schema = z.object({
   name: z.string().min(3),
@@ -35,6 +39,8 @@ const UpdateProduct: NextPageWithLayout = () => {
   const productId = Router.query.productId as string;
   const utils = trpc.useContext();
   const [preview, setPreview] = useState<string | null>();
+  const [isFirst, setIsFirst] = useState<boolean>(false);
+  const [isLast, setIsLast] = useState<boolean>(false);
 
   // get product query
   const getProductQuery = trpc.admin.products.getProduct.useQuery(productId, {
@@ -62,12 +68,43 @@ const UpdateProduct: NextPageWithLayout = () => {
     },
   });
 
+  // next product mutation
+  const nextProductMutation = trpc.admin.products.next.useMutation({
+    onSuccess: async (product) => {
+      if (!product) {
+        toast.error("No more products!");
+        setIsLast(true);
+        setIsFirst(false);
+      }
+      Router.push(`/dashboard/products/${product?.id ?? productId}`);
+    },
+    onError: async (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  // prev product mutation
+  const prevProductMutation = trpc.admin.products.prev.useMutation({
+    onSuccess: async (product) => {
+      if (!product) {
+        toast.error("No more products!");
+        setIsFirst(true);
+        setIsLast(false);
+      }
+      Router.push(`/dashboard/products/${product?.id ?? productId}`);
+    },
+    onError: async (err) => {
+      toast.error(err.message);
+    },
+  });
+
   // react-hook-form
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
+    reset,
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const reader = new FileReader();
@@ -124,6 +161,19 @@ const UpdateProduct: NextPageWithLayout = () => {
     }
   }, [number, productId, utils]);
 
+  // reset form on product change
+  useEffect(() => {
+    if (!getProductQuery.data) return;
+    reset({
+      name: getProductQuery.data.name,
+      price: getProductQuery.data.price,
+      category: getProductQuery.data.category,
+      description: getProductQuery.data.description,
+      rating: getProductQuery.data.rating,
+    });
+    setPreview(getProductQuery.data.image);
+  }, [getProductQuery.data, reset]);
+
   if (getProductQuery.isLoading) {
     return <LoadingScreen />;
   }
@@ -137,181 +187,227 @@ const UpdateProduct: NextPageWithLayout = () => {
       <Head>
         <title>Update Product | Amzn Store</title>
       </Head>
-      <main className="mx-auto min-h-screen w-full max-w-screen-sm px-4 pt-52 pb-14 sm:w-[95vw] md:pt-40">
-        <div className="grid gap-4">
-          <form
-            aria-label="update product form"
-            className="grid gap-2.5 whitespace-nowrap"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <fieldset className="grid gap-2">
-              <label
-                htmlFor="update-product-title"
-                className="text-xs font-medium text-title md:text-sm"
-              >
-                Product title
-              </label>
-              <input
-                type="text"
-                id="update-product-title"
-                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-                placeholder="Product title"
-                {...register("name", { required: true })}
-                defaultValue={getProductQuery.data?.name}
-              />
-              {errors.name ? (
-                <p className="text-sm font-medium text-danger">
-                  {errors.name.message}
-                </p>
-              ) : null}
-            </fieldset>
-            <fieldset className="grid gap-2">
-              <label
-                htmlFor="update-product-price"
-                className="text-xs font-medium text-title md:text-sm"
-              >
-                Product price
-              </label>
-              <input
-                type="number"
-                step="any"
-                id="update-product-price"
-                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-                placeholder="Product price"
-                {...register("price", {
-                  required: true,
-                  valueAsNumber: true,
-                })}
-                defaultValue={getProductQuery.data?.price}
-              />
-              {errors.price ? (
-                <p className="text-sm font-medium text-danger">
-                  {errors.price.message}
-                </p>
-              ) : null}
-            </fieldset>
-            <fieldset className="grid gap-2">
-              <label
-                htmlFor="update-product-category"
-                className="text-xs font-medium text-title md:text-sm"
-              >
-                Product category
-              </label>
-              <select
-                id="update-product-category"
-                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
-                {...register("category", { required: true })}
-                defaultValue={getProductQuery.data?.category}
-              >
-                <option value="" hidden>
-                  Select category
-                </option>
-                {Object.values(PRODUCT_CATEGORY).map((category) => (
-                  <option key={category} value={category}>
-                    {formatEnum(category)}
-                  </option>
-                ))}
-              </select>
-              {errors.category ? (
-                <p className="text-sm font-medium text-danger">
-                  {errors.category.message}
-                </p>
-              ) : null}
-            </fieldset>
-            <fieldset className="grid gap-2">
-              <label
-                htmlFor="update-user-name"
-                className="text-xs font-medium text-title md:text-sm"
-              >
-                Product description
-              </label>
-              <textarea
-                cols={25}
-                rows={5}
-                id="update-product-description"
-                className="h-32 w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-                placeholder="Product description"
-                {...register("description", { required: true })}
-                defaultValue={getProductQuery.data?.description}
-              />
-              {errors.description ? (
-                <p className="text-sm font-medium text-danger">
-                  {errors.description.message}
-                </p>
-              ) : null}
-            </fieldset>
-            <fieldset className="grid gap-2">
-              <label
-                htmlFor="update-product-image"
-                className="text-xs font-medium text-title md:text-sm"
-              >
-                Product image
-              </label>
-              <div
-                {...getRootProps()}
-                className="grid h-32 w-full place-items-center p-2 text-xs font-medium text-title ring-1 ring-lowkey/80 transition-colors placeholder:text-lowkey/80 md:text-sm"
-              >
-                <input {...getInputProps()} id="update-product-image" />
-                {isDragActive ? (
-                  <p>Drop the files here ...</p>
-                ) : preview ?? getProductQuery.data?.image ? (
-                  <Image
-                    src={preview ?? (getProductQuery.data?.image as string)}
-                    alt="product preview"
-                    width={224}
-                    height={224}
-                    className="h-28 w-full object-cover"
-                  />
-                ) : (
-                  <p>Drag {`'n'`} drop image here, or click to select image</p>
-                )}
-              </div>
-              {errors.image ? (
-                <p className="text-sm font-medium text-danger">
-                  {errors.image.message}
-                </p>
-              ) : null}
-            </fieldset>
-            <fieldset className="grid gap-2">
-              <label
-                htmlFor="update-product-rating"
-                className="text-xs font-medium text-title md:text-sm"
-              >
-                Product ratings
-              </label>
-              <input
-                type="number"
-                step="any"
-                id="update-product-rating"
-                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-                placeholder="Product ratings"
-                {...register("rating", { required: true, valueAsNumber: true })}
-                defaultValue={getProductQuery.data?.rating}
-              />
-              {errors.rating ? (
-                <p className="text-sm font-medium text-danger">
-                  {errors.rating.message}
-                </p>
-              ) : null}
-            </fieldset>
-            <Button
-              aria-label="update product"
-              className="w-full"
-              disabled={updateProductMutation.isLoading}
+      <main className="min-h-screen pt-52 pb-14 md:pt-40">
+        <div className="mx-auto grid w-full max-w-screen-sm gap-4 px-4 sm:w-[95vw]">
+          <div className="flex items-center justify-between">
+            <button
+              aria-label="navigate back to products page"
+              className="flex-1"
+              onClick={() => Router.push("/dashboard/products")}
             >
-              {updateProductMutation.isLoading
+              <ArrowLeftCircleIcon
+                className="aspect-square w-10 text-primary transition-colors hover:text-orange-300 active:text-orange-500"
+                aria-hidden="true"
+              />
+            </button>
+            <div className="flex items-center">
+              <button
+                aria-label="navigate to previous product page"
+                className="disabled:hidden"
+                onClick={() => prevProductMutation.mutateAsync(productId)}
+                disabled={isFirst}
+              >
+                <ArrowLeftCircleIcon
+                  className="aspect-square w-10 text-primary transition-colors hover:text-orange-300 active:text-orange-500"
+                  aria-hidden="true"
+                />
+              </button>
+              <button
+                aria-label="navigate to next product page"
+                className="disabled:hidden"
+                onClick={() => nextProductMutation.mutateAsync(productId)}
+                disabled={isLast}
+              >
+                <ArrowRightCircleIcon
+                  className="aspect-square w-10 text-primary transition-colors hover:text-orange-300 active:text-orange-500"
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
+          </div>
+          <div className="grid gap-4">
+            <form
+              aria-label="update product form"
+              className="grid gap-2.5 whitespace-nowrap"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <fieldset className="grid gap-2">
+                <label
+                  htmlFor="update-product-name"
+                  className="text-xs font-medium text-title md:text-sm"
+                >
+                  Product name
+                </label>
+                <input
+                  type="text"
+                  id="update-product-name"
+                  className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+                  placeholder="Product name"
+                  {...register("name", { required: true })}
+                  defaultValue={getProductQuery.data?.name}
+                />
+                {errors.name ? (
+                  <p className="text-sm font-medium text-danger">
+                    {errors.name.message}
+                  </p>
+                ) : null}
+              </fieldset>
+              <fieldset className="grid gap-2">
+                <label
+                  htmlFor="update-product-price"
+                  className="text-xs font-medium text-title md:text-sm"
+                >
+                  Product price
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  id="update-product-price"
+                  className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+                  placeholder="Product price"
+                  {...register("price", {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
+                  defaultValue={getProductQuery.data?.price}
+                />
+                {errors.price ? (
+                  <p className="text-sm font-medium text-danger">
+                    {errors.price.message}
+                  </p>
+                ) : null}
+              </fieldset>
+              <fieldset className="grid gap-2">
+                <label
+                  htmlFor="update-product-category"
+                  className="text-xs font-medium text-title md:text-sm"
+                >
+                  Product category
+                </label>
+                <select
+                  id="update-product-category"
+                  className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
+                  {...register("category", { required: true })}
+                  defaultValue={getProductQuery.data?.category}
+                >
+                  <option value="" hidden>
+                    Select category
+                  </option>
+                  {Object.values(PRODUCT_CATEGORY).map((category) => (
+                    <option key={category} value={category}>
+                      {formatEnum(category)}
+                    </option>
+                  ))}
+                </select>
+                {errors.category ? (
+                  <p className="text-sm font-medium text-danger">
+                    {errors.category.message}
+                  </p>
+                ) : null}
+              </fieldset>
+              <fieldset className="grid gap-2">
+                <label
+                  htmlFor="update-user-name"
+                  className="text-xs font-medium text-title md:text-sm"
+                >
+                  Product description
+                </label>
+                <textarea
+                  cols={25}
+                  rows={5}
+                  id="update-product-description"
+                  className="h-32 w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+                  placeholder="Product description"
+                  {...register("description", { required: true })}
+                  defaultValue={getProductQuery.data?.description}
+                />
+                {errors.description ? (
+                  <p className="text-sm font-medium text-danger">
+                    {errors.description.message}
+                  </p>
+                ) : null}
+              </fieldset>
+              <fieldset className="grid gap-2">
+                <label
+                  htmlFor="update-product-image"
+                  className="text-xs font-medium text-title md:text-sm"
+                >
+                  Product image
+                </label>
+                <div
+                  {...getRootProps()}
+                  className="grid h-32 w-full place-items-center p-2 text-xs font-medium text-title ring-1 ring-lowkey/80 transition-colors placeholder:text-lowkey/80 md:text-sm"
+                >
+                  <input {...getInputProps()} id="update-product-image" />
+                  {isDragActive ? (
+                    <p>Drop the files here ...</p>
+                  ) : preview ?? getProductQuery.data?.image ? (
+                    <Image
+                      src={preview ?? (getProductQuery.data?.image as string)}
+                      alt="product preview"
+                      width={224}
+                      height={224}
+                      className="h-28 w-full object-cover"
+                      priority
+                    />
+                  ) : (
+                    <p>
+                      Drag {`'n'`} drop image here, or click to select image
+                    </p>
+                  )}
+                </div>
+                {errors.image ? (
+                  <p className="text-sm font-medium text-danger">
+                    {errors.image.message}
+                  </p>
+                ) : null}
+              </fieldset>
+              <fieldset className="grid gap-2">
+                <label
+                  htmlFor="update-product-rating"
+                  className="text-xs font-medium text-title md:text-sm"
+                >
+                  Product ratings
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  id="update-product-rating"
+                  className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+                  placeholder="Product ratings"
+                  {...register("rating", {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
+                  defaultValue={getProductQuery.data?.rating}
+                />
+                {errors.rating ? (
+                  <p className="text-sm font-medium text-danger">
+                    {errors.rating.message}
+                  </p>
+                ) : null}
+              </fieldset>
+              <Button
+                aria-label="update product"
+                className="w-full"
+                disabled={updateProductMutation.isLoading}
+              >
+                {updateProductMutation.isLoading
+                  ? "Loading..."
+                  : "Update product"}
+              </Button>
+            </form>
+            <Button
+              aria-label="delete product"
+              className="w-full bg-danger"
+              onClick={() => deleteProductMutation.mutateAsync(productId)}
+              disabled={deleteProductMutation.isLoading}
+            >
+              {deleteProductMutation.isLoading
                 ? "Loading..."
-                : "Update product"}
+                : "Delete product"}
             </Button>
-          </form>
-          <Button
-            aria-label="delete product"
-            className="w-full bg-danger"
-            onClick={() => deleteProductMutation.mutateAsync(productId)}
-            disabled={deleteProductMutation.isLoading}
-          >
-            {deleteProductMutation.isLoading ? "Loading..." : "Delete product"}
-          </Button>
+          </div>
         </div>
       </main>
     </>

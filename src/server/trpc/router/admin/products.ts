@@ -129,6 +129,28 @@ export const productsAdminRouter = router({
     return nextProduct;
   }),
 
+  prev: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    const product = await ctx.prisma.product.findUnique({
+      where: {
+        id: input,
+      },
+    });
+    if (!product) {
+      throw new Error("Product not found");
+    }
+    const prevProduct = await ctx.prisma.product.findFirst({
+      where: {
+        id: {
+          lt: product.id,
+        },
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+    return prevProduct;
+  }),
+
   update: adminProcedure
     .input(
       z.object({

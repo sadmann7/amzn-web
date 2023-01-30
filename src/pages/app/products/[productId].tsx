@@ -46,8 +46,8 @@ const ShowProduct: NextPageWithLayout = () => {
               alt={productQuery.data.name}
               width={224}
               height={224}
-              loading="lazy"
               className="h-56 w-56 object-contain"
+              loading="lazy"
             />
             <div className="flex flex-col items-center gap-2">
               <h1 className="text-center text-xl font-semibold md:text-3xl">

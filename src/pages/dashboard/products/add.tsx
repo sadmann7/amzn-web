@@ -110,165 +110,168 @@ const AddProduct: NextPageWithLayout = () => {
       <Head>
         <title>Add Product | Amzn Store</title>
       </Head>
-      <main className="mx-auto min-h-screen w-full max-w-screen-sm px-4 pt-52 pb-14 sm:w-[95vw] md:pt-40">
-        <form
-          aria-label="add product form"
-          className="grid gap-2.5 whitespace-nowrap"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <fieldset className="grid gap-2">
-            <label
-              htmlFor="add-product-title"
-              className="text-xs font-medium text-title md:text-sm"
-            >
-              Product title
-            </label>
-            <input
-              type="text"
-              id="add-product-title"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-              placeholder="Product title"
-              {...register("name", { required: true })}
-            />
-            {errors.name ? (
-              <p className="text-sm font-medium text-danger">
-                {errors.name.message}
-              </p>
-            ) : null}
-          </fieldset>
-          <fieldset className="grid gap-2">
-            <label
-              htmlFor="add-product-price"
-              className="text-xs font-medium text-title md:text-sm"
-            >
-              Product price
-            </label>
-            <input
-              type="number"
-              step="any"
-              id="add-product-price"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-              placeholder="Product price"
-              {...register("price", {
-                required: true,
-                valueAsNumber: true,
-              })}
-            />
-            {errors.price ? (
-              <p className="text-sm font-medium text-danger">
-                {errors.price.message}
-              </p>
-            ) : null}
-          </fieldset>
-          <fieldset className="grid gap-2">
-            <label
-              htmlFor="add-product-category"
-              className="text-xs font-medium text-title md:text-sm"
-            >
-              Product category
-            </label>
-            <select
-              id="add-product-category"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
-              {...register("category", { required: true })}
-            >
-              <option value="" hidden>
-                Select category
-              </option>
-              {Object.values(PRODUCT_CATEGORY).map((category) => (
-                <option key={category} value={category}>
-                  {formatEnum(category)}
-                </option>
-              ))}
-            </select>
-            {errors.category ? (
-              <p className="text-sm font-medium text-danger">
-                {errors.category.message}
-              </p>
-            ) : null}
-          </fieldset>
-          <fieldset className="grid gap-2">
-            <label
-              htmlFor="update-user-name"
-              className="text-xs font-medium text-title md:text-sm"
-            >
-              Product description
-            </label>
-            <textarea
-              cols={25}
-              rows={5}
-              id="add-product-description"
-              className="h-32 w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-              placeholder="Product description"
-              {...register("description", { required: true })}
-            />
-            {errors.description ? (
-              <p className="text-sm font-medium text-danger">
-                {errors.description.message}
-              </p>
-            ) : null}
-          </fieldset>
-          <fieldset className="grid gap-2">
-            <label
-              htmlFor="add-product-image"
-              className="text-xs font-medium text-title md:text-sm"
-            >
-              Product image
-            </label>
-            <div
-              {...getRootProps()}
-              className="grid h-32 w-full place-items-center p-2 text-xs font-medium text-title ring-1 ring-lowkey/80 transition-colors placeholder:text-lowkey/80 md:text-sm"
-            >
-              <input {...getInputProps()} id="add-product-image" />
-              {isDragActive ? (
-                <p>Drop the files here ...</p>
-              ) : preview ? (
-                <Image
-                  src={preview}
-                  alt="product preview"
-                  width={224}
-                  height={224}
-                  className="h-28 w-full object-cover"
-                />
-              ) : (
-                <p>Drag {`'n'`} drop image here, or click to select image</p>
-              )}
-            </div>
-            {errors.image ? (
-              <p className="text-sm font-medium text-danger">
-                {errors.image.message}
-              </p>
-            ) : null}
-          </fieldset>
-          <fieldset className="grid gap-2">
-            <label
-              htmlFor="add-product-rating"
-              className="text-xs font-medium text-title md:text-sm"
-            >
-              Product ratings
-            </label>
-            <input
-              type="number"
-              step="any"
-              id="add-product-rating"
-              className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
-              placeholder="Product ratings"
-              {...register("rating", { required: true, valueAsNumber: true })}
-            />
-            {errors.rating ? (
-              <p className="text-sm font-medium text-danger">
-                {errors.rating.message}
-              </p>
-            ) : null}
-          </fieldset>
-          <Button
-            aria-label="add product"
-            className="w-full"
-            disabled={addProductMutation.isLoading}
+      <main className="min-h-screen pt-52 pb-14 md:pt-40">
+        <div className="mx-auto w-full max-w-screen-sm px-4 sm:w-[95vw]">
+          <form
+            aria-label="add product form"
+            className="grid gap-2.5 whitespace-nowrap"
+            onSubmit={handleSubmit(onSubmit)}
           >
-            {addProductMutation.isLoading ? "Loading..." : "Add product"}
-          </Button>
-        </form>
+            <fieldset className="grid gap-2">
+              <label
+                htmlFor="add-product-name"
+                className="text-xs font-medium text-title md:text-sm"
+              >
+                Product name
+              </label>
+              <input
+                type="text"
+                id="add-product-name"
+                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+                placeholder="Product name"
+                {...register("name", { required: true })}
+              />
+              {errors.name ? (
+                <p className="text-sm font-medium text-danger">
+                  {errors.name.message}
+                </p>
+              ) : null}
+            </fieldset>
+            <fieldset className="grid gap-2">
+              <label
+                htmlFor="add-product-price"
+                className="text-xs font-medium text-title md:text-sm"
+              >
+                Product price
+              </label>
+              <input
+                type="number"
+                step="any"
+                id="add-product-price"
+                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+                placeholder="Product price"
+                {...register("price", {
+                  required: true,
+                  valueAsNumber: true,
+                })}
+              />
+              {errors.price ? (
+                <p className="text-sm font-medium text-danger">
+                  {errors.price.message}
+                </p>
+              ) : null}
+            </fieldset>
+            <fieldset className="grid gap-2">
+              <label
+                htmlFor="add-product-category"
+                className="text-xs font-medium text-title md:text-sm"
+              >
+                Product category
+              </label>
+              <select
+                id="add-product-category"
+                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
+                {...register("category", { required: true })}
+              >
+                <option value="" hidden>
+                  Select category
+                </option>
+                {Object.values(PRODUCT_CATEGORY).map((category) => (
+                  <option key={category} value={category}>
+                    {formatEnum(category)}
+                  </option>
+                ))}
+              </select>
+              {errors.category ? (
+                <p className="text-sm font-medium text-danger">
+                  {errors.category.message}
+                </p>
+              ) : null}
+            </fieldset>
+            <fieldset className="grid gap-2">
+              <label
+                htmlFor="update-user-name"
+                className="text-xs font-medium text-title md:text-sm"
+              >
+                Product description
+              </label>
+              <textarea
+                cols={25}
+                rows={5}
+                id="add-product-description"
+                className="h-32 w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+                placeholder="Product description"
+                {...register("description", { required: true })}
+              />
+              {errors.description ? (
+                <p className="text-sm font-medium text-danger">
+                  {errors.description.message}
+                </p>
+              ) : null}
+            </fieldset>
+            <fieldset className="grid gap-2">
+              <label
+                htmlFor="add-product-image"
+                className="text-xs font-medium text-title md:text-sm"
+              >
+                Product image
+              </label>
+              <div
+                {...getRootProps()}
+                className="grid h-32 w-full place-items-center p-2 text-xs font-medium text-title ring-1 ring-lowkey/80 transition-colors placeholder:text-lowkey/80 md:text-sm"
+              >
+                <input {...getInputProps()} id="add-product-image" />
+                {isDragActive ? (
+                  <p>Drop the files here ...</p>
+                ) : preview ? (
+                  <Image
+                    src={preview}
+                    alt="product preview"
+                    width={224}
+                    height={224}
+                    className="h-28 w-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <p>Drag {`'n'`} drop image here, or click to select image</p>
+                )}
+              </div>
+              {errors.image ? (
+                <p className="text-sm font-medium text-danger">
+                  {errors.image.message}
+                </p>
+              ) : null}
+            </fieldset>
+            <fieldset className="grid gap-2">
+              <label
+                htmlFor="add-product-rating"
+                className="text-xs font-medium text-title md:text-sm"
+              >
+                Product ratings
+              </label>
+              <input
+                type="number"
+                step="any"
+                id="add-product-rating"
+                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+                placeholder="Product ratings"
+                {...register("rating", { required: true, valueAsNumber: true })}
+              />
+              {errors.rating ? (
+                <p className="text-sm font-medium text-danger">
+                  {errors.rating.message}
+                </p>
+              ) : null}
+            </fieldset>
+            <Button
+              aria-label="add product"
+              className="w-full"
+              disabled={addProductMutation.isLoading}
+            >
+              {addProductMutation.isLoading ? "Loading..." : "Add product"}
+            </Button>
+          </form>
+        </div>
       </main>
     </>
   );
