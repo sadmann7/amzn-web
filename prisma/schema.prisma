@@ -46,6 +46,7 @@ model User {
   image                    String?
   role                     USER_ROLE                   @default(USER)
   active                   Boolean                     @default(true)
+  phone                    String?
   accounts                 Account[]
   sessions                 Session[]
   createdAt                DateTime                    @default(now())

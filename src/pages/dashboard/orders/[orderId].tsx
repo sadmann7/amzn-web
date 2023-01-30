@@ -12,6 +12,10 @@ import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
+import {
+  ArrowLeftCircleIcon,
+  ArrowRightCircleIcon,
+} from "@heroicons/react/20/solid";
 
 const UpdateOrder: NextPageWithLayout = () => {
   const orderId = Router.query.orderId as string;
@@ -25,6 +29,32 @@ const UpdateOrder: NextPageWithLayout = () => {
     onSuccess: async () => {
       toast.success("Order deleted");
       Router.push("/dashboard/orders");
+    },
+    onError: async (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  // prev order mutation
+  const prevOrderMutation = trpc.admin.orders.prev.useMutation({
+    onSuccess: async (data) => {
+      if (!data) {
+        return toast.error("No previous order!");
+      }
+      Router.push(`/dashboard/orders/${data.id}`);
+    },
+    onError: async (err) => {
+      toast.error(err.message);
+    },
+  });
+
+  // next user mutation
+  const nextOrderMutation = trpc.admin.orders.next.useMutation({
+    onSuccess: async (data) => {
+      if (!data) {
+        return toast.error("No next order!");
+      }
+      Router.push(`/dashboard/orders/${data.id}`);
     },
     onError: async (err) => {
       toast.error(err.message);
@@ -61,21 +91,56 @@ const UpdateOrder: NextPageWithLayout = () => {
       <Head>
         <title>Update Order | Amzn Store</title>
       </Head>
-      <main className="mx-auto min-h-screen w-full max-w-screen-sm px-4 pt-52 pb-14 sm:w-[95vw] md:pt-40">
-        <div className="grid gap-4">
-          {orderQuery.data?.items.map((item) => (
-            <Item key={item.id} item={item} />
-          ))}
-          {Number(orderQuery.data?.items.length) > 0 ? (
-            <Button
-              aria-label="delete product"
-              className="w-full bg-danger"
-              onClick={() => deleteOrderMutation.mutateAsync(orderId)}
-              disabled={deleteOrderMutation.isLoading}
+      <main className="min-h-screen pt-52 pb-14 md:pt-40">
+        <div className="mx-auto grid w-full max-w-screen-sm gap-4 px-4 sm:w-[95vw]">
+          <div className="flex items-center justify-between">
+            <button
+              aria-label="navigate back to orders page"
+              className="flex-1"
+              onClick={() => Router.push("/dashboard/orders")}
             >
-              {deleteOrderMutation.isLoading ? "Loading..." : "Delete order"}
-            </Button>
-          ) : null}
+              <ArrowLeftCircleIcon
+                className="aspect-square w-10 text-primary transition-colors hover:text-orange-300 active:text-orange-500"
+                aria-hidden="true"
+              />
+            </button>
+            <div className="flex items-center">
+              <button
+                aria-label="navigate to previous order page"
+                onClick={() => prevOrderMutation.mutateAsync(orderId)}
+              >
+                <ArrowLeftCircleIcon
+                  className="aspect-square w-10 text-primary transition-colors hover:text-orange-300 active:text-orange-500"
+                  aria-hidden="true"
+                />
+              </button>
+              <button
+                aria-label="navigate to next order page"
+                onClick={() => nextOrderMutation.mutateAsync(orderId)}
+              >
+                <ArrowRightCircleIcon
+                  className="aspect-square w-10 text-primary transition-colors hover:text-orange-300 active:text-orange-500"
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
+          </div>
+
+          <div className="grid gap-4">
+            {orderQuery.data?.items.map((item) => (
+              <Item key={item.id} item={item} />
+            ))}
+            {Number(orderQuery.data?.items.length) > 0 ? (
+              <Button
+                aria-label="delete product"
+                className="w-full bg-danger"
+                onClick={() => deleteOrderMutation.mutateAsync(orderId)}
+                disabled={deleteOrderMutation.isLoading}
+              >
+                {deleteOrderMutation.isLoading ? "Loading..." : "Delete order"}
+              </Button>
+            ) : null}
+          </div>
         </div>
       </main>
     </>

@@ -118,6 +118,14 @@ export const ordersAdminRouter = router({
         createdAt: "desc",
       },
     });
+    if (!prevOrder) {
+      const lastOrder = await ctx.prisma.order.findFirst({
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return lastOrder;
+    }
     return prevOrder;
   }),
 
@@ -141,6 +149,14 @@ export const ordersAdminRouter = router({
         createdAt: "asc",
       },
     });
+    if (!nextOrder) {
+      const firstOrder = await ctx.prisma.order.findFirst({
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+      return firstOrder;
+    }
     return nextOrder;
   }),
 });

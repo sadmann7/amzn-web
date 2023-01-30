@@ -89,7 +89,9 @@ const UpdateProduct: NextPageWithLayout = () => {
   // prev product mutation
   const prevProductMutation = trpc.admin.products.prev.useMutation({
     onSuccess: async (data) => {
-      if (!data) toast.error("No previous product!");
+      if (!data) {
+        return toast.error("No previous product!");
+      }
       Router.push(`/dashboard/products/${data?.id}`);
     },
     onError: async (err) => {
@@ -100,7 +102,9 @@ const UpdateProduct: NextPageWithLayout = () => {
   // next product mutation
   const nextProductMutation = trpc.admin.products.next.useMutation({
     onSuccess: async (data) => {
-      if (!data) toast.error("No next product!");
+      if (!data) {
+        return toast.error("No next product!");
+      }
       Router.push(`/dashboard/products/${data?.id}`);
     },
     onError: async (err) => {

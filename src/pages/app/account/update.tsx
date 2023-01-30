@@ -18,8 +18,12 @@ const schema = z.object({
   name: z
     .string()
     .min(3, { message: "Name must be at least 3 charachters" })
-    .max(255, { message: "Name must be at most 255 charachters" }),
+    .max(50, { message: "Name must be at most 50 charachters" }),
   email: z.string().email({ message: "Invalid email" }),
+  phone: z
+    .string()
+    .min(10, { message: "Phone number must be at least 10 charachters" })
+    .max(11, { message: "Phone number must be at most 11 charachters" }),
 });
 type Inputs = z.infer<typeof schema>;
 
@@ -59,8 +63,7 @@ const Update: NextPageWithLayout = () => {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await updateUserMutation.mutateAsync({
       id: sessionMutation.data?.user?.id as string,
-      name: data.name,
-      email: data.email,
+      ...data,
     });
   };
 
@@ -80,20 +83,20 @@ const Update: NextPageWithLayout = () => {
       <main className="mx-auto min-h-screen w-full max-w-screen-sm px-4 pt-52 pb-14 sm:w-[95vw] md:pt-40">
         <div className="grid gap-4">
           <form
-            aria-label="update user form"
+            aria-label="update account form"
             className="grid gap-2.5 whitespace-nowrap"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="grid gap-2">
+            <fieldset className="grid gap-2">
               <label
-                htmlFor="update-user-name"
+                htmlFor="update-account-name"
                 className="text-xs font-medium text-title md:text-sm"
               >
                 Name
               </label>
               <input
                 type="text"
-                id="update-user-name"
+                id="update-account-name"
                 className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                 placeholder="Enter your name"
                 {...register("name", { required: true })}
@@ -108,17 +111,17 @@ const Update: NextPageWithLayout = () => {
                   {errors.name.message}
                 </p>
               ) : null}
-            </div>
-            <div className="grid gap-2">
+            </fieldset>
+            <fieldset className="grid gap-2">
               <label
-                htmlFor="update-user-email"
+                htmlFor="update-account-email"
                 className="text-xs font-medium text-title md:text-sm"
               >
                 Email
               </label>
               <input
                 type="text"
-                id="update-user-email"
+                id="update-account-email"
                 className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                 placeholder="Enter your email addres"
                 {...register("email", { required: true })}
@@ -133,7 +136,32 @@ const Update: NextPageWithLayout = () => {
                   {errors.email.message}
                 </p>
               ) : null}
-            </div>
+            </fieldset>
+            <fieldset className="grid gap-2">
+              <label
+                htmlFor="update-account-phone"
+                className="text-xs font-medium text-title md:text-sm"
+              >
+                Phone number
+              </label>
+              <input
+                type="text"
+                id="update-account-phone"
+                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
+                placeholder="Enter your phone number"
+                {...register("phone", { required: true })}
+                defaultValue={
+                  updateUserMutation.isLoading
+                    ? ""
+                    : (sessionMutation.data?.user?.phone as string)
+                }
+              />
+              {errors.phone ? (
+                <p className="text-sm font-medium text-danger">
+                  {errors.phone.message}
+                </p>
+              ) : null}
+            </fieldset>
             <Button
               aria-label="update user"
               className="w-full"

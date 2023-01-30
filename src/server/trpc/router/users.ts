@@ -31,8 +31,9 @@ export const usersRouter = router({
     .input(
       z.object({
         id: z.string(),
-        name: z.string().min(3).max(255),
+        name: z.string().min(3).max(50),
         email: z.string().email(),
+        phone: z.string().min(10).max(11),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -43,6 +44,7 @@ export const usersRouter = router({
         data: {
           name: input.name,
           email: input.email,
+          phone: input.phone,
         },
       });
       return user;

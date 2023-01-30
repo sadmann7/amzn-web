@@ -22,7 +22,8 @@ import {
 } from "@heroicons/react/20/solid";
 
 const schema = z.object({
-  role: z.nativeEnum(USER_ROLE),
+  name: z.string().min(3).max(50),
+  email: z.string().email(),
 });
 type Inputs = z.infer<typeof schema>;
 
@@ -32,6 +33,16 @@ const UpdateUser: NextPageWithLayout = () => {
   // get user query
   const userQuery = trpc.admin.users.getOne.useQuery(userId, {
     enabled: Boolean(userId),
+  });
+
+  // update user mutation
+  const updateUserMutation = trpc.admin.users.update.useMutation({
+    onSuccess: async () => {
+      toast.success("User updated!");
+    },
+    onError: async (err) => {
+      toast.error(err.message);
+    },
   });
 
   // update role mutation
@@ -65,10 +76,23 @@ const UpdateUser: NextPageWithLayout = () => {
     },
   });
 
+  // react-hook-form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<Inputs>({ resolver: zodResolver(schema) });
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    await updateUserMutation.mutateAsync({ id: userId, ...data });
+  };
+
   // prev user mutation
   const prevUserMutation = trpc.admin.users.prev.useMutation({
     onSuccess: async (data) => {
-      if (!data) return toast.error("No previous user!");
+      if (!data) {
+        return toast.error("No previous user!");
+      }
       Router.push(`/dashboard/users/${data.id}`);
     },
     onError: async (err) => {
@@ -79,26 +103,15 @@ const UpdateUser: NextPageWithLayout = () => {
   // next user mutation
   const nextUserMutation = trpc.admin.users.next.useMutation({
     onSuccess: async (data) => {
-      if (!data) return toast.error("No next user!");
+      if (!data) {
+        return toast.error("No next user!");
+      }
       Router.push(`/dashboard/users/${data.id}`);
     },
     onError: async (err) => {
       toast.error(err.message);
     },
   });
-
-  // react-hook-form
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>({ resolver: zodResolver(schema) });
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await updateRoleMutation.mutateAsync({
-      id: userId,
-      role: data.role,
-    });
-  };
 
   // refetch user query
   const utils = trpc.useContext();
@@ -108,6 +121,12 @@ const UpdateUser: NextPageWithLayout = () => {
       utils.admin.users.getOne.invalidate(userId);
     }
   }, [number, userId, utils]);
+
+  // reset form on user change
+  useEffect(() => {
+    if (!userQuery.data) return;
+    reset();
+  }, [userQuery.data, reset]);
 
   if (userQuery.isLoading) {
     return <LoadingScreen />;
@@ -126,7 +145,7 @@ const UpdateUser: NextPageWithLayout = () => {
         <div className="mx-auto grid w-full max-w-screen-sm gap-4 px-4 sm:w-[95vw]">
           <div className="flex items-center justify-between">
             <button
-              aria-label="navigate back to products page"
+              aria-label="navigate back to users page"
               className="flex-1"
               onClick={() => Router.push("/dashboard/users")}
             >
@@ -137,7 +156,7 @@ const UpdateUser: NextPageWithLayout = () => {
             </button>
             <div className="flex items-center">
               <button
-                aria-label="navigate to previous product page"
+                aria-label="navigate to previous user page"
                 onClick={() => prevUserMutation.mutateAsync(userId)}
               >
                 <ArrowLeftCircleIcon
@@ -146,7 +165,7 @@ const UpdateUser: NextPageWithLayout = () => {
                 />
               </button>
               <button
-                aria-label="navigate to next product page"
+                aria-label="navigate to next user page"
                 onClick={() => nextUserMutation.mutateAsync(userId)}
               >
                 <ArrowRightCircleIcon
@@ -164,42 +183,80 @@ const UpdateUser: NextPageWithLayout = () => {
             >
               <fieldset className="grid gap-2">
                 <label
-                  htmlFor="update-user-role"
+                  htmlFor="update-user-name"
                   className="text-xs font-medium text-title md:text-sm"
                 >
-                  Product category
+                  Name
                 </label>
-                <select
-                  id="update-user-role"
+                <input
+                  type="text"
+                  id="update-user-name"
                   className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
-                  {...register("role", { required: true })}
-                  defaultValue={
-                    updateRoleMutation.isLoading ? "" : userQuery.data?.role
-                  }
-                >
-                  <option value="" hidden>
-                    Select role
-                  </option>
-                  {Object.values(USER_ROLE).map((role) => (
-                    <option key={role} value={role}>
-                      {formatEnum(role)}
-                    </option>
-                  ))}
-                </select>
-                {errors.role ? (
+                  {...register("name", { required: true })}
+                  defaultValue={userQuery.data?.name as string}
+                />
+                {errors.name ? (
                   <p className="text-sm font-medium text-danger">
-                    {errors.role.message}
+                    {errors.name.message}
+                  </p>
+                ) : null}
+              </fieldset>
+              <fieldset className="grid gap-2">
+                <label
+                  htmlFor="update-user-email"
+                  className="text-xs font-medium text-title md:text-sm"
+                >
+                  Email
+                </label>
+                <input
+                  type="text"
+                  id="update-user-email"
+                  className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
+                  {...register("email", { required: true })}
+                  defaultValue={userQuery.data?.email as string}
+                />
+                {errors.email ? (
+                  <p className="text-sm font-medium text-danger">
+                    {errors.email.message}
                   </p>
                 ) : null}
               </fieldset>
               <Button
-                aria-label="update role"
+                aria-label="update account"
                 className="w-full"
-                disabled={updateRoleMutation.isLoading}
+                disabled={updateUserMutation.isLoading}
               >
-                {updateRoleMutation.isLoading ? "Loading..." : "Update role"}
+                {updateUserMutation.isLoading ? "Loading..." : "Update account"}
               </Button>
             </form>
+            <fieldset className="grid gap-2">
+              <label
+                htmlFor="update-user-role"
+                className="text-xs font-medium text-title md:text-sm"
+              >
+                Role
+              </label>
+              <select
+                id="update-user-role"
+                className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
+                onChange={(e) => {
+                  updateRoleMutation.mutateAsync({
+                    id: userId,
+                    role: e.target.value as USER_ROLE,
+                  });
+                }}
+                defaultValue={userQuery.data?.role}
+              >
+                <option value="" hidden>
+                  Select role
+                </option>
+                {Object.values(USER_ROLE).map((role) => (
+                  <option key={role} value={role}>
+                    {formatEnum(role)}
+                  </option>
+                ))}
+              </select>
+            </fieldset>
             <Button
               aria-label="update status"
               className="w-full"

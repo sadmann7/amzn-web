@@ -63,6 +63,27 @@ export const usersAdminRouter = router({
     return user;
   }),
 
+  update: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().min(3).max(50),
+        email: z.string().email(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          email: input.email,
+        },
+      });
+      return user;
+    }),
+
   updateRole: adminProcedure
     .input(
       z.object({
@@ -71,17 +92,17 @@ export const usersAdminRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const uniqueUser = await ctx.prisma.user.findUnique({
+      const currentUser = await ctx.prisma.user.findUnique({
         where: {
-          id: input.id,
+          id: ctx.session.user.id,
         },
       });
-      if (!uniqueUser)
+      if (!currentUser)
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "User not found!",
         });
-      if (uniqueUser.role !== USER_ROLE.ADMIN) {
+      if (currentUser.role !== USER_ROLE.ADMIN) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only admins can change roles!",
@@ -89,7 +110,7 @@ export const usersAdminRouter = router({
       }
       const user = await ctx.prisma.user.update({
         where: {
-          id: uniqueUser.id,
+          id: input.id,
         },
         data: {
           role: input.role,
@@ -106,17 +127,17 @@ export const usersAdminRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const uniqueUser = await ctx.prisma.user.findUnique({
+      const currentUser = await ctx.prisma.user.findUnique({
         where: {
-          id: input.id,
+          id: ctx.session.user.id,
         },
       });
-      if (!uniqueUser)
+      if (!currentUser)
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "User not found!",
         });
-      if (uniqueUser.role !== USER_ROLE.ADMIN) {
+      if (currentUser.role !== USER_ROLE.ADMIN) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Only admins can change status!",
@@ -124,7 +145,7 @@ export const usersAdminRouter = router({
       }
       const user = await ctx.prisma.user.update({
         where: {
-          id: uniqueUser.id,
+          id: input.id,
         },
         data: {
           active: input.status,
