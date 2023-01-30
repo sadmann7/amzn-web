@@ -19,7 +19,7 @@ const Categories: NextPageWithLayout = () => {
   }
 
   if (categoriesQuery.isError) {
-    return <ErrorScreen />;
+    return <ErrorScreen error={categoriesQuery.error} />;
   }
 
   return (

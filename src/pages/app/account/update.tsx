@@ -69,7 +69,7 @@ const Update: NextPageWithLayout = () => {
   }
 
   if (sessionMutation.isError) {
-    return <ErrorScreen />;
+    return <ErrorScreen error={sessionMutation.error} />;
   }
 
   return (

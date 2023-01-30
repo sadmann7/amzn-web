@@ -29,8 +29,8 @@ const ShowProduct: NextPageWithLayout = () => {
     return <LoadingScreen />;
   }
 
-  if (productQuery.isError || !productQuery.data) {
-    return <ErrorScreen />;
+  if (productQuery.isError) {
+    return <ErrorScreen error={productQuery.error} />;
   }
 
   return (

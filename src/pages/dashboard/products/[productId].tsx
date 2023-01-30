@@ -40,7 +40,7 @@ const UpdateProduct: NextPageWithLayout = () => {
   const [preview, setPreview] = useState<string | undefined>();
 
   // get product query
-  const getProductQuery = trpc.admin.products.getOne.useQuery(productId, {
+  const productQuery = trpc.admin.products.getOne.useQuery(productId, {
     enabled: Boolean(productId),
   });
 
@@ -120,29 +120,29 @@ const UpdateProduct: NextPageWithLayout = () => {
 
   // setPreview
   useEffect(() => {
-    if (!getProductQuery.data?.image) return;
-    setPreview(getProductQuery.data.image);
-  }, [getProductQuery.data?.image]);
+    if (!productQuery.data?.image) return;
+    setPreview(productQuery.data.image);
+  }, [productQuery.data?.image]);
 
   // reset form (without image) on product change
   useEffect(() => {
-    if (!getProductQuery.data ?? getProductQuery.data === null) return;
+    if (!productQuery.data ?? productQuery.data === null) return;
     reset((formValues) => ({
       ...formValues,
-      name: (getProductQuery.data as Product).name,
-      price: (getProductQuery.data as Product).price,
-      category: (getProductQuery.data as Product).category,
-      description: (getProductQuery.data as Product).description,
-      rating: (getProductQuery.data as Product).rating,
+      name: (productQuery.data as Product).name,
+      price: (productQuery.data as Product).price,
+      category: (productQuery.data as Product).category,
+      description: (productQuery.data as Product).description,
+      rating: (productQuery.data as Product).rating,
     }));
-  }, [getProductQuery.data, reset]);
+  }, [productQuery.data, reset]);
 
-  if (getProductQuery.isLoading) {
+  if (productQuery.isLoading) {
     return <LoadingScreen />;
   }
 
-  if (getProductQuery.isError) {
-    return <ErrorScreen />;
+  if (productQuery.isError) {
+    return <ErrorScreen error={productQuery.error} />;
   }
 
   return (
@@ -203,7 +203,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                   className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                   placeholder="Product name"
                   {...register("name", { required: true })}
-                  defaultValue={getProductQuery.data?.name}
+                  defaultValue={productQuery.data?.name}
                 />
                 {errors.name ? (
                   <p className="text-sm font-medium text-danger">
@@ -228,7 +228,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                     required: true,
                     valueAsNumber: true,
                   })}
-                  defaultValue={getProductQuery.data?.price}
+                  defaultValue={productQuery.data?.price}
                 />
                 {errors.price ? (
                   <p className="text-sm font-medium text-danger">
@@ -247,7 +247,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                   id="update-product-category"
                   className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
                   {...register("category", { required: true })}
-                  defaultValue={getProductQuery.data?.category}
+                  defaultValue={productQuery.data?.category}
                 >
                   <option value="" hidden>
                     Select category
@@ -278,7 +278,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                   className="h-32 w-full px-4 py-2.5 text-xs font-medium text-title transition-colors placeholder:text-lowkey/80 md:text-sm"
                   placeholder="Product description"
                   {...register("description", { required: true })}
-                  defaultValue={getProductQuery.data?.description}
+                  defaultValue={productQuery.data?.description}
                 />
                 {errors.description ? (
                   <p className="text-sm font-medium text-danger">
@@ -323,7 +323,7 @@ const UpdateProduct: NextPageWithLayout = () => {
                     required: true,
                     valueAsNumber: true,
                   })}
-                  defaultValue={getProductQuery.data?.rating}
+                  defaultValue={productQuery.data?.rating}
                 />
                 {errors.rating ? (
                   <p className="text-sm font-medium text-danger">

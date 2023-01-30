@@ -49,8 +49,12 @@ const Orders: NextPageWithLayout = () => {
     return <LoadingScreen />;
   }
 
-  if (ordersQuery.isError || archivedOrdersQuery.isError) {
-    return <ErrorScreen />;
+  if (ordersQuery.isError) {
+    return <ErrorScreen error={ordersQuery.error} />;
+  }
+
+  if (archivedOrdersQuery.isError) {
+    return <ErrorScreen error={archivedOrdersQuery.error} />;
   }
 
   if (

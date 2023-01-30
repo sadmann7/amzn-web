@@ -19,7 +19,7 @@ const Products: NextPageWithLayout = () => {
   }
 
   if (productsQuery.isError) {
-    return <ErrorScreen />;
+    return <ErrorScreen error={productsQuery.error} />;
   }
 
   return (

@@ -114,7 +114,7 @@ const UpdateUser: NextPageWithLayout = () => {
   }
 
   if (userQuery.isError) {
-    return <ErrorScreen />;
+    return <ErrorScreen error={userQuery.error} />;
   }
 
   return (

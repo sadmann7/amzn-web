@@ -12,10 +12,10 @@ import LoadingScreen from "@/screens/LoadingScreen";
 
 const App: NextPageWithLayout = () => {
   // get queries
-  const productsQuery = trpc.products.get.useQuery(undefined, {
+  const categoriesQuery = trpc.products.getCategories.useQuery(undefined, {
     staleTime: 1000 * 60 * 60 * 24,
   });
-  const categoriesQuery = trpc.products.getCategories.useQuery(undefined, {
+  const productsQuery = trpc.products.get.useQuery(undefined, {
     staleTime: 1000 * 60 * 60 * 24,
   });
 
@@ -23,8 +23,12 @@ const App: NextPageWithLayout = () => {
     return <LoadingScreen />;
   }
 
-  if (categoriesQuery.isError || productsQuery.isError) {
-    return <ErrorScreen />;
+  if (categoriesQuery.isError) {
+    return <ErrorScreen error={categoriesQuery.error} />;
+  }
+
+  if (productsQuery.isError) {
+    return <ErrorScreen error={productsQuery.error} />;
   }
 
   return (

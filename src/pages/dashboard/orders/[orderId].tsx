@@ -53,7 +53,7 @@ const UpdateOrder: NextPageWithLayout = () => {
   }
 
   if (orderQuery.isError) {
-    return <ErrorScreen />;
+    return <ErrorScreen error={orderQuery.error} />;
   }
 
   return (

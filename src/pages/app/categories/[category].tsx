@@ -23,7 +23,7 @@ const ShowCategory: NextPageWithLayout = () => {
   }
 
   if (productsQuery.isError) {
-    return <ErrorScreen />;
+    return <ErrorScreen error={productsQuery.error} />;
   }
 
   return (
