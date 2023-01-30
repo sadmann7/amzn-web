@@ -151,7 +151,7 @@ const dropLinks = [
 ];
 
 const Dropdown = () => {
-  // trpc
+  // get session mutation
   const sessionMutation = trpc.users.getSession.useQuery();
 
   return (

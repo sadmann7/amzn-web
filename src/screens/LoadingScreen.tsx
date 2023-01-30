@@ -3,7 +3,7 @@ const LoadingScreen = () => {
     <div
       aria-label="loading screen"
       role="presentation"
-      className="grid min-h-screen place-items-center"
+      className="grid min-h-screen place-items-center px-4"
     >
       <div
         role="progressbar"

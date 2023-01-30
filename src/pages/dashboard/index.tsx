@@ -1,9 +1,12 @@
+import { USER_ROLE } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import type { NextPageWithLayout } from "../_app";
 
 // external imports
 import DefaultLayout from "@/layouts/DefaultLayout";
+import RestrictedScreen from "@/screens/RestrictedScreen";
 
 const dashboardRoutes = [
   {
@@ -21,6 +24,12 @@ const dashboardRoutes = [
 ];
 
 const Dashboard: NextPageWithLayout = () => {
+  const { data: session } = useSession();
+
+  if (session?.user?.role !== USER_ROLE.ADMIN) {
+    return <RestrictedScreen />;
+  }
+
   return (
     <>
       <Head>
