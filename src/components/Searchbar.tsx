@@ -48,7 +48,7 @@ const Searchbar = <TData extends Product>({
           placeholder={`Search ${route}...`}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <Combobox.Button className={styles.inputButton}>
+        <Combobox.Button aria-label="search" className={styles.inputButton}>
           <MagnifyingGlassIcon
             className="aspect-square w-6 stroke-2 text-title"
             aria-hidden="true"
