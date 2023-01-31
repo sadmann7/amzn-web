@@ -24,9 +24,9 @@ const dashboardRoutes = [
 ];
 
 const Dashboard: NextPageWithLayout = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  if (session?.user?.role !== USER_ROLE.ADMIN) {
+  if (status === "authenticated" && session?.user?.role !== USER_ROLE.ADMIN) {
     return <RestrictedScreen />;
   }
 
@@ -42,7 +42,7 @@ const Dashboard: NextPageWithLayout = () => {
               <Link
                 aria-label={`navigate to ${route.name} page`}
                 href={route.path}
-                className="block bg-primary px-4 py-1.5 text-center text-sm font-medium text-white hover:bg-opacity-80 active:bg-opacity-90 md:text-base"
+                className="block bg-primary px-4 py-1.5 text-center text-sm font-semibold text-title hover:bg-opacity-80 active:bg-opacity-90 sm:text-base"
               >
                 {route.name}
               </Link>

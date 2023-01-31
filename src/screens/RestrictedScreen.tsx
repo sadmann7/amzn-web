@@ -16,7 +16,7 @@ const RestrictedScreen = () => {
       </p>
       <Button
         aria-label="navigate back"
-        className="mt-2.5 font-bold text-title"
+        className="mt-2.5"
         onClick={() => Router.back()}
       >
         Go back

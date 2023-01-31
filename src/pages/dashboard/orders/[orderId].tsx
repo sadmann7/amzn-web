@@ -19,10 +19,11 @@ import {
 
 const UpdateOrder: NextPageWithLayout = () => {
   const orderId = Router.query.orderId as string;
-  const utils = trpc.useContext();
 
   // get order query
-  const orderQuery = trpc.admin.orders.getOne.useQuery(orderId);
+  const orderQuery = trpc.admin.orders.getOne.useQuery(orderId, {
+    enabled: Boolean(orderId),
+  });
 
   // delete order mutation
   const deleteOrderMutation = trpc.admin.orders.delete.useMutation({
@@ -62,6 +63,7 @@ const UpdateOrder: NextPageWithLayout = () => {
   });
 
   // refetch queries
+  const utils = trpc.useContext();
   const number = useIsMutating();
   useEffect(() => {
     if (number === 0) {

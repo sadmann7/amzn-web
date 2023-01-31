@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports
+import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
@@ -79,16 +80,16 @@ const Prime: NextPageWithLayout = () => {
               <p className="text-center text-sm text-lowkey sm:text-base">
                 Thank you for being a Prime member
               </p>
-              <button
+              <Button
                 aria-label="Manage your Prime membership"
-                className="mt-3.5 bg-orange-300 py-1.5 px-4 text-sm font-semibold text-title transition-colors enabled:hover:bg-orange-400/80 sm:text-base"
+                className="mt-3.5"
                 onClick={async () => {
                   await billingPortalSessionMutation.mutateAsync();
                 }}
                 disabled={billingPortalSessionMutation.isLoading}
               >
                 Manage your Prime membership
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-0.5">
@@ -100,16 +101,16 @@ const Prime: NextPageWithLayout = () => {
                 Get unlimited free two-day shipping, ad-free music, exclusive
                 deals, and more
               </p>
-              <button
+              <Button
                 aria-label="Start your 30-day free trial"
-                className="mt-3.5 bg-orange-300 py-1.5 px-4 text-sm font-semibold text-title transition-colors enabled:hover:bg-orange-400/80 sm:text-base"
+                className="mt-3.5"
                 onClick={async () => {
                   await checkoutSessionMutation.mutateAsync();
                 }}
                 disabled={checkoutSessionMutation.isLoading}
               >
                 Start your 30-day free trial
-              </button>
+              </Button>
             </div>
           )}
         </div>
