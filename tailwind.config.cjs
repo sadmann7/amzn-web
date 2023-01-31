@@ -14,7 +14,7 @@ module.exports = {
         danger: "hsl(0, 84%, 60%)",
         layout: "hsl(221, 39%, 11%)",
         "layout-light": "hsl(217, 19%, 27%)",
-        lowkey: "hsl(0, 0%, 45%)",
+        lowkey: "hsl(220, 9%, 46%)",
         title: "hsl(0, 0%, 15%)",
         text: "hsl(0, 0%, 25%)",
         link: "hsl(193, 82%, 31%)",

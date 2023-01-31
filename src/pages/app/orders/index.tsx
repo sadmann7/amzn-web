@@ -41,7 +41,7 @@ const Orders: NextPageWithLayout = () => {
     }
   }, [number, utils]);
 
-  // headlessui
+  // headlessui tab
   const [selectedIndex, setSelectedIndex] = useState(0);
   const tabs = [{ name: "Orders" }, { name: "Archived orders" }];
 

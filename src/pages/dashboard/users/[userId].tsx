@@ -24,6 +24,7 @@ import {
 const schema = z.object({
   name: z.string().min(3).max(50),
   email: z.string().email(),
+  phone: z.string().min(10).max(11),
 });
 type Inputs = z.infer<typeof schema>;
 
@@ -217,12 +218,32 @@ const UpdateUser: NextPageWithLayout = () => {
                   </p>
                 ) : null}
               </fieldset>
+              <fieldset className="grid gap-2">
+                <label
+                  htmlFor="update-user-phone"
+                  className="text-xs font-medium text-title md:text-sm"
+                >
+                  Phone
+                </label>
+                <input
+                  type="text"
+                  id="update-user-phone"
+                  className="w-full px-4 py-2.5 text-xs font-medium text-title transition-colors md:text-sm"
+                  {...register("phone", { required: true })}
+                  defaultValue={userQuery.data?.phone as string}
+                />
+                {errors.phone ? (
+                  <p className="text-sm font-medium text-danger">
+                    {errors.phone.message}
+                  </p>
+                ) : null}
+              </fieldset>
               <Button
-                aria-label="update account"
+                aria-label="update user"
                 className="w-full"
                 disabled={updateUserMutation.isLoading}
               >
-                {updateUserMutation.isLoading ? "Loading..." : "Update account"}
+                {updateUserMutation.isLoading ? "Loading..." : "Update user"}
               </Button>
             </form>
             <fieldset className="grid gap-2">
@@ -267,8 +288,8 @@ const UpdateUser: NextPageWithLayout = () => {
               {updateStatusMutation.isLoading
                 ? "Loading..."
                 : userQuery.data?.active
-                ? "Deactivate"
-                : "Activate"}
+                ? "Deactivate user"
+                : "Activate user"}
             </Button>
             <Button
               aria-label="delete user"
@@ -276,7 +297,7 @@ const UpdateUser: NextPageWithLayout = () => {
               onClick={() => deleteUserMutation.mutateAsync(userId)}
               disabled={deleteUserMutation.isLoading}
             >
-              {deleteUserMutation.isLoading ? "Loading..." : "Delete account"}
+              {deleteUserMutation.isLoading ? "Loading..." : "Delete user"}
             </Button>
           </div>
         </div>

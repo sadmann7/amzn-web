@@ -1,6 +1,10 @@
 import Head from "next/head";
+import type { NextPageWithLayout } from "./_app";
 
-const Four0Four = () => {
+// external imports
+import DefaultLayout from "@/layouts/DefaultLayout";
+
+const Four0Four: NextPageWithLayout = () => {
   return (
     <>
       <Head>
@@ -20,3 +24,5 @@ const Four0Four = () => {
 };
 
 export default Four0Four;
+
+Four0Four.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
