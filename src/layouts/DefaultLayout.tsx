@@ -10,7 +10,7 @@ import Navbar from "../components/Navbar";
 import LoadingScreen from "../screens/LoadingScreen";
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   // get products query
   const productsQuery = trpc.products.get.useQuery(undefined, {
@@ -25,7 +25,7 @@ const DefaultLayout = ({ children }: { children: ReactNode }) => {
     return <ErrorScreen error={productsQuery.error} />;
   }
 
-  if (!session?.user?.active) {
+  if (status === "authenticated" && !session?.user?.active) {
     return <DeactivatedScreen />;
   }
 

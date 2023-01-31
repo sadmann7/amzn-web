@@ -1,7 +1,6 @@
 import { formatEnum } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Product } from "@prisma/client";
 import { PRODUCT_CATEGORY } from "@prisma/client";
 import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
@@ -33,7 +32,7 @@ const schema = z.object({
   }),
   rating: z.number().min(0).max(5),
 });
-type Inputs = z.infer<typeof schema> & { image: File };
+type Inputs = z.infer<typeof schema>;
 
 const UpdateProduct: NextPageWithLayout = () => {
   const productId = Router.query.productId as string;
@@ -64,7 +63,7 @@ const UpdateProduct: NextPageWithLayout = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const reader = new FileReader();
-    reader.readAsDataURL(data.image);
+    reader.readAsDataURL(data.image as File);
     reader.onload = async () => {
       const base64 = reader.result;
       await updateProductMutation.mutateAsync({
@@ -92,7 +91,9 @@ const UpdateProduct: NextPageWithLayout = () => {
       if (!data) {
         return toast.error("No previous product!");
       }
-      Router.push(`/dashboard/products/${data?.id}`);
+      await Router.push(`/dashboard/products/${data.id}`);
+      reset();
+      setPreview(data.image);
     },
     onError: async (err) => {
       toast.error(err.message);
@@ -105,7 +106,9 @@ const UpdateProduct: NextPageWithLayout = () => {
       if (!data) {
         return toast.error("No next product!");
       }
-      Router.push(`/dashboard/products/${data?.id}`);
+      await Router.push(`/dashboard/products/${data.id}`);
+      reset();
+      setPreview(data.image);
     },
     onError: async (err) => {
       toast.error(err.message);
@@ -127,19 +130,6 @@ const UpdateProduct: NextPageWithLayout = () => {
     if (!productQuery.data?.image) return;
     setPreview(productQuery.data.image);
   }, [productQuery.data?.image]);
-
-  // reset form (without image) on product change
-  useEffect(() => {
-    if (!productQuery.data ?? productQuery.data === null) return;
-    reset((formValues) => ({
-      ...formValues,
-      name: (productQuery.data as Product).name,
-      price: (productQuery.data as Product).price,
-      category: (productQuery.data as Product).category,
-      description: (productQuery.data as Product).description,
-      rating: (productQuery.data as Product).rating,
-    }));
-  }, [productQuery.data, reset]);
 
   if (productQuery.isLoading) {
     return <LoadingScreen />;

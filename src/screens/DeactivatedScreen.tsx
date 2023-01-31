@@ -10,6 +10,7 @@ const DeactivatedScreen = () => {
       </h1>
       <p className="text-center text-base font-medium text-lowkey md:text-lg">
         Please contact the administrator to reactivate your account. If you are
+        the administrator, please check the logs for more information.
       </p>
     </div>
   );

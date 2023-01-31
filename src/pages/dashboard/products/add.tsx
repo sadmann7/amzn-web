@@ -25,7 +25,7 @@ const schema = z.object({
   }),
   rating: z.number().min(0).max(5),
 });
-type Inputs = z.infer<typeof schema> & { image: File };
+type Inputs = z.infer<typeof schema>;
 
 const AddProduct: NextPageWithLayout = () => {
   const [preview, setPreview] = useState<string | undefined>();
@@ -34,6 +34,8 @@ const AddProduct: NextPageWithLayout = () => {
   const addProductMutation = trpc.admin.products.create.useMutation({
     onSuccess: async () => {
       toast.success("Product added!");
+      reset();
+      setPreview(undefined);
     },
     onError: async (err) => {
       toast.error(err.message);
@@ -50,7 +52,7 @@ const AddProduct: NextPageWithLayout = () => {
   } = useForm<Inputs>({ resolver: zodResolver(schema) });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const reader = new FileReader();
-    reader.readAsDataURL(data.image);
+    reader.readAsDataURL(data.image as File);
     reader.onload = async () => {
       const base64 = reader.result;
       await addProductMutation.mutateAsync({
@@ -58,8 +60,6 @@ const AddProduct: NextPageWithLayout = () => {
         image: base64 as string,
       });
     };
-    reset();
-    setPreview(undefined);
   };
 
   // refetch products query

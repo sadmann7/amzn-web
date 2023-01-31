@@ -93,7 +93,8 @@ const UpdateUser: NextPageWithLayout = () => {
       if (!data) {
         return toast.error("No previous user!");
       }
-      Router.push(`/dashboard/users/${data.id}`);
+      await Router.push(`/dashboard/users/${data.id}`);
+      reset();
     },
     onError: async (err) => {
       toast.error(err.message);
@@ -106,7 +107,8 @@ const UpdateUser: NextPageWithLayout = () => {
       if (!data) {
         return toast.error("No next user!");
       }
-      Router.push(`/dashboard/users/${data.id}`);
+      await Router.push(`/dashboard/users/${data.id}`);
+      reset();
     },
     onError: async (err) => {
       toast.error(err.message);
@@ -121,12 +123,6 @@ const UpdateUser: NextPageWithLayout = () => {
       utils.admin.users.getOne.invalidate(userId);
     }
   }, [number, userId, utils]);
-
-  // reset form on user change
-  useEffect(() => {
-    if (!userQuery.data) return;
-    reset();
-  }, [userQuery.data, reset]);
 
   if (userQuery.isLoading) {
     return <LoadingScreen />;
