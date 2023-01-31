@@ -31,7 +31,9 @@ const Cart = ({ products }: { products: Product[] }) => {
       cartStore.removeProducts(products.map((product) => product.id));
       toast.success("Products added to order!");
     },
-    onError: async (err) => toast.error(err.message),
+    onError: async (err) => {
+      toast.error(err.message);
+    },
   });
 
   return (

@@ -1,10 +1,11 @@
 import { type inferAsyncReturnType } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
-import cloudinary from "../cloudinary";
 
+import { cloudinary } from "../cloudinary/cloudinary";
 import { getServerAuthSession } from "../common/get-server-auth-session";
 import { prisma } from "../db/client";
+import { stripe } from "../stripe/client";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -20,6 +21,7 @@ export const createContextInner = async (opts: CreateContextOptions) => {
     session: opts.session,
     prisma,
     cloudinary,
+    stripe,
   };
 };
 
@@ -33,9 +35,11 @@ export const createContext = async (opts: CreateNextContextOptions) => {
   // Get the session from the server using the unstable_getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
 
-  return await createContextInner({
-    session,
-  });
+  return {
+    ...(await createContextInner({ session })),
+    req,
+    res,
+  };
 };
 
 export type Context = inferAsyncReturnType<typeof createContext>;

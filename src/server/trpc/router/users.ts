@@ -27,6 +27,30 @@ export const usersRouter = router({
     return user;
   }),
 
+  getSubscriptionStatus: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.session.user?.id) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Could not find user",
+      });
+    }
+    const user = await ctx.prisma.user.findUnique({
+      where: {
+        id: ctx.session.user?.id,
+      },
+      select: {
+        stripeSubscriptionStatus: true,
+      },
+    });
+    if (!user) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Could not find user",
+      });
+    }
+    return user.stripeSubscriptionStatus;
+  }),
+
   update: protectedProcedure
     .input(
       z.object({

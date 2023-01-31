@@ -245,7 +245,7 @@ const CustomModal = ({
                     undone.
                   </p>
                 </div>
-                <div className="mt-4 flex flex-col gap-3 xs:flex-row xs:items-center">
+                <div className="mt-4 flex flex-col gap-3 xxs:flex-row xs:items-center">
                   <button
                     aria-label="proceed"
                     type="button"

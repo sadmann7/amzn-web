@@ -20,6 +20,7 @@ module.exports = {
         link: "hsl(193, 82%, 31%)",
       },
       screens: {
+        xxs: "320px",
         xs: "480px",
       },
     },

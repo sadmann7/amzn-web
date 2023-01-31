@@ -1,6 +1,6 @@
 import Head from "next/head";
-import type { NextPageWithLayout } from "../../_app";
 import Link from "next/link";
+import type { NextPageWithLayout } from "../../_app";
 
 // external imports
 import DefaultLayout from "@/layouts/DefaultLayout";
@@ -19,7 +19,7 @@ const accountLinks = [
   {
     name: "Prime",
     description: "View benefits and payment settings",
-    href: "##",
+    href: "/app/account/prime",
   },
   {
     name: "Gift cards",

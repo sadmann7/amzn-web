@@ -115,17 +115,17 @@ model OrderItem {
 }
 
 model StripeEvent {
-  id              String   @id @default(cuid())
-  apiVersion      String?
-  data            String
-  request         Json
-  type            String
-  object          String
-  acount          String?
-  livemode        Boolean
-  pendingWebhooks Int
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id               String   @id @default(cuid())
+  api_version      String?
+  data             Json
+  request          Json?
+  type             String
+  object           String
+  acount           String?
+  livemode         Boolean
+  pending_webhooks Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 model StripeCustomer {
