@@ -20,6 +20,7 @@ import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
 
 const Orders: NextPageWithLayout = () => {
+  // redirect to signin page if unauthenticated
   const { status } = useSession();
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -44,6 +45,13 @@ const Orders: NextPageWithLayout = () => {
   // headlessui tab
   const [selectedIndex, setSelectedIndex] = useState(0);
   const tabs = [{ name: "Orders" }, { name: "Archived orders" }];
+
+  // set tab index based on query
+  useEffect(() => {
+    if (Router.query.tab === "archived") {
+      setSelectedIndex(1);
+    }
+  }, []);
 
   if (ordersQuery.isLoading || archivedOrdersQuery.isLoading) {
     return <LoadingScreen />;

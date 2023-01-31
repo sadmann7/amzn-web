@@ -1,7 +1,7 @@
 import { useCartStore } from "@/stores/cart";
 import { formatCurrency, formatEnum } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
-import type { Product } from "@prisma/client";
+import { STRIPE_SUBSCRIPTION_STATUS, type Product } from "@prisma/client";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,6 +36,9 @@ const Cart = ({ products }: { products: Product[] }) => {
     },
   });
 
+  // subscription status query
+  const subscriptionStatusQuery = trpc.users.getSubscriptionStatus.useQuery();
+
   return (
     <div className="mx-auto w-full px-4 sm:w-[95vw]">
       {products.length <= 0 ? (
@@ -55,15 +58,15 @@ const Cart = ({ products }: { products: Product[] }) => {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col-reverse justify-between md:flex-row md:gap-5">
-          <div className="grid flex-[0.8] gap-5 bg-white px-5 pb-10 pt-5 md:pt-8">
+        <div className="flex flex-col-reverse justify-between gap-5 md:flex-row">
+          <div className="grid flex-[0.8] gap-5 bg-white px-5 pb-7 pt-5 md:pt-8">
             <div className="flex justify-between gap-4 md:border-b-2 md:border-neutral-200 md:pb-4">
               <span>
                 <h1 className="text-xl text-title md:text-3xl">
                   Shopping Cart
                 </h1>
                 <button
-                  className="mt-1 text-xs font-medium text-link transition-opacity hover:text-opacity-80 active:text-opacity-90 md:text-sm"
+                  className="mt-1 text-xs font-medium text-link transition hover:text-primary hover:underline sm:text-sm"
                   onClick={() => {
                     cartStore.removeProducts(
                       products.map((product) => product.id)
@@ -91,7 +94,7 @@ const Cart = ({ products }: { products: Product[] }) => {
               </span>
             </div>
           </div>
-          <div className="flex flex-[0.2] flex-col gap-4 bg-white px-5 pt-5 md:h-40 md:pb-10 2xl:h-32">
+          <div className="flex flex-col gap-4 bg-white px-5 pt-5 pb-7 md:flex-[0.2]">
             <div className="text-base font-semibold md:text-lg">
               Subtotal ({totalQuantity} {totalQuantity > 1 ? "items" : "item"})
               :{" "}
@@ -100,7 +103,8 @@ const Cart = ({ products }: { products: Product[] }) => {
               </span>
             </div>
             <button
-              className="w-full rounded-md bg-yellow-300 py-2.5 text-xs font-medium text-title transition-colors hover:bg-yellow-400 active:bg-yellow-300 disabled:cursor-not-allowed md:whitespace-nowrap md:px-5 md:py-2 md:text-sm"
+              aria-label="Checkout"
+              className="w-full px-4 py-1.5 text-sm font-medium text-title ring-2 ring-primary transition-opacity enabled:hover:bg-orange-200 enabled:active:bg-orange-300 disabled:cursor-not-allowed sm:text-base"
               onClick={() => {
                 status === "unauthenticated"
                   ? signIn()
@@ -118,26 +122,37 @@ const Cart = ({ products }: { products: Product[] }) => {
                   <svg
                     aria-hidden="true"
                     role="status"
-                    className="mr-3 inline h-4 w-4 animate-spin text-white"
+                    className="mr-3 inline aspect-square w-4 animate-spin text-primary"
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
                       d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                      fill="#E5E7EB"
+                      fill="#cecece"
                     />
                     <path
                       d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
                       fill="currentColor"
                     />
                   </svg>
-                  Adding to order...
+                  Loading...
                 </span>
               ) : (
                 "Proceed to checkout"
               )}
             </button>
+            <Link href={"/app/account/prime"}>
+              <button
+                aria-label="Navigate to Amzn Prime page"
+                className="w-full px-4 py-1.5 text-sm font-medium text-title ring-2 ring-primary transition-opacity hover:bg-orange-200 active:bg-orange-300 sm:text-base"
+              >
+                {subscriptionStatusQuery.data ===
+                STRIPE_SUBSCRIPTION_STATUS.active
+                  ? "Manage prime"
+                  : "Get prime"}
+              </button>
+            </Link>
           </div>
         </div>
       )}
@@ -168,13 +183,13 @@ const ProductCard = ({ product }: { product: Product }) => {
           loading="lazy"
         />
         <div className="flex flex-col gap-1.5">
-          <span className="text-base font-medium text-title line-clamp-2 md:text-lg">
+          <span className="text-sm font-medium text-title line-clamp-2 sm:text-base">
             {product.name}
           </span>
           <span className="block text-base font-bold text-text md:hidden">
             {product.price ? formatCurrency(product.price, "USD") : "-"}
           </span>
-          <span className="text-xs font-bold capitalize text-text">
+          <span className="text-xs font-bold capitalize tracking-wide text-text">
             {formatEnum(product.category)}
           </span>
           <div className="mt-2.5 flex flex-wrap gap-5 divide-x-2 divide-neutral-200">
@@ -196,7 +211,7 @@ const ProductCard = ({ product }: { product: Product }) => {
             </select>
             <button
               aria-label="delete product"
-              className="w-fit px-4 text-xs font-medium text-link hover:underline md:text-sm"
+              className="w-fit px-4 text-xs font-medium text-link hover:underline sm:text-sm"
               onClick={() => cartStore.removeProduct(product.id)}
             >
               Delete
@@ -204,7 +219,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           </div>
         </div>
       </div>
-      <span className="hidden self-start text-xs font-medium text-text md:block md:text-sm">
+      <span className="hidden self-start text-xs font-medium text-text sm:text-sm md:block">
         {product.price ? formatCurrency(product.price, "USD") : "-"}
       </span>
     </div>

@@ -57,7 +57,7 @@ const bottomLinks = [
 ];
 
 const Navbar = ({ data: products }: { data: Product[] }) => {
-  // zustand
+  // cart store
   const cartStore = useCartStore((state) => ({
     products: state.products,
   }));
@@ -71,7 +71,7 @@ const Navbar = ({ data: products }: { data: Product[] }) => {
     <nav className="fixed top-0 left-0 z-50 w-full bg-layout text-white">
       <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-1 px-4 py-1.5 sm:w-[95vw] md:flex-row md:gap-5">
         <div className="flex w-full items-center justify-between gap-0 md:gap-5">
-          <Link href={`/app`}>
+          <Link href={"/app"}>
             <Image
               src={"/img/logo-white.png"}
               alt="amzn logo"

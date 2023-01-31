@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import type { NextPageWithLayout } from "../../_app";
@@ -5,65 +6,74 @@ import type { NextPageWithLayout } from "../../_app";
 // external imports
 import DefaultLayout from "@/layouts/DefaultLayout";
 
-const accountLinks = [
-  {
-    name: "Your Orders",
-    description: "Track, return, or buy things again",
-    href: "/app/orders",
-  },
-  {
-    name: "Login & security",
-    description: "Edit login, name, and mobile number",
-    href: "/app/account/update",
-  },
-  {
-    name: "Prime",
-    description: "View benefits and payment settings",
-    href: "/app/account/prime",
-  },
-  {
-    name: "Gift cards",
-    description: "View balance, redeem, or reload cards",
-    href: "##",
-  },
-  {
-    name: "Your Payments",
-    description: "View all transactions, manage payment methods and settings",
-    href: "##",
-  },
-  {
-    name: "Your Profiles",
-    description:
-      "Manage, add, or remove user profiles for personalized experiences",
-    href: "##",
-  },
-  {
-    name: "Digital Services and Device Support",
-    description: "Troubleshoot device issues",
-    href: "##",
-  },
-  {
-    name: "Your Messages",
-    description: "View messages to and from Amazon, sellers, and buyers",
-    href: "##",
-  },
-  {
-    name: "Archived orders",
-    description: "View and manage your archived orders",
-    href: "##",
-  },
-  {
-    name: "Your Lists",
-    description: "View, modify, and share your lists, or create new ones",
-    href: "##",
-  },
-  {
-    name: "Customer Service",
-    href: "##",
-  },
-];
-
 const Account: NextPageWithLayout = () => {
+  const { status } = useSession();
+
+  const accountLinks = [
+    {
+      name: "Your Orders",
+      description: "Track, return, or buy things again",
+      href: "/app/orders",
+    },
+    {
+      name: "Login & security",
+      description: "Edit login, name, and mobile number",
+      href:
+        status === "authenticated"
+          ? "/app/account/security"
+          : "/api/auth/signin",
+    },
+    {
+      name: "Prime",
+      description: "View benefits and payment settings",
+      href:
+        status === "authenticated" ? "/app/account/prime" : "/api/auth/signin",
+    },
+    {
+      name: "Gift cards",
+      description: "View balance, redeem, or reload cards",
+      href: "##",
+    },
+    {
+      name: "Your Payments",
+      description: "View all transactions, manage payment methods and settings",
+      href: "##",
+    },
+    {
+      name: "Your Profiles",
+      description:
+        "Manage, add, or remove user profiles for personalized experiences",
+      href: "##",
+    },
+    {
+      name: "Digital Services and Device Support",
+      description: "Troubleshoot device issues",
+      href: "##",
+    },
+    {
+      name: "Your Messages",
+      description: "View messages to and from Amazon, sellers, and buyers",
+      href: "##",
+    },
+    {
+      name: "Archived orders",
+      description: "View and manage your archived orders",
+      href:
+        status === "authenticated"
+          ? "/app/orders?tab=archived"
+          : "/api/auth/signin",
+    },
+    {
+      name: "Your Lists",
+      description: "View, modify, and share your lists, or create new ones",
+      href: "##",
+    },
+    {
+      name: "Customer Service",
+      href: "##",
+    },
+  ];
+
   return (
     <>
       <Head>

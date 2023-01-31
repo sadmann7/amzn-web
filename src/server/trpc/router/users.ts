@@ -3,10 +3,6 @@ import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const usersRouter = router({
-  getSession: publicProcedure.query(({ ctx }) => {
-    return ctx.session;
-  }),
-
   get: protectedProcedure.query(async ({ ctx }) => {
     const users = await ctx.prisma.user.findMany();
     return users;
@@ -25,6 +21,10 @@ export const usersRouter = router({
       });
     }
     return user;
+  }),
+
+  getSession: publicProcedure.query(({ ctx }) => {
+    return ctx.session;
   }),
 
   getSubscriptionStatus: protectedProcedure.query(async ({ ctx }) => {

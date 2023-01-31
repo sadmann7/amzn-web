@@ -31,8 +31,8 @@ export const stripeRouter = router({
           quantity: 1,
         },
       ],
-      success_url: `${baseUrl}/dashboard?checkoutSuccess=true`,
-      cancel_url: `${baseUrl}/dashboard?checkoutCanceled=true`,
+      success_url: `${baseUrl}/app/account/prime?checkoutSuccess=true`,
+      cancel_url: `${baseUrl}/app/account/prime?checkoutCanceled=true`,
       subscription_data: {
         metadata: {
           userId: ctx.session.user?.id,
@@ -67,7 +67,7 @@ export const stripeRouter = router({
     const stripeBillingPortalSession =
       await ctx.stripe.billingPortal.sessions.create({
         customer: customerId,
-        return_url: `${baseUrl}/dashboard`,
+        return_url: `${baseUrl}/app/account/prime`,
       });
     if (!stripeBillingPortalSession) {
       throw new TRPCError({
