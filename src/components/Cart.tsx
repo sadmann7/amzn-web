@@ -40,7 +40,12 @@ const Cart = ({ products }: { products: Product[] }) => {
   });
 
   // subscription status query
-  const subscriptionStatusQuery = trpc.users.getSubscriptionStatus.useQuery();
+  const subscriptionStatusQuery = trpc.users.getSubscriptionStatus.useQuery(
+    undefined,
+    {
+      enabled: status === "authenticated",
+    }
+  );
 
   return (
     <div className="mx-auto w-full px-4 sm:w-[95vw]">
@@ -107,7 +112,7 @@ const Cart = ({ products }: { products: Product[] }) => {
             </div>
             <Button
               aria-label="Add to order"
-              className="w-full py-2 text-xs sm:text-sm"
+              className="w-full text-xs sm:text-sm"
               onClick={() => {
                 status === "unauthenticated"
                   ? signIn()
@@ -145,16 +150,19 @@ const Cart = ({ products }: { products: Product[] }) => {
                 "Proceed to checkout"
               )}
             </Button>
-            <Link href={"/app/account/prime"}>
-              <Button
-                aria-label="Navigate to Amzn Prime page"
-                className="w-full py-2 text-xs sm:text-sm"
-              >
-                {subscriptionStatusQuery.data ===
-                STRIPE_SUBSCRIPTION_STATUS.active
-                  ? "Manage prime"
-                  : "Get prime"}
-              </Button>
+            <Link
+              aria-label="Navigate to Amzn Prime page"
+              href={
+                status === "authenticated"
+                  ? "/app/account/prime"
+                  : "/api/auth/signin"
+              }
+              className="w-full bg-primary px-4 py-1.5 text-center text-xs font-semibold text-title transition-opacity hover:bg-opacity-80 active:bg-opacity-90 sm:text-sm "
+            >
+              {subscriptionStatusQuery.data ===
+              STRIPE_SUBSCRIPTION_STATUS.active
+                ? "Manage prime"
+                : "Get prime"}
             </Link>
           </div>
         </div>

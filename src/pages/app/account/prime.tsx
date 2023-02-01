@@ -1,8 +1,7 @@
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { trpc } from "@/utils/trpc";
 import { STRIPE_SUBSCRIPTION_STATUS } from "@prisma/client";
 import type { GetServerSideProps } from "next";
-import { unstable_getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
@@ -14,10 +13,18 @@ import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
+import { getServerAuthSession } from "@/server/common/get-server-auth-session";
 
 const Prime: NextPageWithLayout = () => {
+  const { status } = useSession();
+
   // subscription status query
-  const subscriptionStatusQuery = trpc.users.getSubscriptionStatus.useQuery();
+  const subscriptionStatusQuery = trpc.users.getSubscriptionStatus.useQuery(
+    undefined,
+    {
+      enabled: status === "authenticated",
+    }
+  );
 
   // checkout session mutation
   const checkoutSessionMutation = trpc.stripe.createCheckoutSession.useMutation(
@@ -124,16 +131,15 @@ export default Prime;
 Prime.getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions
-  );
+  const session = await getServerAuthSession({
+    req: ctx.req,
+    res: ctx.res,
+  });
 
   if (!session) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/api/auth/signin",
         permanent: false,
       },
     };

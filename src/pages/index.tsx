@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import type { NextPageWithLayout } from "./_app";
 
 // external imports
-import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
 
 const Home: NextPageWithLayout = () => {
@@ -25,13 +24,12 @@ const Home: NextPageWithLayout = () => {
         <h1 className="text-center text-xl font-semibold md:text-3xl">
           Redirecting to the app page
         </h1>
-        <Link href="/app">
-          <Button
-            aria-label="navigate to app page"
-            className="font-bold text-title"
-          >
-            Go to app
-          </Button>
+        <Link
+          aria-label="navigate to app page"
+          href="/app"
+          className="bg-primary px-4 py-1.5 text-center text-xs font-semibold text-title transition-opacity hover:bg-opacity-80 active:bg-opacity-90 sm:text-sm"
+        >
+          Go to app
         </Link>
       </main>
     </>
