@@ -19,9 +19,7 @@ const Account: NextPageWithLayout = () => {
       name: "Login & security",
       description: "Edit login, name, and mobile number",
       href:
-        status === "authenticated"
-          ? "/app/account/security"
-          : "/api/auth/signin",
+        status === "authenticated" ? "/app/account/update" : "/api/auth/signin",
     },
     {
       name: "Prime",

@@ -54,9 +54,9 @@ model User {
   orders                   Order[]
   stripeCustomerId         String?
   stripeSubscriptionId     String?
-  stripeCustomer           StripeCustomer?             @relation(fields: [stripeCustomerId], references: [id])
-  stripeSubscription       StripeSubscription?         @relation(fields: [stripeSubscriptionId], references: [id])
   stripeSubscriptionStatus STRIPE_SUBSCRIPTION_STATUS? @default(incomplete)
+  stripeCustomer           StripeCustomer?             @relation(fields: [stripeCustomerId], references: [id], onDelete: Cascade)
+  stripeSubscription       StripeSubscription?         @relation(fields: [stripeSubscriptionId], references: [id], onDelete: Cascade)
 
   @@index([id])
   @@index([stripeCustomerId])
@@ -129,22 +129,78 @@ model StripeEvent {
 }
 
 model StripeCustomer {
-  id                       String                     @id @default(cuid())
-  stripeCustomerId         String
-  stripeSubscriptionId     String
-  stripeSubscriptionStatus STRIPE_SUBSCRIPTION_STATUS
-  createdAt                DateTime                   @default(now())
-  updatedAt                DateTime                   @updatedAt
-  User                     User[]
+  id                    String   @id @default(cuid())
+  object                String
+  address               Json?
+  balance               Int
+  created               DateTime
+  currency              String
+  default_source        String?
+  delinquent            Boolean
+  description           String?
+  discount              Json?
+  email                 String?
+  invoice_prefix        String
+  invoice_settings      Json?
+  livemode              Boolean
+  metadata              Json?
+  name                  String?
+  next_invoice_sequence Int
+  phone                 String?
+  preferred_locales     Json?
+  shipping              Json?
+  tax_exempt            String
+  test_clock            Json?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  users                 User[]
 }
 
 model StripeSubscription {
-  id                       String                     @id @default(cuid())
-  stripeSubscriptionId     String
-  stripeSubscriptionStatus STRIPE_SUBSCRIPTION_STATUS
-  createdAt                DateTime                   @default(now())
-  updatedAt                DateTime                   @updatedAt
-  User                     User[]
+  id                                String    @id @default(cuid())
+  object                            String
+  application                       String?
+  application_fee_percent           Int?
+  automatic_tax                     Json?
+  billing_cycle_anchor              Int
+  billing_thresholds                Json?
+  cancel_at                         DateTime?
+  cancel_at_period_end              Boolean
+  canceled_at                       DateTime?
+  collection_method                 String
+  created                           DateTime
+  currency                          String
+  current_period_end                Int
+  current_period_start              Int
+  customer                          String
+  days_until_due                    Int?
+  default_payment_method            String?
+  default_source                    String?
+  default_tax_rates                 Json?
+  description                       String?
+  discount                          Json?
+  ended_at                          DateTime?
+  items                             Json
+  latest_invoice                    String?
+  livemode                          Boolean
+  metadata                          Json
+  next_pending_invoice_item_invoice String?
+  on_behalf_of                      String?
+  pause_collection                  Json?
+  payment_settings                  Json
+  pending_invoice_item_interval     Json?
+  pending_setup_intent              String?
+  pending_update                    Json?
+  schedule                          String?
+  start_date                        Int
+  status                            String
+  test_clock                        Json?
+  transfer_data                     Json?
+  trial_end                         DateTime?
+  trial_start                       DateTime?
+  createdAt                         DateTime  @default(now())
+  updatedAt                         DateTime  @updatedAt
+  users                             User[]
 }
 
 enum USER_ROLE {

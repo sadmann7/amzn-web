@@ -112,7 +112,7 @@ const Cart = ({ products }: { products: Product[] }) => {
             </div>
             <Button
               aria-label="Add to order"
-              className="w-full text-xs sm:text-sm"
+              className="w-full"
               onClick={() => {
                 status === "unauthenticated"
                   ? signIn()

@@ -77,4 +77,26 @@ export const stripeRouter = router({
     }
     return { billingPortalUrl: stripeBillingPortalSession.url };
   }),
+
+  getCustomer: protectedProcedure.query(async ({ ctx }) => {
+    const customerId = await getOrCreateStripeCustomerIdForUser({
+      prisma: ctx.prisma,
+      stripe: ctx.stripe,
+      userId: ctx.session.user?.id,
+    });
+    if (!customerId) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Could not create customer id",
+      });
+    }
+    const customer = await ctx.stripe.customers.retrieve(customerId);
+    if (!customer) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Could not get customer",
+      });
+    }
+    return customer;
+  }),
 });

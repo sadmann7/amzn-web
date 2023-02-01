@@ -1,3 +1,4 @@
+import { getServerAuthSession } from "@/server/common/get-server-auth-session";
 import { trpc } from "@/utils/trpc";
 import { STRIPE_SUBSCRIPTION_STATUS } from "@prisma/client";
 import type { GetServerSideProps } from "next";
@@ -13,7 +14,6 @@ import Button from "@/components/Button";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import ErrorScreen from "@/screens/ErrorScreen";
 import LoadingScreen from "@/screens/LoadingScreen";
-import { getServerAuthSession } from "@/server/common/get-server-auth-session";
 
 const Prime: NextPageWithLayout = () => {
   const { status } = useSession();
@@ -89,13 +89,15 @@ const Prime: NextPageWithLayout = () => {
               </p>
               <Button
                 aria-label="Manage your Prime membership"
-                className="mt-3.5"
+                className="mt-3.5 min-w-[8rem]"
                 onClick={async () => {
                   await billingPortalSessionMutation.mutateAsync();
                 }}
                 disabled={billingPortalSessionMutation.isLoading}
               >
-                Manage your Prime membership
+                {billingPortalSessionMutation.isLoading
+                  ? "Loading..."
+                  : "Manage your Prime membership"}
               </Button>
             </div>
           ) : (
@@ -110,13 +112,15 @@ const Prime: NextPageWithLayout = () => {
               </p>
               <Button
                 aria-label="Start your 30-day free trial"
-                className="mt-3.5"
+                className="mt-3.5 min-w-[8rem]"
                 onClick={async () => {
                   await checkoutSessionMutation.mutateAsync();
                 }}
                 disabled={checkoutSessionMutation.isLoading}
               >
-                Start your 30-day free trial
+                {checkoutSessionMutation.isLoading
+                  ? "Loading..."
+                  : "Start your 30-day free trial"}
               </Button>
             </div>
           )}
