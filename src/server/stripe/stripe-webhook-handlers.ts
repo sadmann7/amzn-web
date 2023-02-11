@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient, STRIPE_SUBSCRIPTION_STATUS } from "@prisma/client";
 import type Stripe from "stripe";
 
 // retrieves a Stripe customer id for a given user if it exists or creates a new one
@@ -71,7 +71,8 @@ export const handleInvoicePaid = async ({
     },
     data: {
       stripeSubscriptionId: subscription.id,
-      stripeSubscriptionStatus: subscription.status,
+      stripeSubscriptionStatus:
+        subscription.status as STRIPE_SUBSCRIPTION_STATUS,
     },
   });
 };
@@ -93,7 +94,8 @@ export const handleSubscriptionCreatedOrUpdated = async ({
     },
     data: {
       stripeSubscriptionId: subscription.id,
-      stripeSubscriptionStatus: subscription.status,
+      stripeSubscriptionStatus:
+        subscription.status as STRIPE_SUBSCRIPTION_STATUS,
     },
   });
 };
