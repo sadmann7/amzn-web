@@ -4,7 +4,7 @@ import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports

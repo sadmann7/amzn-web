@@ -5,7 +5,7 @@ import type { Product } from "@prisma/client";
 import Head from "next/head";
 import Image from "next/image";
 import Router from "next/router";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports
