@@ -32,7 +32,7 @@ import {
   type SetStateAction,
 } from "react";
 
-interface Props<TData, TValue = any> {
+interface Props<TData, TValue = unknown> {
   tableTitle?: ReactNode;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -84,7 +84,7 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-const CustomTable = <TData, TValue = any>(props: Props<TData, TValue>) => {
+const CustomTable = <TData, TValue = unknown>(props: Props<TData, TValue>) => {
   const { manualFiltering, manualSorting, manualPagination } = props;
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -143,7 +143,7 @@ const CustomTable = <TData, TValue = any>(props: Props<TData, TValue>) => {
     <>
       <div className="flex py-4">
         <h2 className="text-2xl">{props.tableTitle}</h2>
-        <div className="mr-0 ml-auto flex gap-4">
+        <div className="ml-auto mr-0 flex gap-4">
           {props.disableGlobalFilter ? null : (
             <div>
               <label htmlFor="global-filter-input" className="sr-only">
@@ -166,7 +166,7 @@ const CustomTable = <TData, TValue = any>(props: Props<TData, TValue>) => {
                     <Popover.Button className="inline-flex w-full justify-center border border-lowkey px-4 py-2 text-sm font-medium hover:bg-lowkey hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                       Show Columns
                       <ChevronDownIcon
-                        className="ml-2 -mr-1 h-5 w-5"
+                        className="-mr-1 ml-2 h-5 w-5"
                         aria-hidden="true"
                       />
                     </Popover.Button>
@@ -387,7 +387,7 @@ const CustomTable = <TData, TValue = any>(props: Props<TData, TValue>) => {
 
 export default CustomTable;
 
-const Filter = <TData, TValue = any>({
+const Filter = <TData, TValue = unknown>({
   column,
   table,
 }: {

@@ -4,9 +4,9 @@ import Head from "next/head";
 
 // external components
 import ProductList from "@/components/ProductList";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import ErrorScreen from "@/screens/ErrorScreen";
-import LoadingScreen from "@/screens/LoadingScreen";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const Products: NextPageWithLayout = () => {
   // get products query

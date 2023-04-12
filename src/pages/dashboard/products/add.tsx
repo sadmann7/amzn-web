@@ -11,9 +11,9 @@ import { z } from "zod";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports
-import Button from "@/components/Button";
-import CustomDropzone from "@/components/CustomDropzone";
-import DefaultLayout from "@/layouts/DefaultLayout";
+import Button from "@/components/ui/Button";
+import CustomDropzone from "@/components/ui/FileInput";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const schema = z.object({
   name: z.string().min(3),
@@ -76,7 +76,7 @@ const AddProduct: NextPageWithLayout = () => {
       <Head>
         <title>Add Product | Amzn Store</title>
       </Head>
-      <main className="min-h-screen pt-52 pb-14 md:pt-40">
+      <main className="min-h-screen pb-14 pt-52 md:pt-40">
         <div className="mx-auto w-full max-w-screen-sm px-4 sm:w-[95vw]">
           <form
             aria-label="add product form"

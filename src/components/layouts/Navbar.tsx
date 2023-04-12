@@ -11,7 +11,7 @@ import { Fragment } from "react";
 // external imports
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
-import Searchbar from "./Searchbar";
+import Searchbar from "../Searchbar";
 
 const bottomLinks = [
   {
@@ -68,7 +68,7 @@ const Navbar = ({ data: products }: { data: Product[] }) => {
   );
 
   return (
-    <nav className="fixed top-0 left-0 z-50 w-full bg-layout text-white">
+    <nav className="fixed left-0 top-0 z-50 w-full bg-layout text-white">
       <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-1 px-4 py-1.5 sm:w-[95vw] md:flex-row md:gap-5">
         <div className="flex w-full items-center justify-between gap-0 md:gap-5">
           <Link href={"/app"}>
@@ -100,7 +100,7 @@ const Navbar = ({ data: products }: { data: Product[] }) => {
                   className="aspect-square w-7"
                   aria-hidden="true"
                 />
-                <span className="absolute top-1 left-[1.15rem] h-5 bg-layout text-base font-medium text-primary md:text-lg">
+                <span className="absolute left-[1.15rem] top-1 h-5 bg-layout text-base font-medium text-primary md:text-lg">
                   {totalQuantity}
                 </span>
                 <span className="text-sm font-medium md:text-base">Cart</span>
@@ -111,12 +111,12 @@ const Navbar = ({ data: products }: { data: Product[] }) => {
         <Searchbar className="md:hidden" data={products} route="products" />
       </div>
       <div className="w-full bg-layout-light">
-        <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between gap-4 overflow-x-auto whitespace-nowrap py-2 px-4 sm:w-[95vw] md:justify-start ">
+        <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between gap-4 overflow-x-auto whitespace-nowrap px-4 py-2 sm:w-[95vw] md:justify-start ">
           {bottomLinks.map((link) => (
             <Link
               href={link.href}
               key={link.name}
-              className="px-1 pt-0.5 pb-1 text-xs font-medium transition hover:ring-1 hover:ring-white md:text-sm"
+              className="px-1 pb-1 pt-0.5 text-xs font-medium transition hover:ring-1 hover:ring-white md:text-sm"
             >
               {link.name}
             </Link>

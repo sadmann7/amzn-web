@@ -12,10 +12,10 @@ import { z } from "zod";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports
-import Button from "@/components/Button";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import ErrorScreen from "@/screens/ErrorScreen";
-import LoadingScreen from "@/screens/LoadingScreen";
+import Button from "@/components/ui/Button";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 import {
   ArrowLeftCircleIcon,
   ArrowRightCircleIcon,
@@ -138,7 +138,7 @@ const UpdateUser: NextPageWithLayout = () => {
       <Head>
         <title>Update User | Amzn Store</title>
       </Head>
-      <main className="min-h-screen pt-52 pb-14 md:pt-40">
+      <main className="min-h-screen pb-14 pt-52 md:pt-40">
         <div className="mx-auto grid w-full max-w-screen-sm gap-4 px-4 sm:w-[95vw]">
           <div className="flex items-center justify-between">
             <button

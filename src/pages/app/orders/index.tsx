@@ -14,10 +14,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 // external imports
-import Button from "@/components/Button";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import ErrorScreen from "@/screens/ErrorScreen";
-import LoadingScreen from "@/screens/LoadingScreen";
+import Button from "@/components/ui/Button";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const Orders: NextPageWithLayout = () => {
   // redirect to signin page if unauthenticated
@@ -83,7 +83,7 @@ const Orders: NextPageWithLayout = () => {
       <Head>
         <title>Orders | Amzn Store</title>
       </Head>
-      <main className="min-h-screen pt-48 pb-14 md:pt-36">
+      <main className="min-h-screen pb-14 pt-48 md:pt-36">
         <div className="mx-auto w-full max-w-screen-lg px-4 sm:w-[95vw]">
           <h1 className="text-xl font-semibold text-title md:text-2xl">
             Your Orders

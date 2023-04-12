@@ -1,12 +1,12 @@
-import DeactivatedScreen from "@/screens/DeactivatedScreen";
-import ErrorScreen from "@/screens/ErrorScreen";
+import DeactivatedScreen from "@/components/screens/DeactivatedScreen";
+import ErrorScreen from "@/components/screens/ErrorScreen";
 import { trpc } from "@/utils/trpc";
 import { useSession } from "next-auth/react";
 import { type ReactNode } from "react";
 
 // external imports
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import Footer from "./Footer";
+import Navbar from "./Navbar";
 import LoadingScreen from "../screens/LoadingScreen";
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => {

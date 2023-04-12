@@ -8,8 +8,8 @@ import "../styles/globals.css";
 import { trpc } from "../utils/trpc";
 
 // external imports
-import ToastWrapper from "@/components/ToastWrapper";
-import DefaultLayout from "@/layouts/DefaultLayout";
+import ToastWrapper from "@/components/ui/ToastWrapper";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,

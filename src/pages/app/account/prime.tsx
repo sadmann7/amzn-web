@@ -10,10 +10,10 @@ import { toast } from "react-toastify";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports
-import Button from "@/components/Button";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import ErrorScreen from "@/screens/ErrorScreen";
-import LoadingScreen from "@/screens/LoadingScreen";
+import Button from "@/components/ui/Button";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const Prime: NextPageWithLayout = () => {
   const { status } = useSession();
@@ -76,7 +76,7 @@ const Prime: NextPageWithLayout = () => {
       <Head>
         <title>Prime | Amzn Store</title>
       </Head>
-      <main className="grid min-h-screen place-items-center pt-48 pb-14 md:pt-36">
+      <main className="grid min-h-screen place-items-center pb-14 pt-48 md:pt-36">
         <div className="mx-auto w-full max-w-screen-sm px-4 sm:w-[95vw]">
           {subscriptionStatusQuery.data ===
           STRIPE_SUBSCRIPTION_STATUS.active ? (

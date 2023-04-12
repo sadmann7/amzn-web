@@ -9,7 +9,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 // external imports
-import Button from "./Button";
+import Button from "./ui/Button";
 
 const Cart = ({ products }: { products: Product[] }) => {
   const { status } = useSession();
@@ -50,7 +50,7 @@ const Cart = ({ products }: { products: Product[] }) => {
   return (
     <div className="mx-auto w-full px-4 sm:w-[95vw]">
       {products.length <= 0 ? (
-        <div className="grid gap-1.5 bg-white px-5 pt-8 pb-10">
+        <div className="grid gap-1.5 bg-white px-5 pb-10 pt-8">
           <h1 className="text-2xl text-title md:text-3xl">
             Your Amzn Cart is empty.
           </h1>
@@ -102,7 +102,7 @@ const Cart = ({ products }: { products: Product[] }) => {
               </span>
             </div>
           </div>
-          <div className="flex flex-col gap-4 bg-white px-5 pt-5 pb-7 md:flex-[0.2]">
+          <div className="flex flex-col gap-4 bg-white px-5 pb-7 pt-5 md:flex-[0.2]">
             <div className="text-base font-semibold md:text-lg">
               Subtotal ({totalQuantity} {totalQuantity > 1 ? "items" : "item"})
               :{" "}

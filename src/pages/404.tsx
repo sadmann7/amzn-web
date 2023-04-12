@@ -2,7 +2,7 @@ import Head from "next/head";
 import type { NextPageWithLayout } from "./_app";
 
 // external imports
-import DefaultLayout from "@/layouts/DefaultLayout";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const Four0Four: NextPageWithLayout = () => {
   return (

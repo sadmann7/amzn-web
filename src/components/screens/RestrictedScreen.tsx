@@ -1,7 +1,7 @@
 import Router from "next/router";
 
 // external imports
-import Button from "@/components/Button";
+import Button from "@/components/ui/Button";
 import { NoSymbolIcon } from "@heroicons/react/20/solid";
 
 const RestrictedScreen = () => {

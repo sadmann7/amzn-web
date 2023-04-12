@@ -7,9 +7,9 @@ import Router from "next/router";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports
-import DefaultLayout from "@/layouts/DefaultLayout";
-import ErrorScreen from "@/screens/ErrorScreen";
-import LoadingScreen from "@/screens/LoadingScreen";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const ShowOrder: NextPageWithLayout = () => {
   const orderId = Router.query.orderId as string;
@@ -30,7 +30,7 @@ const ShowOrder: NextPageWithLayout = () => {
       <Head>
         <title>Order | Amzn Store</title>
       </Head>
-      <main className="min-h-screen pt-48 pb-14 md:pt-36">
+      <main className="min-h-screen pb-14 pt-48 md:pt-36">
         <div className="mx-auto w-full max-w-screen-lg px-4 sm:w-[95vw]">
           {orderQuery.data.items.map((item) => (
             <div key={item.id}>

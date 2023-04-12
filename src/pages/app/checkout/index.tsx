@@ -4,7 +4,7 @@ import Head from "next/head";
 
 // external imports
 import Cart from "@/components/Cart";
-import DefaultLayout from "@/layouts/DefaultLayout";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const Checkout: NextPageWithLayout = () => {
   //  cart store
@@ -17,7 +17,7 @@ const Checkout: NextPageWithLayout = () => {
       <Head>
         <title>Checkout | Amzn Store</title>
       </Head>
-      <main className="min-h-screen bg-bg-gray pt-48 pb-14 md:pt-40 lg:pt-36">
+      <main className="min-h-screen bg-bg-gray pb-14 pt-48 md:pt-40 lg:pt-36">
         <Cart products={cartStore.products} />
       </main>
     </>

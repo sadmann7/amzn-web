@@ -16,9 +16,9 @@ import Router from "next/router";
 import { useMemo, useState } from "react";
 
 // external imports
-import Button from "@/components/Button";
-import CustomTable from "@/components/CustomTable";
-import DefaultLayout from "@/layouts/DefaultLayout";
+import Button from "@/components/ui/Button";
+import CustomTable from "@/components/ui/Table";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 type TextField = string | undefined;
 type NumberField = number | undefined;
@@ -115,7 +115,7 @@ const Products: NextPageWithLayout = () => {
       <Head>
         <title>Products | Amzn Store</title>
       </Head>
-      <main className="min-h-screen bg-bg-gray pt-48 pb-14 md:pt-36">
+      <main className="min-h-screen bg-bg-gray pb-14 pt-48 md:pt-36">
         <div className="mx-auto w-full max-w-screen-2xl px-4 sm:w-[95vw]">
           <CustomTable<Product>
             tableTitle={

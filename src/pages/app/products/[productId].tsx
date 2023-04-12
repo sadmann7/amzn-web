@@ -9,10 +9,10 @@ import { toast } from "react-toastify";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports
-import Button from "@/components/Button";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import ErrorScreen from "@/screens/ErrorScreen";
-import LoadingScreen from "@/screens/LoadingScreen";
+import Button from "@/components/ui/Button";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const ShowProduct: NextPageWithLayout = () => {
   const productId = Router.query.productId as string;
@@ -38,7 +38,7 @@ const ShowProduct: NextPageWithLayout = () => {
       <Head>
         <title>{productQuery.data.name ?? "Product"} | Amzn Store</title>
       </Head>
-      <main className="min-h-screen pt-48 pb-14 md:pt-40 lg:pt-36">
+      <main className="min-h-screen pb-14 pt-48 md:pt-40 lg:pt-36">
         <div className="mx-auto w-full max-w-screen-2xl px-4 sm:w-[95vw]">
           <div className="mx-auto flex w-full flex-col items-center gap-5 md:w-1/2">
             <Image

@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse, PageConfig } from "next";
 import { env } from "../../env/server.mjs";
 import { prisma } from "../../server/db/client";
 import type Stripe from "stripe";
@@ -11,7 +11,7 @@ import {
 import { stripe } from "../../server/stripe/client";
 
 // Stripe requires the raw body to construct the event.
-export const config = {
+export const config: PageConfig = {
   api: {
     bodyParser: false,
   },
@@ -99,8 +99,12 @@ export default async function handler(
       });
 
       res.json({ received: true });
-    } catch (err) {
-      res.status(400).send(`Webhook Error: ${(err as any).message}`);
+    } catch (error) {
+      res
+        .status(400)
+        .send(
+          `Webhook Error: ${error instanceof Error ? error.message : error}`
+        );
       return;
     }
   } else {

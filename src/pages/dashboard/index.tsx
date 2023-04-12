@@ -5,8 +5,8 @@ import Link from "next/link";
 import type { NextPageWithLayout } from "../_app";
 
 // external imports
-import DefaultLayout from "@/layouts/DefaultLayout";
-import RestrictedScreen from "@/screens/RestrictedScreen";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import RestrictedScreen from "@/components/screens/RestrictedScreen";
 
 const dashboardRoutes = [
   {
@@ -35,7 +35,7 @@ const Dashboard: NextPageWithLayout = () => {
       <Head>
         <title>Dashboard | Amzn Store</title>
       </Head>
-      <main className="mx-auto min-h-screen w-full max-w-[200px] pt-52 pb-14 sm:w-[95vw] md:pt-40">
+      <main className="mx-auto min-h-screen w-full max-w-[200px] pb-14 pt-52 sm:w-[95vw] md:pt-40">
         <ul className="grid gap-2.5">
           {dashboardRoutes.map((route) => (
             <li key={route.name}>

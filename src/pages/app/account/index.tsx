@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports
-import DefaultLayout from "@/layouts/DefaultLayout";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 
 const Account: NextPageWithLayout = () => {
   const { status } = useSession();
@@ -77,7 +77,7 @@ const Account: NextPageWithLayout = () => {
       <Head>
         <title>Account | Amzn Store</title>
       </Head>
-      <main className="min-h-screen pt-48 pb-14 md:pt-36">
+      <main className="min-h-screen pb-14 pt-48 md:pt-36">
         <div className="mx-auto w-full max-w-screen-lg px-4 sm:w-[95vw]">
           <h1 className="text-xl font-medium text-title md:text-2xl">
             Your Account

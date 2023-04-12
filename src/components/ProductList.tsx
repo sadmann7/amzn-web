@@ -8,7 +8,7 @@ import { Fragment } from "react";
 import { toast } from "react-toastify";
 
 // external imports
-import Button from "./Button";
+import Button from "./ui/Button";
 
 const ProductList = ({ products }: { products: Product[] }) => {
   return (

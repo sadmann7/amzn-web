@@ -6,9 +6,9 @@ import type { NextPageWithLayout } from "../../_app";
 
 // external imports
 import ProductList from "@/components/ProductList";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import ErrorScreen from "@/screens/ErrorScreen";
-import LoadingScreen from "@/screens/LoadingScreen";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const ShowCategory: NextPageWithLayout = () => {
   const category = Router.query.category as PRODUCT_CATEGORY;
@@ -31,7 +31,7 @@ const ShowCategory: NextPageWithLayout = () => {
       <Head>
         <title>Products | Amzn Store</title>
       </Head>
-      <main className="min-h-screen bg-bg-gray pt-48 pb-14 md:pt-40 lg:pt-36">
+      <main className="min-h-screen bg-bg-gray pb-14 pt-48 md:pt-40 lg:pt-36">
         <ProductList products={productsQuery.data} />
       </main>
     </>

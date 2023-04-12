@@ -6,9 +6,9 @@ import type { NextPageWithLayout } from "../_app";
 import CategoryList from "@/components/CategoryList";
 import Hero from "@/components/Hero";
 import ProductList from "@/components/ProductList";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import ErrorScreen from "@/screens/ErrorScreen";
-import LoadingScreen from "@/screens/LoadingScreen";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const App: NextPageWithLayout = () => {
   // get queries

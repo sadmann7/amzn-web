@@ -12,11 +12,11 @@ import { z } from "zod";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports
-import Button from "@/components/Button";
+import Button from "@/components/ui/Button";
 import ConfirmationModal from "@/components/ConfirmationModal";
-import DefaultLayout from "@/layouts/DefaultLayout";
-import ErrorScreen from "@/screens/ErrorScreen";
-import LoadingScreen from "@/screens/LoadingScreen";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
+import ErrorScreen from "@/components/screens/ErrorScreen";
+import LoadingScreen from "@/components/screens/LoadingScreen";
 
 const schema = z.object({
   name: z
@@ -87,7 +87,7 @@ const Update: NextPageWithLayout = () => {
       <Head>
         <title>Change Name, E-mail, and Delete Account | Amzn Store</title>
       </Head>
-      <main className="mx-auto min-h-screen w-full max-w-screen-sm px-4 pt-52 pb-14 sm:w-[95vw] md:pt-40">
+      <main className="mx-auto min-h-screen w-full max-w-screen-sm px-4 pb-14 pt-52 sm:w-[95vw] md:pt-40">
         <ConfirmationModal
           isOpen={isOpen}
           setIsOpen={setIsOpen}
