@@ -12,16 +12,17 @@ import type {
   PathValue,
   UseFormSetValue,
 } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
-type DropProps<TInputs extends FieldValues> = {
+interface DropProps<TInputs extends FieldValues>
+  extends React.HTMLAttributes<HTMLDivElement> {
   name: Path<TInputs>;
   setValue: UseFormSetValue<TInputs>;
   preview: string | undefined;
   setPreview: Dispatch<SetStateAction<string | undefined>>;
-} & JSX.IntrinsicElements["div"];
+}
 
-const CustomDropzone = <TInputs extends FieldValues>({
+const FileInput = <TInputs extends FieldValues>({
   name,
   setValue,
   preview,
@@ -47,7 +48,7 @@ const CustomDropzone = <TInputs extends FieldValues>({
               `Please upload a image smaller than 1MB. Current size: ${size}MB`
             );
           } else {
-            toast.error(toast.error(file.errors[0]?.message));
+            toast.error(toast.error(file.errors[0]?.message ?? "Error"));
           }
         })
       ),
@@ -93,4 +94,4 @@ const CustomDropzone = <TInputs extends FieldValues>({
   );
 };
 
-export default CustomDropzone;
+export default FileInput;
