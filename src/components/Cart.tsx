@@ -6,7 +6,7 @@ import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 // external imports
 import Button from "./ui/Button";
@@ -32,7 +32,7 @@ const Cart = ({ products }: { products: Product[] }) => {
   const addOrderMutation = trpc.orders.create.useMutation({
     onSuccess: async () => {
       cartStore.removeProducts(products.map((product) => product.id));
-      toast.success("Products added to order!");
+      toast.success("Products added to your order!");
     },
     onError: async (err) => {
       toast.error(err.message);

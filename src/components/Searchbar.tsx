@@ -2,22 +2,22 @@ import styles from "@/styles/searchbar.module.css";
 import { Combobox, Transition } from "@headlessui/react";
 import type { Product } from "@prisma/client";
 import Router from "next/router";
-import { Fragment, useState } from "react";
+import * as React from "react";
 
 // external imports
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
-type SearchbarProps<TData> = {
+interface SearchbarProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   data: TData[];
   route: string;
-} & JSX.IntrinsicElements["div"];
+}
 
 const Searchbar = <TData extends Product>({
   data,
   route,
   className,
 }: SearchbarProps<TData>) => {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = React.useState("");
 
   // filter data
   const filteredData =
@@ -56,7 +56,7 @@ const Searchbar = <TData extends Product>({
         </Combobox.Button>
       </div>
       <Transition
-        as={Fragment}
+        as={React.Fragment}
         leave="transition ease-in duration-100"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"

@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import type { NextPageWithLayout } from "../../_app";
 
 // external imports

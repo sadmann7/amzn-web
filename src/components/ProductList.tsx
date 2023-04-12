@@ -5,7 +5,8 @@ import type { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
+
 
 // external imports
 import Button from "./ui/Button";

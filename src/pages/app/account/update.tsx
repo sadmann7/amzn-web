@@ -7,7 +7,7 @@ import Head from "next/head";
 import Router from "next/router";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { z } from "zod";
 import type { NextPageWithLayout } from "../../_app";
 
