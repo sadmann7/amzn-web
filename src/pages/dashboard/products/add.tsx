@@ -6,7 +6,7 @@ import { useIsMutating } from "@tanstack/react-query";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { z } from "zod";
 import type { NextPageWithLayout } from "../../_app";
 
