@@ -13,17 +13,10 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "fakestoreapi.com",
-      },
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-      },
-    ],
+    images: {
+    // image optimization is disabled because of exceeding the vercel hobby tier limit
+    unoptimized: true,
+    domains: ["fakestoreapi.com", "res.cloudinary.com"],
   },
 };
 export default config;
